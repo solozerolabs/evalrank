@@ -186,7 +186,7 @@ class FeedInventoryArtifactTests(unittest.TestCase):
         self.assertEqual("evalrank_feed_inventory", self.feeds["object"])
         self.assertEqual("1", self.feeds["schema_version"])
         self.assertEqual(self.manifest["manifest_version"], self.feeds["manifest_version"])
-        self.assertEqual("2026-07-23.1", self.feeds["manifest_version"])
+        self.assertEqual("2026-08-04.1", self.feeds["manifest_version"])
 
     def test_committed_file_is_one_compact_line_per_feed(self):
         lines = (CATALOG / "feeds.json").read_text(encoding="utf-8").splitlines()

@@ -453,7 +453,7 @@ class CatalogManifestTests(unittest.TestCase):
 
         self.assertEqual("evalrank_manifest", payload["object"])
         self.assertEqual("1", payload["schema_version"])
-        self.assertEqual("2026-07-23.1", payload["manifest_version"])
+        self.assertEqual("2026-08-04.1", payload["manifest_version"])
         for key, id_key in (
             ("cells", "cell_id"),
             ("ranking_groups", "ranking_group_id"),

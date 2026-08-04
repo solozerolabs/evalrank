@@ -2,7 +2,7 @@
   "$schema": "../schemas/evalrank-manifest.schema.json",
   "object": "evalrank_manifest",
   "schema_version": "1",
-  "manifest_version": "2026-07-23.1",
+  "manifest_version": "2026-08-04.1",
   "ranking_group_dimensions": [
     "cell_id",
     "entity_kind",

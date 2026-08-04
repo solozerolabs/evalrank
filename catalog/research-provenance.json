@@ -2135,12 +2135,17 @@
     },
     {
       "benchmark_family_id": "hle-with-tools",
-      "checked_on": "2026-07-23",
+      "checked_on": "2026-08-04",
       "sources": [
         {
           "source_id": "site",
           "kind": "official_site",
           "url": "https://lastexam.ai/"
+        },
+        {
+          "source_id": "openrouter-leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://openrouter.ai/benchmarks/hle"
         }
       ],
       "claims": [
@@ -2205,6 +2210,15 @@
           "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source.",
           "source_ids": [
             "site"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "A published leaderboard scores this benchmark with live search tooling on production endpoints, varying the search configuration at a fixed model.",
+          "source_ids": [
+            "openrouter-leaderboard"
           ]
         }
       ]
@@ -3269,12 +3283,17 @@
     },
     {
       "benchmark_family_id": "facts-parametric",
-      "checked_on": "2026-07-23",
+      "checked_on": "2026-08-04",
       "sources": [
         {
           "source_id": "release",
           "kind": "official_site",
           "url": "https://deepmind.google/blog/facts-benchmark-suite-systematically-evaluating-the-factuality-of-large-language-models/"
+        },
+        {
+          "source_id": "kaggle-leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://www.kaggle.com/benchmarks/google/facts"
         }
       ],
       "claims": [
@@ -3349,6 +3368,24 @@
           "source_ids": [
             "release"
           ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "A maintained leaderboard publishes scores for this benchmark suite and continues to admit newly released models.",
+          "source_ids": [
+            "kaggle-leaderboard"
+          ]
+        },
+        {
+          "topic": "research_flag",
+          "research_flag": "aggregator-rights-by-attestation",
+          "basis": "owner_attestation",
+          "source_ids": [
+            "kaggle-leaderboard"
+          ],
+          "statement": "EvalRank holds direct permission, reported by the repo owner on 2026-08-04, from Kaggle to collect and use the public benchmark data published on its website. This permission is the sole basis for this field where those scores are concerned and overrides the access terms published on that website, which prohibit automated collection. It is not derived from any licence on the benchmark itself."
         }
       ]
     },
@@ -3445,12 +3482,17 @@
     },
     {
       "benchmark_family_id": "facts-grounding-v2",
-      "checked_on": "2026-07-23",
+      "checked_on": "2026-08-04",
       "sources": [
         {
           "source_id": "release",
           "kind": "official_site",
           "url": "https://deepmind.google/blog/facts-benchmark-suite-systematically-evaluating-the-factuality-of-large-language-models/"
+        },
+        {
+          "source_id": "kaggle-leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://www.kaggle.com/benchmarks/google/facts"
         }
       ],
       "claims": [
@@ -3516,6 +3558,24 @@
           "source_ids": [
             "release"
           ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "A maintained leaderboard publishes scores for this benchmark suite and continues to admit newly released models.",
+          "source_ids": [
+            "kaggle-leaderboard"
+          ]
+        },
+        {
+          "topic": "research_flag",
+          "research_flag": "aggregator-rights-by-attestation",
+          "basis": "owner_attestation",
+          "source_ids": [
+            "kaggle-leaderboard"
+          ],
+          "statement": "EvalRank holds direct permission, reported by the repo owner on 2026-08-04, from Kaggle to collect and use the public benchmark data published on its website. This permission is the sole basis for this field where those scores are concerned and overrides the access terms published on that website, which prohibit automated collection. It is not derived from any licence on the benchmark itself."
         }
       ]
     },
@@ -7247,7 +7307,7 @@
     },
     {
       "benchmark_family_id": "browsecomp",
-      "checked_on": "2026-07-23",
+      "checked_on": "2026-08-04",
       "sources": [
         {
           "source_id": "release",
@@ -7258,6 +7318,11 @@
           "source_id": "repository",
           "kind": "official_repository",
           "url": "https://github.com/openai/simple-evals"
+        },
+        {
+          "source_id": "openrouter-leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://openrouter.ai/benchmarks/browsecomp"
         }
       ],
       "claims": [
@@ -7322,6 +7387,15 @@
           "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source.",
           "source_ids": [
             "release"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "A published leaderboard scores this benchmark on production endpoints across search engine, request format and turn budget at a fixed model; turn budget alone moves the reported score materially.",
+          "source_ids": [
+            "openrouter-leaderboard"
           ]
         }
       ]
@@ -8372,6 +8446,1013 @@
           "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source.",
           "source_ids": [
             "mteb_repo"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "widesearch",
+      "checked_on": "2026-08-04",
+      "sources": [
+        {
+          "source_id": "repository",
+          "kind": "official_repository",
+          "url": "https://github.com/ByteDance-Seed/WideSearch"
+        },
+        {
+          "source_id": "site",
+          "kind": "official_site",
+          "url": "https://widesearch-seed.github.io/"
+        },
+        {
+          "source_id": "paper",
+          "kind": "primary_paper",
+          "url": "https://arxiv.org/abs/2508.07999"
+        },
+        {
+          "source_id": "openrouter-leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://openrouter.ai/benchmarks/widesearch"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "WideSearch scores agents on populating a structured table from broad web search; the official leaderboard reports SR and F1 at Avg@4 and Pass@4 across single-agent, multi-agent, and end-to-end system configurations.",
+          "source_ids": [
+            "site",
+            "paper"
+          ]
+        },
+        {
+          "topic": "version_status",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official leaderboard lists only the models evaluated in the ICLR 2026 paper and states no submission process or update cadence; the repository last received commits on 2025-10-09.",
+          "source_ids": [
+            "site",
+            "repository"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official repository is published under the MIT License and the project site states it is licensed under Creative Commons Attribution-ShareAlike 4.0 International.",
+          "source_ids": [
+            "repository",
+            "site"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank holds direct permission, reported by the repo owner on 2026-08-04, from OpenRouter to collect and use the public benchmark data published on its website. This permission is the sole basis for this field where those scores are concerned and overrides the access terms published on that website, which prohibit automated collection. It is not derived from any licence on the benchmark itself.",
+          "source_ids": [
+            "openrouter-leaderboard"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank holds direct permission, reported by the repo owner on 2026-08-04, from OpenRouter to collect and use the public benchmark data published on its website. This permission is the sole basis for this field where those scores are concerned and overrides the access terms published on that website, which prohibit automated collection. It is not derived from any licence on the benchmark itself.",
+          "source_ids": [
+            "openrouter-leaderboard"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank holds direct permission, reported by the repo owner on 2026-08-04, from OpenRouter to collect and use the public benchmark data published on its website. This permission is the sole basis for this field where those scores are concerned and overrides the access terms published on that website, which prohibit automated collection. It is not derived from any licence on the benchmark itself.",
+          "source_ids": [
+            "openrouter-leaderboard"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank holds direct permission, reported by the repo owner on 2026-08-04, from OpenRouter to collect and use the public benchmark data published on its website. This permission is the sole basis for this field where those scores are concerned and overrides the access terms published on that website, which prohibit automated collection. It is not derived from any licence on the benchmark itself.",
+          "source_ids": [
+            "openrouter-leaderboard"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank holds direct permission, reported by the repo owner on 2026-08-04, from OpenRouter to collect and use the public benchmark data published on its website. This permission is the sole basis for this field where those scores are concerned and overrides the access terms published on that website, which prohibit automated collection. It is not derived from any licence on the benchmark itself.",
+          "source_ids": [
+            "openrouter-leaderboard"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank holds direct permission, reported by the repo owner on 2026-08-04, from OpenRouter to collect and use the public benchmark data published on its website. This permission is the sole basis for this field where those scores are concerned and overrides the access terms published on that website, which prohibit automated collection. It is not derived from any licence on the benchmark itself.",
+          "source_ids": [
+            "openrouter-leaderboard"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "A second published leaderboard scores this benchmark on production endpoints as a search configuration rather than as the paper's fixed agent set.",
+          "source_ids": [
+            "openrouter-leaderboard"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "deepsearchqa",
+      "checked_on": "2026-08-04",
+      "sources": [
+        {
+          "source_id": "leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://www.kaggle.com/benchmarks/google/dsqa"
+        },
+        {
+          "source_id": "paper",
+          "kind": "primary_paper",
+          "url": "https://storage.googleapis.com/deepmind-media/DeepSearchQA/DeepSearchQA_benchmark_paper.pdf"
+        },
+        {
+          "source_id": "openrouter-leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://openrouter.ai/benchmarks/deepsearchqa"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "DeepSearchQA is a 900-prompt benchmark across 17 fields scoring exhaustive answer lists on causal-chain search tasks; the leaderboard reports Fully Correct, Fully Incorrect, Correct with Excessive Answers, and F1.",
+          "source_ids": [
+            "leaderboard",
+            "paper"
+          ]
+        },
+        {
+          "topic": "version_status",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The benchmark is at version 1 dated 2025-12-10 while the leaderboard continues to admit new model entries, the most recent recorded in April 2026.",
+          "source_ids": [
+            "leaderboard"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The benchmark page states the benchmark has been released under the Apache 2.0 License.",
+          "source_ids": [
+            "leaderboard"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank holds direct permission from the source owner to collect and use this source's public benchmark data, independently of the access terms published on the source's own website.",
+          "source_ids": [
+            "leaderboard"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank holds direct permission from the source owner to collect and use this source's public benchmark data, independently of the access terms published on the source's own website.",
+          "source_ids": [
+            "leaderboard"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank holds direct permission from the source owner to collect and use this source's public benchmark data, independently of the access terms published on the source's own website.",
+          "source_ids": [
+            "leaderboard"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank holds direct permission from the source owner to collect and use this source's public benchmark data, independently of the access terms published on the source's own website.",
+          "source_ids": [
+            "leaderboard"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank holds direct permission from the source owner to collect and use this source's public benchmark data, independently of the access terms published on the source's own website.",
+          "source_ids": [
+            "leaderboard"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank holds direct permission from the source owner to collect and use this source's public benchmark data, independently of the access terms published on the source's own website.",
+          "source_ids": [
+            "leaderboard"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "A second published leaderboard scores this benchmark on production endpoints, varying search engine, request format and turn budget while holding the model fixed, and reports cost and latency per question.",
+          "source_ids": [
+            "openrouter-leaderboard"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "gpqa-diamond",
+      "checked_on": "2026-08-04",
+      "sources": [
+        {
+          "source_id": "leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://www.kaggle.com/benchmarks/open-benchmarks/gpqa-diamond-zero-shot"
+        },
+        {
+          "source_id": "repository",
+          "kind": "official_repository",
+          "url": "https://github.com/idavidrein/gpqa"
+        },
+        {
+          "source_id": "dataset",
+          "kind": "official_dataset",
+          "url": "https://huggingface.co/datasets/Idavidrein/gpqa"
+        },
+        {
+          "source_id": "openrouter-leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://openrouter.ai/benchmarks/gpqa-diamond"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "GPQA Diamond is a graduate-level multiple-choice science question set scored zero-shot; the observed public leaderboard carried 54 evaluated models.",
+          "source_ids": [
+            "leaderboard"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official dataset is published under CC-BY-4.0 and the official repository under the MIT License; the dataset is access-gated and requires accepting its terms of use before download.",
+          "source_ids": [
+            "repository",
+            "dataset"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank holds direct permission from the source owner to collect and use this source's public benchmark data, independently of the access terms published on the source's own website.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank holds direct permission from the source owner to collect and use this source's public benchmark data, independently of the access terms published on the source's own website.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank holds direct permission from the source owner to collect and use this source's public benchmark data, independently of the access terms published on the source's own website.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank holds direct permission from the source owner to collect and use this source's public benchmark data, independently of the access terms published on the source's own website.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank holds direct permission from the source owner to collect and use this source's public benchmark data, independently of the access terms published on the source's own website.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank holds direct permission from the source owner to collect and use this source's public benchmark data, independently of the access terms published on the source's own website.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Two maintained leaderboards publish scores for this benchmark and continue to admit newly released models.",
+          "source_ids": [
+            "openrouter-leaderboard"
+          ]
+        },
+        {
+          "topic": "version_status",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The question set is fixed at 448 expert-written items and is distributed access-gated with a canary string; published leaderboards continue to admit newly released models against that unchanged set.",
+          "source_ids": [
+            "repository",
+            "dataset"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "kernelbench",
+      "checked_on": "2026-08-04",
+      "sources": [
+        {
+          "source_id": "repository",
+          "kind": "official_repository",
+          "url": "https://github.com/ScalingIntelligence/KernelBench"
+        },
+        {
+          "source_id": "leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://scalingintelligence.stanford.edu/KernelBenchLeaderboard/"
+        },
+        {
+          "source_id": "dataset",
+          "kind": "official_dataset",
+          "url": "https://huggingface.co/datasets/ScalingIntelligence/KernelBench"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "KernelBench scores generated GPU kernels against reference PyTorch implementations over 250 operations in four difficulty levels, reporting speedup over Torch.",
+          "source_ids": [
+            "repository",
+            "leaderboard",
+            "dataset"
+          ]
+        },
+        {
+          "topic": "version_status",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The public Kernelsseum leaderboard lists only 2024-era models such as claude-3.5-sonnet, gpt-4o, gpt-o1 and llama-3.1-405b, while the repository continued receiving commits through 2026-03-24; the leaderboard is a snapshot rather than a maintained ranking.",
+          "source_ids": [
+            "repository",
+            "leaderboard",
+            "dataset"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official repository states the project is licensed under MIT.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the MIT License on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the MIT License on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the MIT License on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the MIT License on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the MIT License on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the MIT License on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "profbench",
+      "checked_on": "2026-08-04",
+      "sources": [
+        {
+          "source_id": "repository",
+          "kind": "official_repository",
+          "url": "https://github.com/NVlabs/ProfBench"
+        },
+        {
+          "source_id": "dataset",
+          "kind": "official_dataset",
+          "url": "https://huggingface.co/datasets/nvidia/ProfBench"
+        },
+        {
+          "source_id": "leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://huggingface.co/spaces/nvidia/ProfBench"
+        },
+        {
+          "source_id": "paper",
+          "kind": "primary_paper",
+          "url": "https://arxiv.org/abs/2510.18941"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "ProfBench scores open-ended professional deliverables against expert rubrics across chemistry, physics, consulting and finance, covering over 7,000 response-criterion pairs.",
+          "source_ids": [
+            "repository",
+            "dataset",
+            "leaderboard",
+            "paper"
+          ]
+        },
+        {
+          "topic": "version_status",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The dataset was published on 2025-09-24 and the repository last received commits on 2025-10-30; a hosted leaderboard application is published alongside it.",
+          "source_ids": [
+            "repository",
+            "dataset",
+            "leaderboard",
+            "paper"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The dataset page states it is released under the NVIDIA Evaluation Dataset License and is ready for commercial and non-commercial use; the accompanying code repository is licensed under MIT.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "research_flag",
+          "research_flag": "task-data-license-unverified",
+          "basis": "evalrank_inference",
+          "source_ids": [
+            "dataset"
+          ],
+          "statement": "The NVIDIA Evaluation Dataset License is an evaluation-purpose licence, not an OSS-permissive grant. Its full text has not been read in this research pass, so no redistribution, retention or derived-publication right is asserted."
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "bixbench",
+      "checked_on": "2026-08-04",
+      "sources": [
+        {
+          "source_id": "repository",
+          "kind": "official_repository",
+          "url": "https://github.com/Future-House/BixBench"
+        },
+        {
+          "source_id": "dataset",
+          "kind": "official_dataset",
+          "url": "https://huggingface.co/datasets/futurehouse/BixBench"
+        },
+        {
+          "source_id": "paper",
+          "kind": "primary_paper",
+          "url": "https://arxiv.org/abs/2503.00096"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "BixBench scores agents on 53 expert-curated bioinformatics analysis scenarios with 296 open-answer questions derived from published notebooks and their data capsules.",
+          "source_ids": [
+            "repository",
+            "dataset",
+            "paper"
+          ]
+        },
+        {
+          "topic": "version_status",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The repository last received commits on 2025-10-06 and no public ranking page was located; results are reported in the paper rather than on a maintained leaderboard.",
+          "source_ids": [
+            "repository",
+            "dataset",
+            "paper"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official repository is published under the Apache License 2.0.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the Apache License 2.0 on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the Apache License 2.0 on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the Apache License 2.0 on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the Apache License 2.0 on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the Apache License 2.0 on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the Apache License 2.0 on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "medxpertqa",
+      "checked_on": "2026-08-04",
+      "sources": [
+        {
+          "source_id": "repository",
+          "kind": "official_repository",
+          "url": "https://github.com/TsinghuaC3I/MedXpertQA"
+        },
+        {
+          "source_id": "leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://medxpertqa.github.io"
+        },
+        {
+          "source_id": "dataset",
+          "kind": "official_dataset",
+          "url": "https://huggingface.co/datasets/TsinghuaC3I/MedXpertQA"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "MedXpertQA scores expert-level medical reasoning and understanding over 4,460 questions spanning 17 specialties, with separate text and multimodal subsets.",
+          "source_ids": [
+            "repository",
+            "leaderboard",
+            "dataset"
+          ]
+        },
+        {
+          "topic": "version_status",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The leaderboard opened on 2025-02-20 and its newest recorded entries remain 2024 and early-2025 models such as o1, o3-mini, DeepSeek-R1 and Qwen2.5-VL-72B; the site publishes a submission link but shows no entries after that period.",
+          "source_ids": [
+            "repository",
+            "leaderboard",
+            "dataset"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official repository states the project is licensed under MIT.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the MIT License on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the MIT License on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the MIT License on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the MIT License on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the MIT License on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the MIT License on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "bbeh",
+      "checked_on": "2026-08-04",
+      "sources": [
+        {
+          "source_id": "repository",
+          "kind": "official_repository",
+          "url": "https://github.com/google-deepmind/bbeh"
+        },
+        {
+          "source_id": "paper",
+          "kind": "primary_paper",
+          "url": "https://aclanthology.org/2025.acl-long.1285/"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "BIG-Bench Extra Hard replaces each BIG-Bench Hard task with a harder task probing the same reasoning capability.",
+          "source_ids": [
+            "repository",
+            "paper"
+          ]
+        },
+        {
+          "topic": "version_status",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official repository was archived by its owner on 2026-07-10 and is read-only; no maintained leaderboard was located.",
+          "source_ids": [
+            "repository",
+            "paper"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official repository is published under the Apache License 2.0.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the Apache License 2.0 on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the Apache License 2.0 on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the Apache License 2.0 on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the Apache License 2.0 on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the Apache License 2.0 on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the Apache License 2.0 on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "musr",
+      "checked_on": "2026-08-04",
+      "sources": [
+        {
+          "source_id": "repository",
+          "kind": "official_repository",
+          "url": "https://github.com/Zayne-Sprague/MuSR"
+        },
+        {
+          "source_id": "paper",
+          "kind": "primary_paper",
+          "url": "https://arxiv.org/abs/2310.16049"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "MuSR scores multistep soft reasoning over long natural-language narratives such as murder mysteries and team allocation problems.",
+          "source_ids": [
+            "repository",
+            "paper"
+          ]
+        },
+        {
+          "topic": "version_status",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official repository last received commits on 2024-08-10 and publishes no maintained leaderboard.",
+          "source_ids": [
+            "repository",
+            "paper"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official repository is published under the MIT License.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the MIT License on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the MIT License on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the MIT License on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the MIT License on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the MIT License on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This field is granted by the MIT License on the official repository.",
+          "source_ids": [
+            "repository"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "legalagentbench",
+      "checked_on": "2026-08-04",
+      "sources": [
+        {
+          "source_id": "repository",
+          "kind": "official_repository",
+          "url": "https://github.com/CSHaitao/LegalAgentBench"
+        },
+        {
+          "source_id": "paper",
+          "kind": "primary_paper",
+          "url": "https://arxiv.org/abs/2412.17259"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "LegalAgentBench scores tool-using agents over 17 real-world Chinese legal corpora with 37 tools for external knowledge access.",
+          "source_ids": [
+            "repository",
+            "paper"
+          ]
+        },
+        {
+          "topic": "version_status",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official repository last received commits on 2026-04-10 and publishes no maintained leaderboard.",
+          "source_ids": [
+            "repository",
+            "paper"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "No license file or license statement was located on the official repository in this research pass.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "research_flag",
+          "research_flag": "task-data-license-unverified",
+          "basis": "evalrank_inference",
+          "statement": "No task-data license has been read from a primary source in this research pass; the family is admitted as research inventory only.",
+          "source_ids": [
+            "repository"
           ]
         }
       ]

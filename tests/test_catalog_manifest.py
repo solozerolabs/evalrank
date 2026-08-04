@@ -137,6 +137,16 @@ EXPECTED_FAMILY_IDS = (
     "mteb-followir",
     "mteb-rar-b",
     "mteb-multilingual-v2",
+    "widesearch",
+    "deepsearchqa",
+    "gpqa-diamond",
+    "kernelbench",
+    "profbench",
+    "bixbench",
+    "medxpertqa",
+    "bbeh",
+    "musr",
+    "legalagentbench",
 )
 
 # MTEB families each expose an embedder + a reranker feed (both retrieval
@@ -149,6 +159,25 @@ _MTEB_FAMILY_IDS = (
     "mteb-rar-b",
     "mteb-multilingual-v2",
 )
+
+# A benchmark whose scores are also published as a search configuration carries
+# that second feed alongside its own ``-discovery`` feed. The configuration feed
+# is a distinct ranking identity — it resolves to ``system_configuration`` while
+# the discovery feed does not — and is never a duplicate of the same one. A
+# second source that resolves to an identity a family already carries earns a
+# provenance source, not a feed row.
+_AGGREGATED_FAMILY_FEEDS = {
+    "browsecomp": ("browsecomp-discovery", "browsecomp-openrouter-search"),
+    "hle-with-tools": (
+        "hle-with-tools-discovery",
+        "hle-with-tools-openrouter-search",
+    ),
+    "widesearch": ("widesearch-discovery", "widesearch-openrouter-search"),
+    "deepsearchqa": (
+        "deepsearchqa-discovery",
+        "deepsearchqa-openrouter-search",
+    ),
+}
 
 EXPECTED_FEED_IDS = tuple(
     feed_id
@@ -165,6 +194,7 @@ EXPECTED_FEED_IDS = tuple(
             fam: (f"{fam}-embedding-discovery", f"{fam}-reranking-discovery")
             for fam in _MTEB_FAMILY_IDS
         },
+        **_AGGREGATED_FAMILY_FEEDS,
     }.get(family_id, (f"{family_id}-discovery",))
 )
 
@@ -499,7 +529,7 @@ class CatalogManifestTests(unittest.TestCase):
     def test_every_cell_has_explicit_ordered_ranking_group_eligibility(self):
         payload = manifest()
         cell_ids = {cell["cell_id"] for cell in payload["cells"]}
-        self.assertEqual(40, len(payload["ranking_groups"]))
+        self.assertEqual(42, len(payload["ranking_groups"]))
         group_keys = set()
         covered_cells = set()
 
@@ -686,7 +716,7 @@ class CatalogManifestTests(unittest.TestCase):
             },
             shadow,
         )
-        self.assertEqual(93, len(families))
+        self.assertEqual(103, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -747,7 +777,7 @@ class CatalogManifestTests(unittest.TestCase):
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(101, len(feeds))
+        self.assertEqual(115, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_user_value_research_wave_maps_to_existing_decision_groups(self):
@@ -765,9 +795,12 @@ class CatalogManifestTests(unittest.TestCase):
             "finance-agent-v2",
             "deepswe",
         })
+        # A family may now carry additional aggregator feeds alongside its
+        # discovery feed; this wave assertion is about the discovery feed.
         feed_by_family = {
             row["benchmark_family_id"]: row for row in payload["feeds"]
             if row["benchmark_family_id"] in _RESEARCH_WAVE_FAMILIES
+            and row["feed_id"].endswith("-discovery")
         }
         expected = {
             "mcp-atlas": ("mcp-tool-orchestration", "rg-mcp-tool-orchestration-agent-system-agentic-agent-system-v1"),
@@ -781,6 +814,19 @@ class CatalogManifestTests(unittest.TestCase):
         }
 
         self.assertEqual(set(expected), set(feed_by_family))
+
+        # The one wave family that also carries a search-configuration feed is
+        # asserted directly, since the discovery filter above excludes it.
+        browsecomp_search = next(
+            row for row in payload["feeds"]
+            if row["feed_id"] == "browsecomp-openrouter-search"
+        )
+        self.assertEqual("system_configuration", browsecomp_search["entity_kind"])
+        self.assertEqual(
+            ["rg-web-browsing-system-configuration-system-system-configuration-v1"],
+            browsecomp_search["ranking_group_ids"],
+        )
+
         for family_id, (cell_id, group_id) in expected.items():
             with self.subTest(family_id=family_id):
                 family = family_by_id[family_id]
@@ -1148,6 +1194,10 @@ class CatalogManifestTests(unittest.TestCase):
         # Each MTEB family exposes an embedder + a reranker feed.
         for mteb_family in _MTEB_FAMILY_IDS:
             self.assertEqual(2, feed_counts.pop(mteb_family))
+        # Families whose scores are also published by an aggregator carry that
+        # aggregator's feed alongside their own discovery feed.
+        for aggregated_family, expected_feeds in _AGGREGATED_FAMILY_FEEDS.items():
+            self.assertEqual(len(expected_feeds), feed_counts.pop(aggregated_family))
         self.assertTrue(all(count == 1 for count in feed_counts.values()))
 
         self.assertEqual([], manifest_semantic_errors(payload))

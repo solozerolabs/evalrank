@@ -1878,6 +1878,66 @@
         "leave_one_family_out": null
       },
       "quarantine_reason": null
+    },
+    {
+      "ranking_group_id": "rg-web-browsing-system-configuration-system-system-configuration-v1",
+      "cell_id": "web-browsing",
+      "entity_kind": "system_configuration",
+      "interaction_policy": "system",
+      "configuration_passport_class": "system-configuration-v1",
+      "state": "preview",
+      "rank_eligible_count": null,
+      "claim_ceiling": "explorer",
+      "eligibility": {
+        "calibration_status": "unvalidated",
+        "explorer": {
+          "minimum_families": 1,
+          "minimum_overlap": 1
+        },
+        "top_set": null,
+        "single_winner": null,
+        "native_effect_policy": "family-native-likelihoods-only",
+        "missing_configuration_policy": "exclude-from-ranking-group-and-disclose",
+        "block_bootstrap": {
+          "replicates": 10000,
+          "seed_derivation": "uint64be(sha256(restricted_jcs({aggregation_input_digest,methodology_version}))[0:8])&9007199254740991"
+        },
+        "bootstrap_coverage_target": 0.95,
+        "superiority_threshold": null,
+        "practical_effect_floor": null,
+        "leave_one_family_out": null
+      },
+      "quarantine_reason": null
+    },
+    {
+      "ranking_group_id": "rg-deep-research-system-configuration-system-system-configuration-v1",
+      "cell_id": "deep-research",
+      "entity_kind": "system_configuration",
+      "interaction_policy": "system",
+      "configuration_passport_class": "system-configuration-v1",
+      "state": "preview",
+      "rank_eligible_count": null,
+      "claim_ceiling": "explorer",
+      "eligibility": {
+        "calibration_status": "unvalidated",
+        "explorer": {
+          "minimum_families": 1,
+          "minimum_overlap": 1
+        },
+        "top_set": null,
+        "single_winner": null,
+        "native_effect_policy": "family-native-likelihoods-only",
+        "missing_configuration_policy": "exclude-from-ranking-group-and-disclose",
+        "block_bootstrap": {
+          "replicates": 10000,
+          "seed_derivation": "uint64be(sha256(restricted_jcs({aggregation_input_digest,methodology_version}))[0:8])&9007199254740991"
+        },
+        "bootstrap_coverage_target": 0.95,
+        "superiority_threshold": null,
+        "practical_effect_floor": null,
+        "leave_one_family_out": null
+      },
+      "quarantine_reason": null
     }
   ],
   "benchmark_families": [
@@ -2277,7 +2337,8 @@
       ],
       "entity_kinds": [
         "model_configuration",
-        "agent_system"
+        "agent_system",
+        "system_configuration"
       ],
       "state": "discovered",
       "rank_eligible_count": null,
@@ -2494,7 +2555,9 @@
       "rank_eligible_count": null,
       "correlation_status": "unknown",
       "correlated_family_group": null,
-      "research_flags": [],
+      "research_flags": [
+        "aggregator-rights-by-attestation"
+      ],
       "quarantine_reason": null
     },
     {
@@ -2527,7 +2590,9 @@
       "rank_eligible_count": null,
       "correlation_status": "unknown",
       "correlated_family_group": null,
-      "research_flags": [],
+      "research_flags": [
+        "aggregator-rights-by-attestation"
+      ],
       "quarantine_reason": null
     },
     {
@@ -3222,7 +3287,8 @@
         "web-browsing"
       ],
       "entity_kinds": [
-        "agent_system"
+        "agent_system",
+        "system_configuration"
       ],
       "state": "discovered",
       "rank_eligible_count": null,
@@ -3405,6 +3471,173 @@
       "correlation_status": "declared",
       "correlated_family_group": "mteb-multilingual-v2",
       "research_flags": [],
+      "quarantine_reason": null
+    },
+    {
+      "benchmark_family_id": "widesearch",
+      "display_name": "WideSearch",
+      "candidate_cells": [
+        "deep-research"
+      ],
+      "entity_kinds": [
+        "agent_system",
+        "system_configuration"
+      ],
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "correlation_status": "unknown",
+      "correlated_family_group": null,
+      "research_flags": [],
+      "quarantine_reason": null
+    },
+    {
+      "benchmark_family_id": "deepsearchqa",
+      "display_name": "DeepSearchQA",
+      "candidate_cells": [
+        "deep-research"
+      ],
+      "entity_kinds": [
+        "agent_system",
+        "system_configuration"
+      ],
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "correlation_status": "unknown",
+      "correlated_family_group": null,
+      "research_flags": [],
+      "quarantine_reason": null
+    },
+    {
+      "benchmark_family_id": "gpqa-diamond",
+      "display_name": "GPQA Diamond",
+      "candidate_cells": [
+        "reasoning",
+        "general-knowledge-qa"
+      ],
+      "entity_kinds": [
+        "model_configuration"
+      ],
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "correlation_status": "unknown",
+      "correlated_family_group": null,
+      "research_flags": [],
+      "quarantine_reason": null
+    },
+    {
+      "benchmark_family_id": "kernelbench",
+      "display_name": "KernelBench",
+      "candidate_cells": [
+        "machine-learning-engineering"
+      ],
+      "entity_kinds": [
+        "agent_system"
+      ],
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "correlation_status": "unknown",
+      "correlated_family_group": null,
+      "research_flags": [],
+      "quarantine_reason": null
+    },
+    {
+      "benchmark_family_id": "profbench",
+      "display_name": "ProfBench",
+      "candidate_cells": [
+        "professional-deliverable-creation"
+      ],
+      "entity_kinds": [
+        "system_configuration"
+      ],
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "correlation_status": "unknown",
+      "correlated_family_group": null,
+      "research_flags": [
+        "task-data-license-unverified"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "benchmark_family_id": "bixbench",
+      "display_name": "BixBench",
+      "candidate_cells": [
+        "computational-research-reproduction"
+      ],
+      "entity_kinds": [
+        "agent_system"
+      ],
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "correlation_status": "unknown",
+      "correlated_family_group": null,
+      "research_flags": [],
+      "quarantine_reason": null
+    },
+    {
+      "benchmark_family_id": "medxpertqa",
+      "display_name": "MedXpertQA",
+      "candidate_cells": [
+        "medical"
+      ],
+      "entity_kinds": [
+        "model_configuration"
+      ],
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "correlation_status": "unknown",
+      "correlated_family_group": null,
+      "research_flags": [],
+      "quarantine_reason": null
+    },
+    {
+      "benchmark_family_id": "bbeh",
+      "display_name": "BIG-Bench Extra Hard",
+      "candidate_cells": [
+        "reasoning"
+      ],
+      "entity_kinds": [
+        "model_configuration"
+      ],
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "correlation_status": "unknown",
+      "correlated_family_group": null,
+      "research_flags": [],
+      "quarantine_reason": null
+    },
+    {
+      "benchmark_family_id": "musr",
+      "display_name": "MuSR",
+      "candidate_cells": [
+        "reasoning"
+      ],
+      "entity_kinds": [
+        "model_configuration"
+      ],
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "correlation_status": "unknown",
+      "correlated_family_group": null,
+      "research_flags": [],
+      "quarantine_reason": null
+    },
+    {
+      "benchmark_family_id": "legalagentbench",
+      "display_name": "LegalAgentBench",
+      "candidate_cells": [
+        "legal"
+      ],
+      "entity_kinds": [
+        "system_configuration"
+      ],
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "correlation_status": "unknown",
+      "correlated_family_group": null,
+      "research_flags": [
+        "task-data-license-unverified"
+      ],
       "quarantine_reason": null
     }
   ],
@@ -4660,6 +4893,56 @@
       },
       "ranking_group_ids": [
         "rg-deep-research-unresolved-unresolved-unresolved-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "hle-with-tools-openrouter-search",
+      "benchmark_family_id": "hle-with-tools",
+      "adapter_id": null,
+      "metric_direction": null,
+      "candidate_cells": [
+        "deep-research"
+      ],
+      "entity_kind": "system_configuration",
+      "interaction_policy": "system",
+      "configuration_passport_class": "system-configuration-v1",
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": null,
+        "task_data_license": null,
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "unvalidated",
+        "mode": null,
+        "expected_seconds": null,
+        "stale_after_seconds": null,
+        "stop_recommending_after_seconds": null,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": true,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "unknown",
+        "task_lineage_id": null,
+        "environment_lineage_id": null,
+        "grader_lineage_id": null,
+        "correlation_status": "declared",
+        "correlated_family_group": "hle"
+      },
+      "ranking_group_ids": [
+        "rg-deep-research-system-configuration-system-system-configuration-v1"
       ],
       "quarantine_reason": null
     },
@@ -7674,6 +7957,56 @@
       "quarantine_reason": null
     },
     {
+      "feed_id": "browsecomp-openrouter-search",
+      "benchmark_family_id": "browsecomp",
+      "adapter_id": null,
+      "metric_direction": null,
+      "candidate_cells": [
+        "web-browsing"
+      ],
+      "entity_kind": "system_configuration",
+      "interaction_policy": "system",
+      "configuration_passport_class": "system-configuration-v1",
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": null,
+        "task_data_license": null,
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "unvalidated",
+        "mode": null,
+        "expected_seconds": null,
+        "stale_after_seconds": null,
+        "stop_recommending_after_seconds": null,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": true,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "unknown",
+        "task_lineage_id": null,
+        "environment_lineage_id": null,
+        "grader_lineage_id": null,
+        "correlation_status": "declared",
+        "correlated_family_group": "browsecomp"
+      },
+      "ranking_group_ids": [
+        "rg-web-browsing-system-configuration-system-system-configuration-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
       "feed_id": "toolathlon-discovery",
       "benchmark_family_id": "toolathlon",
       "adapter_id": null,
@@ -8470,6 +8803,608 @@
       },
       "ranking_group_ids": [
         "rg-rag-retrieval-component-configuration-retrieval-component-configuration-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "widesearch-discovery",
+      "benchmark_family_id": "widesearch",
+      "adapter_id": null,
+      "metric_direction": null,
+      "candidate_cells": [
+        "deep-research"
+      ],
+      "entity_kind": "agent_system",
+      "interaction_policy": "agentic",
+      "configuration_passport_class": "agent-system-v1",
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": null,
+        "task_data_license": null,
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "unvalidated",
+        "mode": null,
+        "expected_seconds": null,
+        "stale_after_seconds": null,
+        "stop_recommending_after_seconds": null,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": false,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "unknown",
+        "task_lineage_id": null,
+        "environment_lineage_id": null,
+        "grader_lineage_id": null,
+        "correlation_status": "unknown",
+        "correlated_family_group": null
+      },
+      "ranking_group_ids": [
+        "rg-deep-research-agent-system-agentic-agent-system-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "widesearch-openrouter-search",
+      "benchmark_family_id": "widesearch",
+      "adapter_id": null,
+      "metric_direction": null,
+      "candidate_cells": [
+        "deep-research"
+      ],
+      "entity_kind": "system_configuration",
+      "interaction_policy": "system",
+      "configuration_passport_class": "system-configuration-v1",
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": null,
+        "task_data_license": null,
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "unvalidated",
+        "mode": null,
+        "expected_seconds": null,
+        "stale_after_seconds": null,
+        "stop_recommending_after_seconds": null,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": true,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "unknown",
+        "task_lineage_id": null,
+        "environment_lineage_id": null,
+        "grader_lineage_id": null,
+        "correlation_status": "unknown",
+        "correlated_family_group": null
+      },
+      "ranking_group_ids": [
+        "rg-deep-research-system-configuration-system-system-configuration-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "deepsearchqa-discovery",
+      "benchmark_family_id": "deepsearchqa",
+      "adapter_id": null,
+      "metric_direction": null,
+      "candidate_cells": [
+        "deep-research"
+      ],
+      "entity_kind": "agent_system",
+      "interaction_policy": "agentic",
+      "configuration_passport_class": "agent-system-v1",
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": null,
+        "task_data_license": null,
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "unvalidated",
+        "mode": null,
+        "expected_seconds": null,
+        "stale_after_seconds": null,
+        "stop_recommending_after_seconds": null,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": false,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "unknown",
+        "task_lineage_id": null,
+        "environment_lineage_id": null,
+        "grader_lineage_id": null,
+        "correlation_status": "unknown",
+        "correlated_family_group": null
+      },
+      "ranking_group_ids": [
+        "rg-deep-research-agent-system-agentic-agent-system-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "deepsearchqa-openrouter-search",
+      "benchmark_family_id": "deepsearchqa",
+      "adapter_id": null,
+      "metric_direction": null,
+      "candidate_cells": [
+        "deep-research"
+      ],
+      "entity_kind": "system_configuration",
+      "interaction_policy": "system",
+      "configuration_passport_class": "system-configuration-v1",
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": null,
+        "task_data_license": null,
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "unvalidated",
+        "mode": null,
+        "expected_seconds": null,
+        "stale_after_seconds": null,
+        "stop_recommending_after_seconds": null,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": true,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "unknown",
+        "task_lineage_id": null,
+        "environment_lineage_id": null,
+        "grader_lineage_id": null,
+        "correlation_status": "unknown",
+        "correlated_family_group": null
+      },
+      "ranking_group_ids": [
+        "rg-deep-research-system-configuration-system-system-configuration-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "gpqa-diamond-discovery",
+      "benchmark_family_id": "gpqa-diamond",
+      "adapter_id": null,
+      "metric_direction": null,
+      "candidate_cells": [
+        "reasoning",
+        "general-knowledge-qa"
+      ],
+      "entity_kind": "model_configuration",
+      "interaction_policy": "direct_prompt",
+      "configuration_passport_class": "model-configuration-v1",
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": null,
+        "task_data_license": null,
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "unvalidated",
+        "mode": null,
+        "expected_seconds": null,
+        "stale_after_seconds": null,
+        "stop_recommending_after_seconds": null,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": false,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "unknown",
+        "task_lineage_id": null,
+        "environment_lineage_id": null,
+        "grader_lineage_id": null,
+        "correlation_status": "unknown",
+        "correlated_family_group": null
+      },
+      "ranking_group_ids": [
+        "rg-reasoning-model-configuration-direct-prompt-model-configuration-v1",
+        "rg-general-knowledge-qa-model-configuration-direct-prompt-model-configuration-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "kernelbench-discovery",
+      "benchmark_family_id": "kernelbench",
+      "adapter_id": null,
+      "metric_direction": null,
+      "candidate_cells": [
+        "machine-learning-engineering"
+      ],
+      "entity_kind": "agent_system",
+      "interaction_policy": "agentic",
+      "configuration_passport_class": "agent-system-v1",
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": null,
+        "task_data_license": null,
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "unvalidated",
+        "mode": null,
+        "expected_seconds": null,
+        "stale_after_seconds": null,
+        "stop_recommending_after_seconds": null,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": false,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "unknown",
+        "task_lineage_id": null,
+        "environment_lineage_id": null,
+        "grader_lineage_id": null,
+        "correlation_status": "unknown",
+        "correlated_family_group": null
+      },
+      "ranking_group_ids": [
+        "rg-machine-learning-engineering-agent-system-agentic-agent-system-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "profbench-discovery",
+      "benchmark_family_id": "profbench",
+      "adapter_id": null,
+      "metric_direction": null,
+      "candidate_cells": [
+        "professional-deliverable-creation"
+      ],
+      "entity_kind": "system_configuration",
+      "interaction_policy": "system",
+      "configuration_passport_class": "system-configuration-v1",
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "unknown",
+        "harness_code_license": null,
+        "task_data_license": null,
+        "commercial_use": "unknown",
+        "result_redistribution": "unknown",
+        "trajectory_redistribution": "unknown",
+        "environment_terms": "unknown",
+        "artifact_retention": "unknown",
+        "derived_score_publication": "unknown"
+      },
+      "cadence": {
+        "status": "unvalidated",
+        "mode": null,
+        "expected_seconds": null,
+        "stale_after_seconds": null,
+        "stop_recommending_after_seconds": null,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": false,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "unknown",
+        "task_lineage_id": null,
+        "environment_lineage_id": null,
+        "grader_lineage_id": null,
+        "correlation_status": "unknown",
+        "correlated_family_group": null
+      },
+      "ranking_group_ids": [
+        "rg-professional-deliverable-creation-system-configuration-system-system-configuration-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "bixbench-discovery",
+      "benchmark_family_id": "bixbench",
+      "adapter_id": null,
+      "metric_direction": null,
+      "candidate_cells": [
+        "computational-research-reproduction"
+      ],
+      "entity_kind": "agent_system",
+      "interaction_policy": "agentic",
+      "configuration_passport_class": "agent-system-v1",
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": null,
+        "task_data_license": null,
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "unvalidated",
+        "mode": null,
+        "expected_seconds": null,
+        "stale_after_seconds": null,
+        "stop_recommending_after_seconds": null,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": false,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "unknown",
+        "task_lineage_id": null,
+        "environment_lineage_id": null,
+        "grader_lineage_id": null,
+        "correlation_status": "unknown",
+        "correlated_family_group": null
+      },
+      "ranking_group_ids": [
+        "rg-computational-research-reproduction-agent-system-agentic-agent-system-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "medxpertqa-discovery",
+      "benchmark_family_id": "medxpertqa",
+      "adapter_id": null,
+      "metric_direction": null,
+      "candidate_cells": [
+        "medical"
+      ],
+      "entity_kind": "model_configuration",
+      "interaction_policy": "direct_prompt",
+      "configuration_passport_class": "model-configuration-v1",
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": null,
+        "task_data_license": null,
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "unvalidated",
+        "mode": null,
+        "expected_seconds": null,
+        "stale_after_seconds": null,
+        "stop_recommending_after_seconds": null,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": false,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "unknown",
+        "task_lineage_id": null,
+        "environment_lineage_id": null,
+        "grader_lineage_id": null,
+        "correlation_status": "unknown",
+        "correlated_family_group": null
+      },
+      "ranking_group_ids": [
+        "rg-medical-model-configuration-direct-prompt-model-configuration-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "bbeh-discovery",
+      "benchmark_family_id": "bbeh",
+      "adapter_id": null,
+      "metric_direction": null,
+      "candidate_cells": [
+        "reasoning"
+      ],
+      "entity_kind": "model_configuration",
+      "interaction_policy": "direct_prompt",
+      "configuration_passport_class": "model-configuration-v1",
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": null,
+        "task_data_license": null,
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "unvalidated",
+        "mode": null,
+        "expected_seconds": null,
+        "stale_after_seconds": null,
+        "stop_recommending_after_seconds": null,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": false,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "unknown",
+        "task_lineage_id": null,
+        "environment_lineage_id": null,
+        "grader_lineage_id": null,
+        "correlation_status": "unknown",
+        "correlated_family_group": null
+      },
+      "ranking_group_ids": [
+        "rg-reasoning-model-configuration-direct-prompt-model-configuration-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "musr-discovery",
+      "benchmark_family_id": "musr",
+      "adapter_id": null,
+      "metric_direction": null,
+      "candidate_cells": [
+        "reasoning"
+      ],
+      "entity_kind": "model_configuration",
+      "interaction_policy": "direct_prompt",
+      "configuration_passport_class": "model-configuration-v1",
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": null,
+        "task_data_license": null,
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "unvalidated",
+        "mode": null,
+        "expected_seconds": null,
+        "stale_after_seconds": null,
+        "stop_recommending_after_seconds": null,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": false,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "unknown",
+        "task_lineage_id": null,
+        "environment_lineage_id": null,
+        "grader_lineage_id": null,
+        "correlation_status": "unknown",
+        "correlated_family_group": null
+      },
+      "ranking_group_ids": [
+        "rg-reasoning-model-configuration-direct-prompt-model-configuration-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "legalagentbench-discovery",
+      "benchmark_family_id": "legalagentbench",
+      "adapter_id": null,
+      "metric_direction": null,
+      "candidate_cells": [
+        "legal"
+      ],
+      "entity_kind": "system_configuration",
+      "interaction_policy": "system",
+      "configuration_passport_class": "system-configuration-v1",
+      "state": "discovered",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "unknown",
+        "harness_code_license": null,
+        "task_data_license": null,
+        "commercial_use": "unknown",
+        "result_redistribution": "unknown",
+        "trajectory_redistribution": "unknown",
+        "environment_terms": "unknown",
+        "artifact_retention": "unknown",
+        "derived_score_publication": "unknown"
+      },
+      "cadence": {
+        "status": "unvalidated",
+        "mode": null,
+        "expected_seconds": null,
+        "stale_after_seconds": null,
+        "stop_recommending_after_seconds": null,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": false,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "unknown",
+        "task_lineage_id": null,
+        "environment_lineage_id": null,
+        "grader_lineage_id": null,
+        "correlation_status": "unknown",
+        "correlated_family_group": null
+      },
+      "ranking_group_ids": [
+        "rg-legal-system-configuration-system-system-configuration-v1"
       ],
       "quarantine_reason": null
     }

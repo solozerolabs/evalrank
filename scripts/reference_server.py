@@ -380,7 +380,7 @@ def _benchmark_health(repo_root: Path) -> dict[str, Any]:
         "object": "benchmark_health",
         "schema_version": "1",
         "manifest_version": manifest["manifest_version"],
-        "generated_at": "2026-07-23T00:00:00Z",
+        "generated_at": "2026-08-04T00:00:00Z",
         "cells": rows,
     }
 

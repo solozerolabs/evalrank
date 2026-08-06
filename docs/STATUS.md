@@ -1,6 +1,6 @@
 # EvalRank Public Status
 
-Last updated: 2026-07-23
+Last updated: 2026-08-04
 
 Portable contract status: the seven-path receipt-first launch contract, Python/TypeScript clients, CLI, MCP adapter, schemas, and stdlib reference server are implemented locally. A release candidate now pins and conforms to the contract; deployment remains separate private work and this repo does not claim a live service.
 
@@ -9,7 +9,7 @@ Portable contract status: the seven-path receipt-first launch contract, Python/T
 Three documents are normative:
 
 - `docs/PRODUCT.md` defines the user job, entity ontology, receipt experience, demand boundary, and exclusions.
-- `catalog/manifest.json` defines the canonical 28-cell/40-ranking-group inventory, 93-family/101-feed research queue, native-metric direction, governance, cadence, lineage, retention, and eligibility. SRE incident response, DevOps lifecycle, and terminal-generalist work are separate decision cells; retired aliases are absent.
+- `catalog/manifest.json` defines the canonical 28-cell/42-ranking-group inventory, 103-family/115-feed research queue, native-metric direction, governance, cadence, lineage, retention, and eligibility. SRE incident response, DevOps lifecycle, and terminal-generalist work are separate decision cells; retired aliases are absent.
 - Aider Polyglot, ITBench SRE, Agents' Last Exam, and DeepSWE have replayed official result adapters but remain `shadow`: none has enough exact overlapping configurations or independent calibrated companion families to support a top set. Detailed admission evidence for the original independent-family wave is in `docs/build-log/2026-07-10-independent-family-admission.md`.
 - `methods/evidence-synthesis.md` defines native-metric synthesis, top and tie sets, uncertainty, sensitivity, abstention, and challenger promotion.
 
@@ -52,6 +52,8 @@ The public repo owns portable contracts and method. Runtime integrations, creden
 - Eligibility thresholds are `unvalidated`. An exact `explorer_<sha256>` output needs at least one family view; a preview without exact evidence truthfully exposes `explorer_views: []`. A calibrated top set needs at least three independent families; a single-winner claim needs at least four plus native practical effect and leave-one-family-out stability.
 - Safety is a cross-cutting veto, not a ranking cell.
 - Evaluator suites remain future calibration evidence, not capability families.
+
+Catalog configuration wave (2026-08-04): manifest `2026-08-04.1` adds ten discovered benchmark families, four discovered search-configuration feeds, and two preview ranking groups. This is a public catalog-policy update only; it does not claim private runtime scheduling, persistence, deployment, or production evidence.
 
 Vetted-feed admission wave (2026-07-21): public contract `548fb58ba65c26ff5569b23e28a9878908f29eee`. The public catalog is repinned to admit the twelve vetted feeds. Runtime scheduling, persistence, and operational behavior for these feeds are maintained in a separate private system and are not part of this repository. Deployment remains operator-gated; this status does not claim live rollout.
 

@@ -1,3 +1,4 @@
+import json
 import re
 import subprocess
 import unittest
@@ -105,6 +106,29 @@ class RepoDocsTests(unittest.TestCase):
                 text,
                 re.I,
             )
+        )
+
+    def test_catalog_inventory_docs_follow_canonical_manifest(self):
+        manifest = json.loads(
+            (REPO_ROOT / "catalog" / "manifest.json").read_text(encoding="utf-8")
+        )
+        counts = {
+            key: len(manifest[key])
+            for key in ("cells", "ranking_groups", "benchmark_families", "feeds")
+        }
+        status = (REPO_ROOT / "docs" / "STATUS.md").read_text(encoding="utf-8")
+        tests = (REPO_ROOT / "TESTS.md").read_text(encoding="utf-8")
+
+        self.assertIn(f"Last updated: {manifest['manifest_version'].split('.')[0]}", status)
+        self.assertIn(
+            f"canonical {counts['cells']}-cell/{counts['ranking_groups']}-ranking-group "
+            f"inventory, {counts['benchmark_families']}-family/{counts['feeds']}-feed research queue",
+            status,
+        )
+        self.assertIn(
+            f"canonical {counts['cells']}-cell taxonomy, exact "
+            f"{counts['benchmark_families']}-family/{counts['feeds']}-feed inventory",
+            tests,
         )
 
     def test_status_mentions_current_porting_workstreams(self):

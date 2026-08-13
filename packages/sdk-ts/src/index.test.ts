@@ -73,14 +73,13 @@ test("Ajv 2020 validates the canonical manifest and closed nested states", () =>
   assert.equal(acceptsManifest(manifest), true, ajv.errorsText(validate.errors));
 
   const invalidCadence = structuredClone(manifest);
-  invalidCadence.feeds[0].cadence.expected_seconds = 86_400;
+  invalidCadence.feeds[0].cadence.stale_after_seconds = 86_400;
   assert.equal(acceptsManifest(invalidCadence), false);
 
   const validatedCadence = structuredClone(manifest);
   validatedCadence.feeds[0].cadence = {
     status: "validated",
     mode: "periodic",
-    expected_seconds: 86_400,
     stale_after_seconds: 172_800,
     stop_recommending_after_seconds: 604_800,
     as_of: null,
@@ -89,7 +88,7 @@ test("Ajv 2020 validates the canonical manifest and closed nested states", () =>
   assert.equal(acceptsManifest(validatedCadence), true, ajv.errorsText(validate.errors));
 
   const misorderedCadence = structuredClone(validatedCadence);
-  misorderedCadence.feeds[0].cadence.stale_after_seconds = 43_200;
+  misorderedCadence.feeds[0].cadence.stale_after_seconds = 900_000;
   assert.equal(validate(misorderedCadence), true, ajv.errorsText(validate.errors));
   assert.equal(cadencesAreOrdered(misorderedCadence), false);
   assert.equal(acceptsManifest(misorderedCadence), false);
@@ -98,7 +97,6 @@ test("Ajv 2020 validates the canonical manifest and closed nested states", () =>
   frozenCadence.feeds[0].cadence = {
     status: "validated",
     mode: "frozen",
-    expected_seconds: null,
     stale_after_seconds: null,
     stop_recommending_after_seconds: null,
     as_of: "2026-07-09T00:00:00Z",
@@ -431,7 +429,6 @@ test("Ajv 2020 enforces fail-closed family and feed admission states", () => {
   admittedFeed.cadence = {
     status: "validated",
     mode: "periodic",
-    expected_seconds: 86_400,
     stale_after_seconds: 172_800,
     stop_recommending_after_seconds: 604_800,
     as_of: null,
@@ -502,7 +499,6 @@ test("Ajv 2020 enforces fail-closed family and feed admission states", () => {
       feed.cadence = {
         status: "unvalidated",
         mode: null,
-        expected_seconds: null,
         stale_after_seconds: null,
         stop_recommending_after_seconds: null,
         as_of: null,
@@ -1057,7 +1053,6 @@ type ManifestFeed = {
   cadence: {
     status: string;
     mode: "frozen" | "periodic" | null;
-    expected_seconds: number | null;
     stale_after_seconds: number | null;
     stop_recommending_after_seconds: number | null;
     as_of: string | null;
@@ -1106,27 +1101,23 @@ function cadencesAreOrdered(manifest: CatalogManifest): boolean {
   return manifest.feeds.every(({ cadence }) => {
     if (cadence.status === "unvalidated") {
       return cadence.mode === null
-        && cadence.expected_seconds === null
         && cadence.stale_after_seconds === null
         && cadence.stop_recommending_after_seconds === null
         && cadence.as_of === null
         && cadence.upstream_version === null;
     }
     if (cadence.mode === "frozen") {
-      return cadence.expected_seconds === null
-        && cadence.stale_after_seconds === null
+      return cadence.stale_after_seconds === null
         && cadence.stop_recommending_after_seconds === null
         && cadence.as_of !== null
         && cadence.upstream_version !== null;
     }
     return cadence.mode === "periodic"
-      && cadence.expected_seconds !== null
       && cadence.stale_after_seconds !== null
       && cadence.stop_recommending_after_seconds !== null
       && cadence.as_of === null
       && cadence.upstream_version === null
-      && cadence.expected_seconds > 0
-      && cadence.expected_seconds <= cadence.stale_after_seconds
+      && cadence.stale_after_seconds > 0
       && cadence.stale_after_seconds <= cadence.stop_recommending_after_seconds;
   });
 }

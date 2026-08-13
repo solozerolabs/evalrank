@@ -21,7 +21,9 @@ discovery rows keep it null. Parsers must never infer direction from labels,
 column names, or observed values.
 
 Cadence is fail-closed. An unvalidated feed has no cadence mode. A validated
-`periodic` feed carries ordered refresh, stale, and stop-recommending windows.
+`periodic` feed carries ordered stale and stop-recommending windows. The poll
+interval that governs how often a feed is refreshed is not part of this public
+contract; it lives in private scheduler/refresh policy in the runtime.
 A validated `frozen` feed instead pins an upstream version and UTC as-of time;
 all recency windows remain null, so a static benchmark cannot imply freshness.
 

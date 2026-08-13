@@ -870,7 +870,6 @@ class CatalogManifestTests(unittest.TestCase):
                     {
                         "status": "validated",
                         "mode": "periodic",
-                        "expected_seconds": 86_400,
                         "stale_after_seconds": 172_800,
                         "stop_recommending_after_seconds": 604_800,
                         "as_of": None,
@@ -910,7 +909,6 @@ class CatalogManifestTests(unittest.TestCase):
                     {
                         "status": "validated",
                         "mode": "periodic",
-                        "expected_seconds": 86_400,
                         "stale_after_seconds": 2_592_000,
                         "stop_recommending_after_seconds": 15_552_000,
                         "as_of": None,
@@ -1120,7 +1118,7 @@ class CatalogManifestTests(unittest.TestCase):
                 if feed["cadence"]["status"] == "unvalidated":
                     self.assertTrue(
                         all(feed["cadence"][key] is None for key in (
-                            "mode", "expected_seconds", "stale_after_seconds",
+                            "mode", "stale_after_seconds",
                             "stop_recommending_after_seconds", "as_of", "upstream_version",
                         ))
                     )
@@ -1343,7 +1341,6 @@ class CatalogManifestTests(unittest.TestCase):
                 feed["cadence"] = {
                     "status": "validated",
                     "mode": "periodic",
-                    "expected_seconds": 86_400,
                     "stale_after_seconds": 172_800,
                     "stop_recommending_after_seconds": 604_800,
                     "as_of": None,

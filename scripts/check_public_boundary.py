@@ -64,6 +64,7 @@ PRIVATE_INTERNAL_TERM_PATTERNS = (
     (re.compile(r"\bbudget_ledger\b", re.IGNORECASE), "names the private table 'budget_ledger'"),
     (re.compile(r"\bsource_cursors\b", re.IGNORECASE), "names the private table 'source_cursors'"),
     (re.compile(r"\bmanifest_feed_cadence\b", re.IGNORECASE), "names the private table 'manifest_feed_cadence'"),
+    (re.compile(r"\bfeed_refresh_interval\b", re.IGNORECASE), "names the private table 'feed_refresh_interval'"),
     (re.compile(r"\btruth_kernel_state\b", re.IGNORECASE), "names the private table 'truth_kernel_state'"),
     (re.compile(r"\bparser_run_freshness\b", re.IGNORECASE), "names the private table 'parser_run_freshness'"),
     # Private migration id: YYYY_MM_DD_NNN_

@@ -923,12 +923,11 @@
     },
     "Cadence": {
       "type": "object",
-      "$comment": "When validated: expected_seconds <= stale_after_seconds <= stop_recommending_after_seconds. Draft 2020-12 cannot compare sibling values, so the default Ajv test path enforces this semantic invariant after schema validation.",
+      "$comment": "When validated: stale_after_seconds <= stop_recommending_after_seconds. Draft 2020-12 cannot compare sibling values, so the default Ajv test path enforces this semantic invariant after schema validation.",
       "additionalProperties": false,
       "required": [
         "status",
         "mode",
-        "expected_seconds",
         "stale_after_seconds",
         "stop_recommending_after_seconds",
         "as_of",
@@ -947,13 +946,6 @@
             "periodic",
             null
           ]
-        },
-        "expected_seconds": {
-          "type": [
-            "integer",
-            "null"
-          ],
-          "minimum": 1
         },
         "stale_after_seconds": {
           "type": [
@@ -1001,9 +993,6 @@
               "mode": {
                 "type": "null"
               },
-              "expected_seconds": {
-                "type": "null"
-              },
               "stale_after_seconds": {
                 "type": "null"
               },
@@ -1042,10 +1031,6 @@
           },
           "then": {
             "properties": {
-              "expected_seconds": {
-                "type": "integer",
-                "minimum": 1
-              },
               "stale_after_seconds": {
                 "type": "integer",
                 "minimum": 1
@@ -1076,9 +1061,6 @@
           },
           "then": {
             "properties": {
-              "expected_seconds": {
-                "type": "null"
-              },
               "stale_after_seconds": {
                 "type": "null"
               },

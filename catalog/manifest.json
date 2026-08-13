@@ -3719,7 +3719,7 @@
       "cadence": {
         "status": "validated",
         "mode": "periodic",
-        "expected_seconds": 604800,
+        "expected_seconds": 86400,
         "stale_after_seconds": 31536000,
         "stop_recommending_after_seconds": 63072000,
         "as_of": null,
@@ -4220,7 +4220,7 @@
       "cadence": {
         "status": "validated",
         "mode": "periodic",
-        "expected_seconds": 604800,
+        "expected_seconds": 86400,
         "stale_after_seconds": 2592000,
         "stop_recommending_after_seconds": 15552000,
         "as_of": null,
@@ -5023,7 +5023,7 @@
       "cadence": {
         "status": "validated",
         "mode": "periodic",
-        "expected_seconds": 604800,
+        "expected_seconds": 86400,
         "stale_after_seconds": 2592000,
         "stop_recommending_after_seconds": 15552000,
         "as_of": null,

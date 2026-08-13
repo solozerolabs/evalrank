@@ -910,7 +910,7 @@ class CatalogManifestTests(unittest.TestCase):
                     {
                         "status": "validated",
                         "mode": "periodic",
-                        "expected_seconds": 604_800,
+                        "expected_seconds": 86_400,
                         "stale_after_seconds": 2_592_000,
                         "stop_recommending_after_seconds": 15_552_000,
                         "as_of": None,

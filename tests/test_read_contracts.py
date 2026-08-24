@@ -242,16 +242,16 @@ class SnapshotSetDescriptorTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "insufficient_independent_families"):
             verify_leaderboard_semantics(false_gap)
 
-        active_explorer = deepcopy(leaderboard)
-        active_explorer["ranking_groups"][0]["explorer_views"] = [{"entries": []}]
-        with self.assertRaisesRegex(ValueError, "active groups cannot expose explorer views"):
-            verify_leaderboard_semantics(active_explorer)
+        top_set_explorer = deepcopy(leaderboard)
+        top_set_explorer["ranking_groups"][0]["explorer_views"] = [{"entries": []}]
+        with self.assertRaisesRegex(ValueError, "top_set groups cannot expose explorer views"):
+            verify_leaderboard_semantics(top_set_explorer)
 
-        active_explorer_identity = _with_evidence_snapshot_id(
+        top_set_explorer_identity = _with_evidence_snapshot_id(
             leaderboard, f"explorer_{'e' * 64}"
         )
-        with self.assertRaisesRegex(ValueError, "active groups require snapshot evidence"):
-            verify_leaderboard_semantics(active_explorer_identity)
+        with self.assertRaisesRegex(ValueError, "top_set groups require snapshot evidence"):
+            verify_leaderboard_semantics(top_set_explorer_identity)
 
         preview_calibrated = deepcopy(leaderboard)
         preview_group = preview_calibrated["ranking_groups"][0]
@@ -266,45 +266,51 @@ class SnapshotSetDescriptorTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "explorer groups"):
             verify_leaderboard_semantics(preview_calibrated)
 
-        for state in ("preview", "shadow"):
-            snapshot_with_view = deepcopy(leaderboard)
-            group = snapshot_with_view["ranking_groups"][0]
-            explorer_entry = deepcopy(group["entries"][0])
-            explorer_entry["ranking"]["in_top_set"] = False
-            group["state"] = state
-            group["entries"] = []
-            group["explorer_views"] = [{"entries": [explorer_entry]}]
-            group["eligibility_summary"] = {
-                **group["eligibility_summary"],
-                "published_claim": "explorer",
-                "rank_eligible_configuration_count": 0,
-                "calibration_status": "unvalidated",
-                "gap_codes": ["calibration_unvalidated", "no_rank_eligible_configurations"],
-            }
+        # A top_set claim (snapshot evidence) may never expose explorer views, in ANY
+        # published state — the rule keys on the claim, not the state.
+        for state in ("active", "preview", "shadow"):
+            top_set_with_view = deepcopy(leaderboard)
+            top_set_with_view["ranking_groups"][0]["state"] = state
+            top_set_with_view["ranking_groups"][0]["explorer_views"] = [{"entries": []}]
             with self.subTest(state=state):
-                with self.assertRaisesRegex(ValueError, "snapshot evidence"):
-                    verify_leaderboard_semantics(snapshot_with_view)
+                with self.assertRaisesRegex(
+                    ValueError, "top_set groups cannot expose explorer views"
+                ):
+                    verify_leaderboard_semantics(top_set_with_view)
 
-            snapshot_with_view["ranking_groups"][0]["explorer_views"] = []
-            verify_leaderboard_semantics(snapshot_with_view)
+        # An explorer claim validates in ANY published state, but its evidence must be
+        # explorer_-prefixed; a snapshot_ evidence id under an explorer claim is a
+        # claim/evidence inconsistency.
+        for state in ("active", "preview", "shadow"):
+            explorer_group = _explorer_leaderboard()
+            explorer_group["ranking_groups"][0]["state"] = state
+            with self.subTest(state=state):
+                verify_leaderboard_semantics(explorer_group)
 
-        explorer_without_view = _with_evidence_snapshot_id(
-            snapshot_with_view, f"explorer_{'e' * 64}"
-        )
+            snapshot_evidence = _with_evidence_snapshot_id(
+                explorer_group, f"snapshot_{'a' * 64}"
+            )
+            with self.subTest(state=state, mutation="snapshot-evidence"):
+                with self.assertRaisesRegex(
+                    ValueError, "explorer groups require explorer evidence"
+                ):
+                    verify_leaderboard_semantics(snapshot_evidence)
+
+        explorer_without_view = _explorer_leaderboard()
         explorer_without_view["ranking_groups"][0]["explorer_views"] = []
         with self.assertRaisesRegex(ValueError, "explorer evidence requires an explorer view"):
             verify_leaderboard_semantics(explorer_without_view)
 
-        preview_top_set = deepcopy(leaderboard)
-        preview_top_set["ranking_groups"][0]["state"] = "preview"
-        preview_top_set["ranking_groups"][0]["eligibility_summary"] = {
-            **preview_top_set["ranking_groups"][0]["eligibility_summary"],
-            "published_claim": "explorer",
-            "calibration_status": "unvalidated",
-            "gap_codes": ["calibration_unvalidated"],
-        }
-        with self.assertRaisesRegex(ValueError, "non-active"):
-            verify_leaderboard_semantics(preview_top_set)
+        # An explorer claim cannot carry a calibrated top-set member.
+        explorer_claims_top_set = _explorer_leaderboard()
+        claim_group = explorer_claims_top_set["ranking_groups"][0]
+        top_set_entry = deepcopy(claim_group["explorer_views"][0]["entries"][0])
+        top_set_entry["ranking"]["in_top_set"] = True
+        claim_group["entries"] = [top_set_entry]
+        with self.assertRaisesRegex(
+            ValueError, "explorer reads cannot claim top-set membership"
+        ):
+            verify_leaderboard_semantics(explorer_claims_top_set)
 
         explorer_top_set = _explorer_leaderboard()
         explorer_top_set["ranking_groups"][0]["explorer_views"][0]["entries"][0][
@@ -312,6 +318,24 @@ class SnapshotSetDescriptorTests(unittest.TestCase):
         ]["in_top_set"] = True
         with self.assertRaisesRegex(ValueError, "explorer views cannot claim top-set"):
             verify_leaderboard_semantics(explorer_top_set)
+
+        # v2 acceptance: an ACTIVE read carrying an explorer claim (explorer evidence,
+        # disclosed gaps, no in_top_set) is decoupled from state and MUST be accepted.
+        active_explorer = _explorer_leaderboard()
+        active_explorer["cell_state"] = "active"
+        active_explorer["ranking_groups"][0]["state"] = "active"
+        verify_leaderboard_semantics(active_explorer)
+
+        # v2 rejection: a top_set claim must carry validated calibration and no gaps,
+        # regardless of state.
+        top_set_with_gaps = deepcopy(leaderboard)
+        top_set_gap_eligibility = top_set_with_gaps["ranking_groups"][0]["eligibility_summary"]
+        top_set_gap_eligibility["calibration_status"] = "unvalidated"
+        top_set_gap_eligibility["gap_codes"] = ["calibration_unvalidated"]
+        with self.assertRaisesRegex(
+            ValueError, "top_set reads require validated calibration with no gaps"
+        ):
+            verify_leaderboard_semantics(top_set_with_gaps)
 
     def test_explorer_views_are_independently_ranked_family_bound_and_freshness_truthful(self):
         leaderboard = _explorer_leaderboard()
@@ -343,11 +367,25 @@ class SnapshotSetDescriptorTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "evidence"):
                     verify_leaderboard_semantics(invalid)
 
-        no_evidence = deepcopy(leaderboard)
-        group = no_evidence["ranking_groups"][0]
+        # An explorer claim carries explorer_ evidence and a disclosing view even when
+        # it publishes no calibrated entry (a low-evidence holding cell).
+        explorer_holding = _with_evidence_snapshot_id(leaderboard, f"explorer_{'e' * 64}")
+        group = explorer_holding["ranking_groups"][0]
         group["state"] = "preview"
         group["entries"] = []
-        group["explorer_views"] = []
+        group["citations"] = []
+        group["explorer_views"] = [
+            {
+                "benchmark_family_id": "family-a",
+                "feed_id": "family-a-feed",
+                "metric_direction": "higher",
+                "observed_at": "2026-07-10T00:00:00Z",
+                "expires_at": "2026-07-17T00:00:00Z",
+                "agreement": "single_source",
+                "entries": [],
+                "citations": [],
+            }
+        ]
         group["eligibility_summary"] = {
             "published_claim": "explorer",
             "rank_eligible_configuration_count": 0,
@@ -358,7 +396,7 @@ class SnapshotSetDescriptorTests(unittest.TestCase):
             "calibration_status": "unvalidated",
             "gap_codes": ["calibration_unvalidated", "insufficient_configuration_overlap", "insufficient_independent_families", "no_rank_eligible_configurations"],
         }
-        verify_leaderboard_semantics(no_evidence)
+        verify_leaderboard_semantics(explorer_holding)
 
         missing = deepcopy(leaderboard)
         del missing["generated_at"]

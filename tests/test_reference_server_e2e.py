@@ -211,27 +211,14 @@ class ReferenceServerE2ETests(unittest.TestCase):
         self.assertEqual("2026-08-04.1", health["manifest_version"])
         self.assertEqual("2026-08-04T00:00:00Z", health["generated_at"])
         self.assertEqual(28, len(health["cells"]))
+        # v2: publication decoupled from validation. Every cell with a published
+        # (active) ranking group is now "active", so none remain in the "preview"
+        # or "unavailable" holding states.
         self.assertEqual(
-            {
-                "autonomous-swe-agent",
-                "code-generation",
-                "terminal-generalist",
-                "customer-support",
-                "function-calling",
-                "professional-deliverable-creation",
-                "sre-incident-response",
-                "reasoning",
-                "general-knowledge-qa",
-                "factuality",
-                "math-reasoning",
-                "enterprise-crm-workflow",
-                "web-frontend-code-generation",
-                "vision-multimodal",
-                "rag-retrieval",
-            },
+            set(),
             {row["cell_id"] for row in health["cells"] if row["status"] == "preview"},
         )
-        self.assertEqual(13, sum(row["status"] == "unavailable" for row in health["cells"]))
+        self.assertEqual(0, sum(row["status"] == "unavailable" for row in health["cells"]))
         self.assertTrue(
             all(
                 (row["status"] == "active")

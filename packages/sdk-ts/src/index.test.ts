@@ -54,7 +54,7 @@ test("the public catalog manifest owns the exact 28-cell taxonomy", () => {
   ];
 
   assert.deepEqual(manifest.cells.map((cell) => cell.cell_id), expected);
-  assert.ok(manifest.cells.every((cell) => cell.state === "preview"));
+  assert.ok(manifest.cells.every((cell) => cell.state === "active"));
   assert.deepEqual(manifestUseCases(), manifest.cells.map((cell) => ({
     object: "use_case",
     id: cell.cell_id,
@@ -229,19 +229,24 @@ test("Ajv 2020 rejects mixed identities and impossible ranking-group states", ()
   explorerGroup.eligibility.leave_one_family_out = null;
   assert.equal(acceptsManifest(validResolvedExplorer), true, ajv.errorsText(validate.errors));
 
+  // v2: publication is decoupled from validation. An active explorer group with
+  // no top_set, a rank_eligible_count of 1, and validated calibration is now valid.
   const activeExplorer = structuredClone(validResolvedExplorer);
-  const invalidActiveExplorer = activeExplorer.ranking_groups.find(
+  const decoupledActiveExplorer = activeExplorer.ranking_groups.find(
     (group) => group.ranking_group_id === explorerGroup.ranking_group_id,
   );
-  assert.ok(invalidActiveExplorer);
-  invalidActiveExplorer.state = "active";
-  invalidActiveExplorer.rank_eligible_count = 1;
-  invalidActiveExplorer.eligibility.calibration_status = "validated";
-  assert.equal(acceptsManifest(activeExplorer), false);
+  assert.ok(decoupledActiveExplorer);
+  decoupledActiveExplorer.state = "active";
+  decoupledActiveExplorer.rank_eligible_count = 1;
+  decoupledActiveExplorer.eligibility.calibration_status = "validated";
+  assert.equal(acceptsManifest(activeExplorer), true, ajv.errorsText(validate.errors));
 
   const validActiveGroup = structuredClone(manifest);
   const activeGroup = validActiveGroup.ranking_groups.find(
-    (group) => group.state === "preview" && group.entity_kind !== "unresolved",
+    (group) =>
+      group.state === "active" &&
+      group.entity_kind !== "unresolved" &&
+      group.claim_ceiling === "single_winner",
   );
   assert.ok(activeGroup);
   activeGroup.state = "active";
@@ -251,12 +256,18 @@ test("Ajv 2020 rejects mixed identities and impossible ranking-group states", ()
   activeGroup.eligibility.practical_effect_floor.status = "validated";
   assert.equal(acceptsManifest(validActiveGroup), true, ajv.errorsText(validate.errors));
 
+  // v2: an active group no longer requires validated calibration.
   const activeGroupWithoutCalibration = structuredClone(validActiveGroup);
   activeGroupWithoutCalibration.ranking_groups.find(
     (group) => group.ranking_group_id === activeGroup.ranking_group_id,
   )!.eligibility.calibration_status = "unvalidated";
-  assert.equal(acceptsManifest(activeGroupWithoutCalibration), false);
+  assert.equal(
+    acceptsManifest(activeGroupWithoutCalibration),
+    true,
+    ajv.errorsText(validate.errors),
+  );
 
+  // v2: an active group no longer requires a validated practical-effect floor.
   const activeGroupWithoutCalibratedEffect = structuredClone(validActiveGroup);
   activeGroupWithoutCalibratedEffect.ranking_groups.find(
     (group) => group.ranking_group_id === activeGroup.ranking_group_id,
@@ -264,31 +275,41 @@ test("Ajv 2020 rejects mixed identities and impossible ranking-group states", ()
     mode: "native-metric-calibrated",
     status: "unvalidated",
   };
-  assert.equal(acceptsManifest(activeGroupWithoutCalibratedEffect), false);
+  assert.equal(
+    acceptsManifest(activeGroupWithoutCalibratedEffect),
+    true,
+    ajv.errorsText(validate.errors),
+  );
 
-  for (const invalidCount of [0, 1, null] as const) {
-    const activeGroupWithoutCount = structuredClone(validActiveGroup);
-    activeGroupWithoutCount.ranking_groups.find(
+  // v2: an active group's rank_eligible_count is no longer gated by publication.
+  for (const decoupledCount of [0, 1, null] as const) {
+    const activeGroupWithCount = structuredClone(validActiveGroup);
+    activeGroupWithCount.ranking_groups.find(
       (group) => group.ranking_group_id === activeGroup.ranking_group_id,
-    )!.rank_eligible_count = invalidCount;
-    assert.equal(acceptsManifest(activeGroupWithoutCount), false);
+    )!.rank_eligible_count = decoupledCount;
+    assert.equal(
+      acceptsManifest(activeGroupWithCount),
+      true,
+      ajv.errorsText(validate.errors),
+    );
   }
 
+  // v2: an active unresolved ranking group is valid so long as its identity triple
+  // is coherent and it is not quarantined.
   const activeUnresolvedGroup = structuredClone(manifest);
   const unresolvedActive = activeUnresolvedGroup.ranking_groups.find(
-    (group) => group.entity_kind === "unresolved",
+    (group) => group.state === "active" && group.entity_kind === "unresolved",
   );
   assert.ok(unresolvedActive);
-  unresolvedActive.state = "active";
   unresolvedActive.rank_eligible_count = 1;
   unresolvedActive.eligibility.calibration_status = "validated";
-  assert.equal(acceptsManifest(activeUnresolvedGroup), false);
+  assert.equal(acceptsManifest(activeUnresolvedGroup), true, ajv.errorsText(validate.errors));
 
-  const previewGroupWithCount = structuredClone(manifest);
-  previewGroupWithCount.ranking_groups.find(
-    (group) => group.state === "preview",
+  const activeGroupWithCount = structuredClone(manifest);
+  activeGroupWithCount.ranking_groups.find(
+    (group) => group.state === "active",
   )!.rank_eligible_count = 1;
-  assert.equal(acceptsManifest(previewGroupWithCount), true, ajv.errorsText(validate.errors));
+  assert.equal(acceptsManifest(activeGroupWithCount), true, ajv.errorsText(validate.errors));
 
   const quarantinedGroupWithoutReason = structuredClone(manifest);
   quarantinedGroupWithoutReason.ranking_groups.find(
@@ -302,11 +323,11 @@ test("Ajv 2020 rejects mixed identities and impossible ranking-group states", ()
   )!.rank_eligible_count = 1;
   assert.equal(acceptsManifest(quarantinedGroupWithCount), false);
 
-  const previewGroupWithReason = structuredClone(manifest);
-  previewGroupWithReason.ranking_groups.find(
-    (group) => group.state === "preview",
+  const nonQuarantinedGroupWithReason = structuredClone(manifest);
+  nonQuarantinedGroupWithReason.ranking_groups.find(
+    (group) => group.state === "active",
   )!.quarantine_reason = "This must remain null outside quarantine.";
-  assert.equal(acceptsManifest(previewGroupWithReason), false);
+  assert.equal(acceptsManifest(nonQuarantinedGroupWithReason), false);
 });
 
 test("Ajv 2020 enforces fail-closed family and feed admission states", () => {
@@ -342,29 +363,36 @@ test("Ajv 2020 enforces fail-closed family and feed admission states", () => {
   admittedFamily.correlated_family_group = "independent-family-v1";
   assert.equal(acceptsManifest(validActiveFamily), true, ajv.errorsText(validate.errors));
 
-  for (const [requirement, breakAdmission] of [
-    ["rank count", (family: ManifestFamily) => { family.rank_eligible_count = null; }],
-    ["positive rank count", (family: ManifestFamily) => { family.rank_eligible_count = 0; }],
-    ["validated correlation", (family: ManifestFamily) => {
+  // v2: publication is decoupled from validation. An active family carries its real
+  // (often unvalidated) evidence; only entity-kind resolution and CorrelationState
+  // internal consistency still gate admission.
+  for (const [property, decouple] of [
+    ["null rank count", (family: ManifestFamily) => { family.rank_eligible_count = null; }],
+    ["zero rank count", (family: ManifestFamily) => { family.rank_eligible_count = 0; }],
+    ["unknown correlation with no group", (family: ManifestFamily) => {
       family.correlation_status = "unknown";
       family.correlated_family_group = null;
     }],
-    ["correlation group", (family: ManifestFamily) => {
-      family.correlated_family_group = null;
-    }],
   ] as const) {
-    const invalidActiveFamily = structuredClone(validActiveFamily);
-    const family = invalidActiveFamily.benchmark_families.find(
+    const decoupledActiveFamily = structuredClone(validActiveFamily);
+    const family = decoupledActiveFamily.benchmark_families.find(
       (row) => row.benchmark_family_id === admittedFamily.benchmark_family_id,
     );
     assert.ok(family);
-    breakAdmission(family);
+    decouple(family);
     assert.equal(
-      acceptsManifest(invalidActiveFamily),
-      false,
-      `active family admission requires ${requirement}`,
+      acceptsManifest(decoupledActiveFamily),
+      true,
+      `active family admission is decoupled from ${property}: ${ajv.errorsText(validate.errors)}`,
     );
   }
+
+  // Still fail-closed: CorrelationState requires a group whenever correlation is not "unknown".
+  const inconsistentCorrelationFamily = structuredClone(validActiveFamily);
+  inconsistentCorrelationFamily.benchmark_families.find(
+    (row) => row.benchmark_family_id === admittedFamily.benchmark_family_id,
+  )!.correlated_family_group = null;
+  assert.equal(acceptsManifest(inconsistentCorrelationFamily), false);
 
   const activeUnresolvedFamily = structuredClone(validActiveFamily);
   activeUnresolvedFamily.benchmark_families.find(
@@ -455,10 +483,12 @@ test("Ajv 2020 enforces fail-closed family and feed admission states", () => {
   unresolvedFeed.configuration_passport_class = "unresolved-v1";
   assert.equal(acceptsManifest(activeUnresolvedFeed), false);
 
+  // Still fail-closed. An active feed must resolve its adapter/metric-direction, and
+  // once rights.status is "approved" every declared right stays internally consistent;
+  // retained bytes still require retention rights; and CorrelationState still binds
+  // correlation_status to a group. None of these were relaxed by the publication decoupling.
   for (const [requirement, breakAdmission] of [
     ["adapter", (feed: ManifestFeed) => { feed.adapter_id = null; }],
-    ["rank count", (feed: ManifestFeed) => { feed.rank_eligible_count = 0; }],
-    ["rights", (feed: ManifestFeed) => { feed.rights.status = "unknown"; }],
     ["commercial-use rights", (feed: ManifestFeed) => {
       feed.rights.commercial_use = "unknown";
     }],
@@ -492,28 +522,6 @@ test("Ajv 2020 enforces fail-closed family and feed admission states", () => {
       feed.retention.store_artifact_bytes = false;
       feed.rights.artifact_retention = "unknown";
     }],
-    ["replayable retained artifacts", (feed: ManifestFeed) => {
-      feed.retention.store_artifact_bytes = false;
-    }],
-    ["cadence", (feed: ManifestFeed) => {
-      feed.cadence = {
-        status: "unvalidated",
-        mode: null,
-        stale_after_seconds: null,
-        stop_recommending_after_seconds: null,
-        as_of: null,
-        upstream_version: null,
-      };
-    }],
-    ["lineage", (feed: ManifestFeed) => {
-      feed.lineage.validation_status = "unknown";
-      feed.lineage.task_lineage_id = null;
-      feed.lineage.environment_lineage_id = null;
-      feed.lineage.grader_lineage_id = null;
-    }],
-    ["validated correlation", (feed: ManifestFeed) => {
-      feed.lineage.correlation_status = "declared";
-    }],
     ["correlation group", (feed: ManifestFeed) => {
       feed.lineage.correlated_family_group = null;
     }],
@@ -526,6 +534,45 @@ test("Ajv 2020 enforces fail-closed family and feed admission states", () => {
       acceptsManifest(invalidActiveFeed),
       false,
       `active admission requires ${requirement}`,
+    );
+  }
+
+  // v2: publication is decoupled from validation. An active feed carries its real
+  // (often unvalidated) evidence; these no longer gate admission.
+  for (const [property, decouple] of [
+    ["zero rank count", (feed: ManifestFeed) => { feed.rank_eligible_count = 0; }],
+    ["unknown rights status", (feed: ManifestFeed) => { feed.rights.status = "unknown"; }],
+    ["no retained artifact bytes", (feed: ManifestFeed) => {
+      feed.retention.store_artifact_bytes = false;
+    }],
+    ["unvalidated cadence", (feed: ManifestFeed) => {
+      feed.cadence = {
+        status: "unvalidated",
+        mode: null,
+        stale_after_seconds: null,
+        stop_recommending_after_seconds: null,
+        as_of: null,
+        upstream_version: null,
+      };
+    }],
+    ["unvalidated lineage", (feed: ManifestFeed) => {
+      feed.lineage.validation_status = "unknown";
+      feed.lineage.task_lineage_id = null;
+      feed.lineage.environment_lineage_id = null;
+      feed.lineage.grader_lineage_id = null;
+    }],
+    ["unvalidated feed correlation", (feed: ManifestFeed) => {
+      feed.lineage.correlation_status = "declared";
+    }],
+  ] as const) {
+    const decoupledActiveFeed = structuredClone(validActiveFeed);
+    const feed = decoupledActiveFeed.feeds.find((row) => row.feed_id === admittedFeed.feed_id);
+    assert.ok(feed);
+    decouple(feed);
+    assert.equal(
+      acceptsManifest(decoupledActiveFeed),
+      true,
+      `active admission is decoupled from ${property}: ${ajv.errorsText(validate.errors)}`,
     );
   }
 

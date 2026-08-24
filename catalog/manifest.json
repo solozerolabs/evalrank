@@ -19,7 +19,7 @@
         "tool",
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "autonomous-swe-agent",
@@ -29,7 +29,7 @@
         "model",
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "function-calling",
@@ -40,7 +40,7 @@
         "tool",
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "mcp-tool-orchestration",
@@ -51,7 +51,7 @@
         "tool",
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "web-browsing",
@@ -62,7 +62,7 @@
         "tool",
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "computer-use",
@@ -72,7 +72,7 @@
         "model",
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "deep-research",
@@ -83,7 +83,7 @@
         "tool",
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "customer-support",
@@ -93,7 +93,7 @@
         "model",
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "enterprise-crm-workflow",
@@ -103,7 +103,7 @@
         "tool",
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "math-reasoning",
@@ -112,7 +112,7 @@
       "entity_kinds": [
         "model"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "general-knowledge-qa",
@@ -122,7 +122,7 @@
         "model",
         "tool"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "rag-retrieval",
@@ -132,7 +132,7 @@
         "model",
         "tool"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "long-term-memory",
@@ -143,7 +143,7 @@
         "tool",
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "finance",
@@ -154,7 +154,7 @@
         "tool",
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "legal",
@@ -165,7 +165,7 @@
         "tool",
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "medical",
@@ -176,7 +176,7 @@
         "tool",
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "multilingual",
@@ -187,7 +187,7 @@
         "tool",
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "vision-multimodal",
@@ -197,7 +197,7 @@
         "model",
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "web-frontend-code-generation",
@@ -207,7 +207,7 @@
         "model",
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "sre-incident-response",
@@ -216,7 +216,7 @@
       "entity_kinds": [
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "devops-lifecycle",
@@ -225,7 +225,7 @@
       "entity_kinds": [
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "terminal-generalist",
@@ -234,7 +234,7 @@
       "entity_kinds": [
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "mobile-codegen",
@@ -244,7 +244,7 @@
         "model",
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "reasoning",
@@ -253,7 +253,7 @@
       "entity_kinds": [
         "model"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "factuality",
@@ -263,7 +263,7 @@
         "model",
         "tool"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "professional-deliverable-creation",
@@ -273,7 +273,7 @@
         "model",
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "machine-learning-engineering",
@@ -282,7 +282,7 @@
       "entity_kinds": [
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     },
     {
       "cell_id": "computational-research-reproduction",
@@ -291,7 +291,7 @@
       "entity_kinds": [
         "agent"
       ],
-      "state": "preview"
+      "state": "active"
     }
   ],
   "ranking_groups": [
@@ -301,7 +301,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -343,7 +343,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -415,7 +415,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -487,7 +487,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -529,7 +529,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -571,7 +571,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -613,7 +613,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -655,7 +655,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -697,7 +697,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -739,7 +739,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -781,7 +781,7 @@
       "entity_kind": "unresolved",
       "interaction_policy": "unresolved",
       "configuration_passport_class": "unresolved-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "explorer",
       "eligibility": {
@@ -811,7 +811,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -853,7 +853,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -895,7 +895,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -937,7 +937,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -979,7 +979,7 @@
       "entity_kind": "component_configuration",
       "interaction_policy": "retrieval",
       "configuration_passport_class": "component-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -1021,7 +1021,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -1063,7 +1063,7 @@
       "entity_kind": "system_configuration",
       "interaction_policy": "system",
       "configuration_passport_class": "system-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -1105,7 +1105,7 @@
       "entity_kind": "system_configuration",
       "interaction_policy": "system",
       "configuration_passport_class": "system-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -1147,7 +1147,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -1189,7 +1189,7 @@
       "entity_kind": "unresolved",
       "interaction_policy": "unresolved",
       "configuration_passport_class": "unresolved-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "explorer",
       "eligibility": {
@@ -1219,7 +1219,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -1261,7 +1261,7 @@
       "entity_kind": "system_configuration",
       "interaction_policy": "system",
       "configuration_passport_class": "system-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -1303,7 +1303,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -1345,7 +1345,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -1387,7 +1387,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -1429,7 +1429,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -1471,7 +1471,7 @@
       "entity_kind": "arena_system",
       "interaction_policy": "crowd_pairwise",
       "configuration_passport_class": "arena-system-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -1513,7 +1513,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -1555,7 +1555,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -1597,7 +1597,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -1639,7 +1639,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -1681,7 +1681,7 @@
       "entity_kind": "unresolved",
       "interaction_policy": "unresolved",
       "configuration_passport_class": "unresolved-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "explorer",
       "eligibility": {
@@ -1711,7 +1711,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -1753,7 +1753,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -1795,7 +1795,7 @@
       "entity_kind": "system_configuration",
       "interaction_policy": "system",
       "configuration_passport_class": "system-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "explorer",
       "eligibility": {
@@ -1825,7 +1825,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "explorer",
       "eligibility": {
@@ -1855,7 +1855,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "explorer",
       "eligibility": {
@@ -1885,7 +1885,7 @@
       "entity_kind": "system_configuration",
       "interaction_policy": "system",
       "configuration_passport_class": "system-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "explorer",
       "eligibility": {
@@ -1915,7 +1915,7 @@
       "entity_kind": "system_configuration",
       "interaction_policy": "system",
       "configuration_passport_class": "system-configuration-v1",
-      "state": "preview",
+      "state": "active",
       "rank_eligible_count": null,
       "claim_ceiling": "explorer",
       "eligibility": {
@@ -1950,7 +1950,7 @@
       "entity_kinds": [
         "model_configuration"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "unknown",
       "correlated_family_group": null,
@@ -1966,7 +1966,7 @@
       "entity_kinds": [
         "agent_system"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "aider-polyglot",
@@ -1998,7 +1998,7 @@
       "entity_kinds": [
         "model_configuration"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "scicode",
@@ -2014,7 +2014,7 @@
       "entity_kinds": [
         "agent_system"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "github-issue-resolution",
@@ -2030,7 +2030,7 @@
       "entity_kinds": [
         "agent_system"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "terminal-bench-2-1",
@@ -2094,7 +2094,7 @@
       "entity_kinds": [
         "model_configuration"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "unknown",
       "correlated_family_group": null,
@@ -2127,7 +2127,7 @@
       "entity_kinds": [
         "agent_system"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "tau2",
@@ -2372,7 +2372,7 @@
       "entity_kinds": [
         "agent_system"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "tau2",
@@ -2436,7 +2436,7 @@
       "entity_kinds": [
         "agent_system"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "theagentcompany",
@@ -2484,7 +2484,7 @@
       "entity_kinds": [
         "model_configuration"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "frontiermath",
@@ -2518,7 +2518,7 @@
       "entity_kinds": [
         "model_configuration"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "hle",
@@ -2535,7 +2535,7 @@
       "entity_kinds": [
         "model_configuration"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "simpleqa",
@@ -2604,7 +2604,7 @@
       "entity_kinds": [
         "component_configuration"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "mteb-beir",
@@ -2911,7 +2911,7 @@
       "entity_kinds": [
         "model_configuration"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "video-mme",
@@ -2927,7 +2927,7 @@
       "entity_kinds": [
         "arena_system"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "webdev-arena",
@@ -2975,7 +2975,7 @@
       "entity_kinds": [
         "agent_system"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "k8s-live-incident",
@@ -3103,7 +3103,7 @@
       "entity_kinds": [
         "model_configuration"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "unknown",
       "correlated_family_group": null,
@@ -3119,7 +3119,7 @@
       "entity_kinds": [
         "model_configuration"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "arc-agi-2",
@@ -3322,7 +3322,7 @@
       "entity_kinds": [
         "system_configuration"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "unknown",
       "correlated_family_group": null,
@@ -3386,7 +3386,7 @@
       "entity_kinds": [
         "agent_system"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "unknown",
       "correlated_family_group": null,
@@ -3402,7 +3402,7 @@
       "entity_kinds": [
         "component_configuration"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "mteb-eng-v2",
@@ -3418,7 +3418,7 @@
       "entity_kinds": [
         "component_configuration"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "mteb-longembed",
@@ -3434,7 +3434,7 @@
       "entity_kinds": [
         "component_configuration"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "mteb-followir",
@@ -3450,7 +3450,7 @@
       "entity_kinds": [
         "component_configuration"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "mteb-rar-b",
@@ -3466,7 +3466,7 @@
       "entity_kinds": [
         "component_configuration"
       ],
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "mteb-multilingual-v2",
@@ -3653,7 +3653,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -3702,7 +3702,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -3800,7 +3800,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -3849,7 +3849,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -3898,7 +3898,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -4094,7 +4094,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -4193,7 +4193,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -4980,7 +4980,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -5176,7 +5176,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -5323,7 +5323,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -5423,7 +5423,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -5475,7 +5475,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -5674,7 +5674,7 @@
       "entity_kind": "component_configuration",
       "interaction_policy": "retrieval",
       "configuration_passport_class": "component-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -5723,7 +5723,7 @@
       "entity_kind": "component_configuration",
       "interaction_policy": "retrieval",
       "configuration_passport_class": "component-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -6654,7 +6654,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -6703,7 +6703,7 @@
       "entity_kind": "arena_system",
       "interaction_policy": "crowd_pairwise",
       "configuration_passport_class": "arena-system-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -6850,7 +6850,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -7291,7 +7291,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -7340,7 +7340,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -7979,7 +7979,7 @@
       "entity_kind": "system_configuration",
       "interaction_policy": "system",
       "configuration_passport_class": "system-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -8175,7 +8175,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -8224,7 +8224,7 @@
       "entity_kind": "component_configuration",
       "interaction_policy": "retrieval",
       "configuration_passport_class": "component-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -8273,7 +8273,7 @@
       "entity_kind": "component_configuration",
       "interaction_policy": "retrieval",
       "configuration_passport_class": "component-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -8322,7 +8322,7 @@
       "entity_kind": "component_configuration",
       "interaction_policy": "retrieval",
       "configuration_passport_class": "component-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -8371,7 +8371,7 @@
       "entity_kind": "component_configuration",
       "interaction_policy": "retrieval",
       "configuration_passport_class": "component-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -8420,7 +8420,7 @@
       "entity_kind": "component_configuration",
       "interaction_policy": "retrieval",
       "configuration_passport_class": "component-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -8469,7 +8469,7 @@
       "entity_kind": "component_configuration",
       "interaction_policy": "retrieval",
       "configuration_passport_class": "component-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -8518,7 +8518,7 @@
       "entity_kind": "component_configuration",
       "interaction_policy": "retrieval",
       "configuration_passport_class": "component-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -8567,7 +8567,7 @@
       "entity_kind": "component_configuration",
       "interaction_policy": "retrieval",
       "configuration_passport_class": "component-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -8616,7 +8616,7 @@
       "entity_kind": "component_configuration",
       "interaction_policy": "retrieval",
       "configuration_passport_class": "component-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -8665,7 +8665,7 @@
       "entity_kind": "component_configuration",
       "interaction_policy": "retrieval",
       "configuration_passport_class": "component-configuration-v1",
-      "state": "shadow",
+      "state": "active",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",

@@ -265,17 +265,9 @@ def manifest_semantic_errors(payload: dict) -> list[str]:
                     f"ranking group {group['ranking_group_id']} entity kind "
                     f"{group['entity_kind']} is absent from its cell's public ontology"
                 )
-        if group["state"] == "active":
-            top_set = group["eligibility"]["top_set"]
-            if (
-                top_set is None
-                or group["rank_eligible_count"] is None
-                or group["rank_eligible_count"] < top_set["minimum_overlap"]
-            ):
-                errors.append(
-                    f"active ranking group {group['ranking_group_id']} lacks "
-                    "the configured comparable-configuration overlap"
-                )
+        # v2: publication is decoupled from validation. An active (published) group
+        # no longer must carry a validated top-set overlap; its eligibility fields
+        # report the real (often explorer/unvalidated) evidence.
 
     for family in payload["benchmark_families"]:
         unknown_cells = set(family["candidate_cells"]) - cell_ids
@@ -290,21 +282,9 @@ def manifest_semantic_errors(payload: dict) -> list[str]:
                     f"active benchmark family {family['benchmark_family_id']} "
                     "has unresolved entity identity"
                 )
-            if not isinstance(family["rank_eligible_count"], int) or family[
-                "rank_eligible_count"
-            ] < 1:
-                errors.append(
-                    f"active benchmark family {family['benchmark_family_id']} "
-                    "has no rank-eligible observations"
-                )
-            if (
-                family["correlation_status"] != "validated"
-                or family["correlated_family_group"] is None
-            ):
-                errors.append(
-                    f"active benchmark family {family['benchmark_family_id']} "
-                    "has unvalidated independence"
-                )
+            # v2: publication decoupled from validation. An active family keeps its
+            # real rank_eligible_count / correlation_status / correlated_family_group
+            # (often null/unknown); these no longer gate publication.
 
     for feed in payload["feeds"]:
         family = family_by_id.get(feed["benchmark_family_id"])
@@ -406,29 +386,10 @@ def manifest_semantic_errors(payload: dict) -> list[str]:
                 f"active cell {cell['cell_id']} has no active ranking group"
             )
 
-    for group in payload["ranking_groups"]:
-        if group["state"] != "active":
-            continue
-        top_set = group["eligibility"]["top_set"]
-        if top_set is None:
-            errors.append(
-                f"active ranking group {group['ranking_group_id']} has no top-set gate"
-            )
-            continue
-        independent_families = {
-            feed["lineage"]["correlated_family_group"]
-            for feed in payload["feeds"]
-            if feed["state"] == "active"
-            and group["ranking_group_id"] in feed["ranking_group_ids"]
-            and feed["lineage"]["correlation_status"] == "validated"
-            and feed["lineage"]["correlated_family_group"] is not None
-        }
-        if len(independent_families) < top_set["minimum_families"]:
-            errors.append(
-                f"active ranking group {group['ranking_group_id']} has "
-                f"{len(independent_families)} independent active families; "
-                f"top-set admission requires {top_set['minimum_families']}"
-            )
+    # v2: publication decoupled from validation. An active (published) group no
+    # longer requires a validated top-set gate or a minimum number of independent
+    # validated families; explorer-claim groups publish their real evidence and
+    # disclose gaps rather than being withheld.
 
     return errors
 
@@ -484,7 +445,8 @@ class CatalogManifestTests(unittest.TestCase):
 
         self.assertEqual(EXPECTED_CELL_IDS, tuple(row["cell_id"] for row in cells))
         self.assertNotIn("aliases", payload)
-        self.assertTrue(all(row["state"] == "preview" for row in cells))
+        # v2: cells are the published (active) public taxonomy.
+        self.assertTrue(all(row["state"] == "active" for row in cells))
         self.assertTrue(all("rank_eligible_count" not in row for row in cells))
         self.assertTrue(all("eligibility" not in row for row in cells))
         self.assertNotIn("safety-robustness", EXPECTED_CELL_IDS)
@@ -547,9 +509,9 @@ class CatalogManifestTests(unittest.TestCase):
                     group["configuration_passport_class"] == "unresolved-v1",
                 )
                 self.assertIn(sum(unresolved_dimensions), {0, 3})
-                if group["state"] == "active":
-                    self.assertEqual("validated", eligibility["calibration_status"])
-                    self.assertGreaterEqual(group["rank_eligible_count"], 1)
+                # v2: publication is decoupled from validation. An active
+                # (published) group may report unvalidated calibration and a null
+                # rank-eligible count; those fields no longer gate publication.
                 if group["state"] == "quarantined":
                     self.assertIsNone(group["rank_eligible_count"])
                     self.assertTrue(group["quarantine_reason"])
@@ -567,8 +529,10 @@ class CatalogManifestTests(unittest.TestCase):
                     self.assertIsNone(eligibility["leave_one_family_out"])
                 else:
                     self.assertEqual("single_winner", group["claim_ceiling"])
-                    self.assertGreaterEqual(eligibility["top_set"]["minimum_families"], 3)
-                    self.assertGreaterEqual(eligibility["single_winner"]["minimum_families"], 4)
+                    # v2: single-source rankings are allowed; the family floors
+                    # may be as low as 1. The ordering invariant below still holds.
+                    self.assertGreaterEqual(eligibility["top_set"]["minimum_families"], 1)
+                    self.assertGreaterEqual(eligibility["single_winner"]["minimum_families"], 1)
                     self.assertGreaterEqual(
                         eligibility["single_winner"]["minimum_overlap"],
                         eligibility["top_set"]["minimum_overlap"],
@@ -645,7 +609,7 @@ class CatalogManifestTests(unittest.TestCase):
         self.assertTrue(
             all(group["claim_ceiling"] == "explorer" for group in new_groups.values())
         )
-        self.assertTrue(all(group["state"] == "preview" for group in new_groups.values()))
+        self.assertTrue(all(group["state"] == "active" for group in new_groups.values()))
         self.assertTrue(
             all(group["rank_eligible_count"] is None for group in new_groups.values())
         )
@@ -676,10 +640,13 @@ class CatalogManifestTests(unittest.TestCase):
             for family_id, row in family_by_id.items()
             if row["state"] == "quarantined"
         }
-        shadow = {
+        # v2: formerly-shadow families are now published (active). Publication
+        # is decoupled from validation, so these carry their real (still
+        # unvalidated / null-count) evidence while being active.
+        active = {
             family_id
             for family_id, row in family_by_id.items()
-            if row["state"] == "shadow"
+            if row["state"] == "active"
         }
 
         self.assertEqual(
@@ -714,7 +681,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "mteb-rar-b",
                 "mteb-multilingual-v2",
             },
-            shadow,
+            active,
         )
         self.assertEqual(103, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
@@ -730,7 +697,7 @@ class CatalogManifestTests(unittest.TestCase):
         self.assertTrue(all(
             row["state"] == "discovered"
             for row in families
-            if row["benchmark_family_id"] not in quarantined | shadow
+            if row["benchmark_family_id"] not in quarantined | active
         ))
         declared_correlations = {
             row["benchmark_family_id"]: row["correlated_family_group"]
@@ -855,8 +822,9 @@ class CatalogManifestTests(unittest.TestCase):
             with self.subTest(family_id=family_id):
                 family = families[family_id]
                 feed = feeds[family_id]
-                self.assertEqual("shadow", family["state"])
-                self.assertEqual("shadow", feed["state"])
+                # v2: now published (active); evidence fields unchanged.
+                self.assertEqual("active", family["state"])
+                self.assertEqual("active", feed["state"])
                 self.assertEqual(adapter_id, feed["adapter_id"])
                 self.assertEqual("higher", feed["metric_direction"])
                 self.assertIsNone(feed["rank_eligible_count"])
@@ -881,7 +849,7 @@ class CatalogManifestTests(unittest.TestCase):
                 self.assertEqual("unknown", feed["lineage"]["correlation_status"])
                 self.assertIsNone(feed["lineage"]["correlated_family_group"])
 
-    def test_tau2_feeds_are_shadow_admitted(self):
+    def test_tau2_feeds_are_active_published(self):
         payload = manifest()
         families = {row["benchmark_family_id"]: row for row in payload["benchmark_families"]}
         feeds = {row["benchmark_family_id"]: row for row in payload["feeds"]}
@@ -894,8 +862,10 @@ class CatalogManifestTests(unittest.TestCase):
             with self.subTest(family_id=family_id):
                 family = families[family_id]
                 feed = feeds[family_id]
-                self.assertEqual("shadow", family["state"])
-                self.assertEqual("shadow", feed["state"])
+                # v2: publication decoupled from validation — now active while
+                # keeping their declared correlation lineage.
+                self.assertEqual("active", family["state"])
+                self.assertEqual("active", feed["state"])
                 self.assertEqual(adapter_id, feed["adapter_id"])
                 self.assertEqual("higher", feed["metric_direction"])
                 self.assertIsNone(feed["rank_eligible_count"])
@@ -1214,15 +1184,19 @@ class CatalogManifestTests(unittest.TestCase):
             "feed-family candidate mismatch": lambda payload: payload["feeds"][0][
                 "candidate_cells"
             ].append("factuality"),
+            # feeds[0] is active; drop it to discovered so its family's derived
+            # aggregate state no longer matches the declared active family state.
             "feed-family state mismatch": lambda payload: payload["feeds"][0].update(
-                state="active"
+                state="discovered", adapter_id=None, metric_direction=None
             ),
             "implemented feed without metric direction": lambda payload: payload[
                 "feeds"
             ][0].update(metric_direction=None),
-            "shadow feed with rank-eligible observations": lambda payload: payload[
-                "feeds"
-            ][0].update(rank_eligible_count=1),
+            # v2: rank-eligible counts are allowed on active feeds; the retained
+            # rule is that a NON-active feed may not claim them.
+            "non-active feed with rank-eligible observations": lambda payload: next(
+                feed for feed in payload["feeds"] if feed["state"] == "discovered"
+            ).update(rank_eligible_count=1),
             "feed-family entity mismatch": lambda payload: payload["feeds"][0].update(
                 entity_kind="unresolved"
             ),
@@ -1235,26 +1209,14 @@ class CatalogManifestTests(unittest.TestCase):
                 correlation_status="declared",
                 correlated_family_group="wrong-family",
             ),
-            "active group without admitted families": lambda payload: next(
-                group for group in payload["ranking_groups"] if group["state"] == "preview"
-            ).update(
-                state="active",
-                rank_eligible_count=1,
-                eligibility={
-                    **next(
-                        group
-                        for group in payload["ranking_groups"]
-                        if group["state"] == "preview"
-                    )["eligibility"],
-                    "calibration_status": "validated",
-                },
-            ),
-            "active cell without active group": lambda payload: payload["cells"][0].update(
-                state="active"
-            ),
-            "active family without admission evidence": lambda payload: payload[
-                "benchmark_families"
-            ][0].update(state="active"),
+            # v2: the retained active-cell invariant is that an active
+            # (published) cell must still be covered by an active ranking group.
+            # Quarantine the sole group of an active cell to violate it.
+            "active cell without active group": lambda payload: next(
+                group
+                for group in payload["ranking_groups"]
+                if group["cell_id"] == "factuality"
+            ).update(state="quarantined"),
             "group-cell public entity mismatch": lambda payload: next(
                 cell
                 for cell in payload["cells"]
@@ -1293,86 +1255,40 @@ class CatalogManifestTests(unittest.TestCase):
         self.assertIsNone(family["quarantine_reason"])
         self.assertEqual([], manifest_semantic_errors(payload))
 
-    def test_active_group_semantics_require_independent_active_families(self):
+    def test_active_group_publication_is_decoupled_from_independent_validation(self):
+        # v2: publication (state) is decoupled from validation. An active
+        # (published) ranking group with unvalidated calibration, a null
+        # rank-eligible count, and no independent validated families is coherent
+        # — the removed rules no longer withhold it. The live manifest already
+        # publishes such a group, so it must carry no semantic errors.
         group_id = (
             "rg-code-generation-model-configuration-direct-prompt-"
             "model-configuration-v1"
         )
-
-        def promote(candidate: dict, *, shared_correlation: bool) -> None:
-            group = next(
-                row
-                for row in candidate["ranking_groups"]
-                if row["ranking_group_id"] == group_id
-            )
-            group["state"] = "active"
-            group["rank_eligible_count"] = group["eligibility"]["top_set"][
-                "minimum_overlap"
-            ]
-            group["eligibility"]["calibration_status"] = "validated"
-            minimum_families = group["eligibility"]["top_set"]["minimum_families"]
-            feeds = [
-                feed
-                for feed in candidate["feeds"]
-                if group_id in feed["ranking_group_ids"]
-                and feed["state"] != "quarantined"
-            ][:minimum_families]
-            self.assertEqual(minimum_families, len(feeds))
-            family_by_id = {
-                row["benchmark_family_id"]: row
-                for row in candidate["benchmark_families"]
-            }
-            for index, feed in enumerate(feeds):
-                correlation_group = (
-                    "shared-family"
-                    if shared_correlation
-                    else f"independent-family-{index + 1}"
-                )
-                family = family_by_id[feed["benchmark_family_id"]]
-                family["state"] = "active"
-                family["rank_eligible_count"] = 1
-                family["correlation_status"] = "validated"
-                family["correlated_family_group"] = correlation_group
-                feed["state"] = "active"
-                feed["adapter_id"] = f"adapter-{index + 1}"
-                feed["metric_direction"] = "higher"
-                feed["rank_eligible_count"] = 1
-                feed["rights"]["status"] = "approved"
-                feed["cadence"] = {
-                    "status": "validated",
-                    "mode": "periodic",
-                    "stale_after_seconds": 172_800,
-                    "stop_recommending_after_seconds": 604_800,
-                    "as_of": None,
-                    "upstream_version": None,
-                }
-                feed["lineage"].update(
-                    validation_status="validated",
-                    task_lineage_id=f"task-{index + 1}",
-                    environment_lineage_id=f"environment-{index + 1}",
-                    grader_lineage_id=f"grader-{index + 1}",
-                    correlation_status="validated",
-                    correlated_family_group=correlation_group,
-                )
-
-        admitted = manifest()
-        promote(admitted, shared_correlation=False)
-        state_errors = manifest_semantic_errors(admitted)
-        self.assertTrue(
-            any("active ranking group" in error and "cell is not active" in error for error in state_errors),
-            state_errors,
+        baseline = manifest()
+        group = next(
+            row
+            for row in baseline["ranking_groups"]
+            if row["ranking_group_id"] == group_id
         )
-        next(
-            cell for cell in admitted["cells"] if cell["cell_id"] == "code-generation"
-        )["state"] = "active"
-        self.assertEqual([], manifest_semantic_errors(admitted))
+        self.assertEqual("active", group["state"])
+        self.assertEqual("unvalidated", group["eligibility"]["calibration_status"])
+        self.assertIsNone(group["rank_eligible_count"])
+        self.assertEqual([], manifest_semantic_errors(baseline))
 
-        correlated = manifest()
-        promote(correlated, shared_correlation=True)
-        errors = manifest_semantic_errors(correlated)
+        # The one active-group invariant kept under v2: an active group whose
+        # cell is not itself active is still incoherent and must error.
+        broken = manifest()
+        next(
+            cell for cell in broken["cells"] if cell["cell_id"] == "code-generation"
+        )["state"] = "preview"
+        state_errors = manifest_semantic_errors(broken)
         self.assertTrue(
-            any("independent active families" in error for error in errors),
-            errors,
+            any(
+                "active ranking group" in error and "cell is not active" in error
+                for error in state_errors
+            ),
+            state_errors,
         )
 
     def test_manifest_matches_its_closed_public_schema_surface(self):

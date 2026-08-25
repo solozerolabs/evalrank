@@ -5447,7 +5447,7 @@
     },
     {
       "benchmark_family_id": "itbench",
-      "checked_on": "2026-07-23",
+      "checked_on": "2026-08-25",
       "sources": [
         {
           "source_id": "repository",
@@ -5476,6 +5476,16 @@
         }
       ],
       "claims": [
+        {
+          "topic": "quarantine_reason",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The official SRE leaderboard identifies submissions only by display label, submitter, organization, and aggregate result fields; it does not publish the exact model, harness revision, scaffold configuration, and environment needed for an evaluated-configuration passport.",
+          "source_ids": [
+            "repository",
+            "sre_results"
+          ]
+        },
         {
           "topic": "scope",
           "research_flag": null,

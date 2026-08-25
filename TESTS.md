@@ -6,6 +6,12 @@
 make check
 ```
 
+Focused catalog contract check:
+
+```sh
+python3 -m unittest tests.test_catalog_manifest tests.test_catalog_research_provenance tests.test_catalog_feed_inventory
+```
+
 ## Test Map
 
 - `tests/test_core_contracts.py` checks the independent discovery contracts, pinned and fail-closed use-case taxonomy envelope, strict extension-preserving Problem Details decoding, shared URI vectors, and complete absence of superseded request/recommendation/stage/ranked DTOs.

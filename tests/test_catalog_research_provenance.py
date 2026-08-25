@@ -167,6 +167,7 @@ class CatalogResearchProvenanceTests(unittest.TestCase):
             row["benchmark_family_id"]: row
             for row in self.manifest["benchmark_families"]
         }
+        manifest_feeds = self.manifest["feeds"]
 
         for family in self.provenance["families"]:
             family_id = family["benchmark_family_id"]
@@ -175,9 +176,14 @@ class CatalogResearchProvenanceTests(unittest.TestCase):
                 for claim in family["claims"]
                 if claim["topic"] == "quarantine_reason"
             ]
-            expected_count = int(
-                manifest_families[family_id]["quarantine_reason"] is not None
+            quarantine_reasons = {manifest_families[family_id]["quarantine_reason"]}
+            quarantine_reasons.update(
+                row["quarantine_reason"]
+                for row in manifest_feeds
+                if row["benchmark_family_id"] == family_id
             )
+            quarantine_reasons.discard(None)
+            expected_count = len(quarantine_reasons)
             with self.subTest(family=family_id):
                 self.assertEqual(expected_count, len(quarantine_claims))
                 for claim in quarantine_claims:

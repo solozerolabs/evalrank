@@ -662,7 +662,6 @@ class CatalogManifestTests(unittest.TestCase):
                 "deepswe",
                 "frontiermath-v2",
                 "hle",
-                "itbench",
                 "livebench-reasoning",
                 "livecodebench",
                 "scicode",
@@ -699,6 +698,7 @@ class CatalogManifestTests(unittest.TestCase):
             for row in families
             if row["benchmark_family_id"] not in quarantined | active
         ))
+
         declared_correlations = {
             row["benchmark_family_id"]: row["correlated_family_group"]
             for row in families
@@ -746,6 +746,17 @@ class CatalogManifestTests(unittest.TestCase):
         feeds = manifest()["feeds"]
         self.assertEqual(115, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
+
+    def test_itbench_is_not_executable_without_exact_configuration_identity(self):
+        payload = manifest()
+        family = next(
+            row for row in payload["benchmark_families"] if row["benchmark_family_id"] == "itbench"
+        )
+        feed = next(row for row in payload["feeds"] if row["feed_id"] == "itbench-discovery")
+
+        self.assertEqual("discovered", family["state"])
+        self.assertEqual("quarantined", feed["state"])
+        self.assertIn("exact evaluated configuration identity", feed["quarantine_reason"])
 
     def test_user_value_research_wave_maps_to_existing_decision_groups(self):
         payload = manifest()

@@ -2975,7 +2975,7 @@
       "entity_kinds": [
         "agent_system"
       ],
-      "state": "active",
+      "state": "discovered",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "k8s-live-incident",
@@ -6850,7 +6850,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -6886,7 +6886,7 @@
       "ranking_group_ids": [
         "rg-sre-incident-response-agent-system-agentic-agent-system-v1"
       ],
-      "quarantine_reason": null
+      "quarantine_reason": "The source leaderboard does not publish exact evaluated configuration identity."
     },
     {
       "feed_id": "itbench-aa-discovery",

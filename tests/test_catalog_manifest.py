@@ -655,6 +655,7 @@ class CatalogManifestTests(unittest.TestCase):
             {
                 "aider-polyglot",
                 "bfcl-v4",
+                "swe-bench-live",
                 "swe-bench-verified",
                 "swe-bench-pro",
                 "steel-current-composites",
@@ -672,7 +673,6 @@ class CatalogManifestTests(unittest.TestCase):
                 "livecodebench",
                 "scicode",
                 "simpleqa-verified",
-                "swe-bench-live",
                 "tau2-bench",
                 "tau-voice",
                 "terminal-bench-2-1",
@@ -785,6 +785,17 @@ class CatalogManifestTests(unittest.TestCase):
         self.assertEqual("quarantined", family["state"])
         self.assertEqual("quarantined", feed["state"])
         self.assertIn("stale relative to the live model landscape", feed["quarantine_reason"])
+
+    def test_swe_bench_live_is_quarantined_as_a_lagging_source(self):
+        payload = manifest()
+        family = next(
+            row for row in payload["benchmark_families"] if row["benchmark_family_id"] == "swe-bench-live"
+        )
+        feed = next(row for row in payload["feeds"] if row["feed_id"] == "swe-bench-live-discovery")
+
+        self.assertEqual("quarantined", family["state"])
+        self.assertEqual("quarantined", feed["state"])
+        self.assertIn("trails the live model landscape", feed["quarantine_reason"])
 
     def test_user_value_research_wave_maps_to_existing_decision_groups(self):
         payload = manifest()

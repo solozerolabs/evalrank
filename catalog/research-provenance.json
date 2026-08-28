@@ -522,6 +522,16 @@
           "source_ids": [
             "repository_license"
           ]
+        },
+        {
+          "topic": "quarantine_reason",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The public SWE-bench Live leaderboard's top configurations remain Claude-4.6-class and it has not admitted current-frontier models (Claude Opus 5, GPT-5.6); EvalRank withdraws the feed from runtime refresh because its evidence lags the live model landscape.",
+          "source_ids": [
+            "leaderboard",
+            "results"
+          ]
         }
       ]
     },

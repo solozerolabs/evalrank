@@ -1789,12 +1789,12 @@
       "entity_kinds": [
         "model_configuration"
       ],
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "correlation_status": "unknown",
       "correlated_family_group": null,
       "research_flags": [],
-      "quarantine_reason": null
+      "quarantine_reason": "This feed has produced no validated evaluated-configuration observation and has not refreshed since inventory; it is withdrawn from runtime refresh as a non-updating source pending adapter or source repair."
     },
     {
       "benchmark_family_id": "complexfuncbench",
@@ -3668,7 +3668,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -3704,7 +3704,7 @@
       "ranking_group_ids": [
         "rg-function-calling-model-configuration-direct-prompt-model-configuration-v1"
       ],
-      "quarantine_reason": null
+      "quarantine_reason": "This feed has produced no validated evaluated-configuration observation and has not refreshed since inventory; it is withdrawn from runtime refresh as a non-updating source pending adapter or source repair."
     },
     {
       "feed_id": "complexfuncbench-discovery",

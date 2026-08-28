@@ -1034,6 +1034,16 @@
           "source_ids": [
             "site"
           ]
+        },
+        {
+          "topic": "quarantine_reason",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "Across scheduled discovery runs the configured leaderboard source (data_overall.csv) has yielded no ingestable evaluated-configuration observation and no content change; EvalRank withdraws the feed from runtime refresh until the adapter or source is repaired.",
+          "source_ids": [
+            "leaderboard",
+            "current-data"
+          ]
         }
       ]
     },

@@ -652,7 +652,12 @@ class CatalogManifestTests(unittest.TestCase):
         }
 
         self.assertEqual(
-            {"swe-bench-verified", "swe-bench-pro", "steel-current-composites"},
+            {
+                "bfcl-v4",
+                "swe-bench-verified",
+                "swe-bench-pro",
+                "steel-current-composites",
+            },
             quarantined,
         )
         self.assertEqual(
@@ -660,7 +665,6 @@ class CatalogManifestTests(unittest.TestCase):
                 "aider-polyglot",
                 "agents-last-exam",
                 "arc-agi-2",
-                "bfcl-v4",
                 "deepswe",
                 "frontiermath-v2",
                 "hle",
@@ -759,6 +763,17 @@ class CatalogManifestTests(unittest.TestCase):
         self.assertEqual("discovered", family["state"])
         self.assertEqual("quarantined", feed["state"])
         self.assertIn("exact evaluated configuration identity", feed["quarantine_reason"])
+
+    def test_bfcl_v4_is_quarantined_as_a_non_updating_source(self):
+        payload = manifest()
+        family = next(
+            row for row in payload["benchmark_families"] if row["benchmark_family_id"] == "bfcl-v4"
+        )
+        feed = next(row for row in payload["feeds"] if row["feed_id"] == "bfcl-v4-discovery")
+
+        self.assertEqual("quarantined", family["state"])
+        self.assertEqual("quarantined", feed["state"])
+        self.assertIn("non-updating source", feed["quarantine_reason"])
 
     def test_user_value_research_wave_maps_to_existing_decision_groups(self):
         payload = manifest()

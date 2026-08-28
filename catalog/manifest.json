@@ -1661,12 +1661,12 @@
       "entity_kinds": [
         "agent_system"
       ],
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "aider-polyglot",
       "research_flags": [],
-      "quarantine_reason": null
+      "quarantine_reason": "The upstream leaderboard's evaluated model roster is frozen at early-2026 configurations and has not admitted current-frontier models; its evidence is stale relative to the live model landscape, so the feed is withdrawn from runtime refresh."
     },
     {
       "benchmark_family_id": "bigcodebench",
@@ -3276,7 +3276,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -3312,7 +3312,7 @@
       "ranking_group_ids": [
         "rg-coding-general-agent-system-agentic-agent-system-v1"
       ],
-      "quarantine_reason": null
+      "quarantine_reason": "The upstream leaderboard's evaluated model roster is frozen at early-2026 configurations and has not admitted current-frontier models; its evidence is stale relative to the live model landscape, so the feed is withdrawn from runtime refresh."
     },
     {
       "feed_id": "bigcodebench-discovery",

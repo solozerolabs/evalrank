@@ -653,6 +653,7 @@ class CatalogManifestTests(unittest.TestCase):
 
         self.assertEqual(
             {
+                "aider-polyglot",
                 "bfcl-v4",
                 "swe-bench-verified",
                 "swe-bench-pro",
@@ -662,7 +663,6 @@ class CatalogManifestTests(unittest.TestCase):
         )
         self.assertEqual(
             {
-                "aider-polyglot",
                 "agents-last-exam",
                 "arc-agi-2",
                 "deepswe",
@@ -774,6 +774,17 @@ class CatalogManifestTests(unittest.TestCase):
         self.assertEqual("quarantined", family["state"])
         self.assertEqual("quarantined", feed["state"])
         self.assertIn("non-updating source", feed["quarantine_reason"])
+
+    def test_aider_polyglot_is_quarantined_as_a_stale_roster_source(self):
+        payload = manifest()
+        family = next(
+            row for row in payload["benchmark_families"] if row["benchmark_family_id"] == "aider-polyglot"
+        )
+        feed = next(row for row in payload["feeds"] if row["feed_id"] == "aider-polyglot-discovery")
+
+        self.assertEqual("quarantined", family["state"])
+        self.assertEqual("quarantined", feed["state"])
+        self.assertIn("stale relative to the live model landscape", feed["quarantine_reason"])
 
     def test_user_value_research_wave_maps_to_existing_decision_groups(self):
         payload = manifest()

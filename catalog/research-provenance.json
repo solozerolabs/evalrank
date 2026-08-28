@@ -220,6 +220,16 @@
           "source_ids": [
             "leaderboard"
           ]
+        },
+        {
+          "topic": "quarantine_reason",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The public aider-polyglot leaderboard's top-ranked configurations remain early-2026 models (GPT-5, o3, Gemini 2.5 Pro, Claude Opus 4) and it has not added current-frontier models; EvalRank withdraws the feed from runtime refresh because its evidence lags the live model landscape.",
+          "source_ids": [
+            "leaderboard",
+            "results"
+          ]
         }
       ]
     },

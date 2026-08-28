@@ -57,9 +57,54 @@
       "items": {
         "$ref": "#/$defs/RankingGroup"
       }
+    },
+    "positional_consensus": {
+      "$ref": "#/$defs/PositionalConsensus"
     }
   },
   "$defs": {
+    "PositionalConsensus": {
+      "description": "Optional cross-benchmark rollup: one merged ranking of models by where they place across the cell's per-benchmark explorer views. Display-only, derived; NOT part of the snapshot_set hash preimage. Present only when the cell has explorer views to aggregate.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["object", "algorithm", "entries"],
+      "properties": {
+        "object": {"const": "positional_consensus"},
+        "algorithm": {"const": "size_aware_reciprocal_borda"},
+        "entries": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/PositionalConsensusEntry"}
+        }
+      }
+    },
+    "PositionalConsensusEntry": {
+      "description": "One model's cross-benchmark standing. score = sum over contributing benchmarks of (N - rank)/(N + rank), N the benchmark's board size; rank is the 1-based position in this merged list.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rank", "model", "score", "benchmark_count", "contributions"],
+      "properties": {
+        "rank": {"type": "integer", "minimum": 1, "maximum": 9007199254740991},
+        "model": {"type": "string", "minLength": 1},
+        "score": {"type": "number", "minimum": 0},
+        "benchmark_count": {"type": "integer", "minimum": 1, "maximum": 9007199254740991},
+        "contributions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["benchmark_family_id", "rank"],
+            "properties": {
+              "benchmark_family_id": {"$ref": "evalrank-manifest.schema.json#/$defs/Slug"},
+              "rank": {"type": "integer", "minimum": 1, "maximum": 9007199254740991}
+            }
+          }
+        }
+      }
+    },
     "EvidenceSnapshotId": {
       "type": "string",
       "pattern": "^(snapshot|explorer)_[0-9a-f]{64}$"

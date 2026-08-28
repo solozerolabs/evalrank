@@ -31,7 +31,18 @@ class PublicReadSchemaTests(unittest.TestCase):
                 )
                 self.assertEqual("object", schema["type"])
                 self.assertFalse(schema["additionalProperties"])
-                self.assertEqual(set(schema["properties"]), set(schema["required"]))
+                # Read contracts are closed and every property is required, with
+                # ONE deliberate exception: the leaderboard's derived, display-only
+                # positional_consensus rollup is absent for cells that have no
+                # explorer views to aggregate (e.g. a fully-active top_set cell).
+                optional = (
+                    {"positional_consensus"}
+                    if filename == "leaderboard.schema.json"
+                    else set()
+                )
+                self.assertEqual(
+                    set(schema["properties"]) - optional, set(schema["required"])
+                )
                 self.assertEqual("1", schema["properties"]["schema_version"]["const"])
 
     def test_benchmark_health_is_closed_and_uses_safe_nonnegative_counts(self):
@@ -387,6 +398,31 @@ assertInvalid(validateLeaderboard, entryIdentity, "entry-level identity override
 const unknownGroupField = clone(payload);
 unknownGroupField.ranking_groups[0].scale = "other";
 assertInvalid(validateLeaderboard, unknownGroupField, "unknown group field");
+
+const withConsensus = clone(payload);
+withConsensus.positional_consensus = {
+  object: "positional_consensus",
+  algorithm: "size_aware_reciprocal_borda",
+  entries: [{
+    rank: 1,
+    model: "example-model-5",
+    score: 1.25,
+    benchmark_count: 2,
+    contributions: [
+      { benchmark_family_id: "livebench-reasoning", rank: 1 },
+      { benchmark_family_id: "scicode", rank: 2 }
+    ]
+  }]
+};
+assertValid(validateLeaderboard, withConsensus, "leaderboard with positional consensus");
+
+const consensusUnknownField = clone(withConsensus);
+consensusUnknownField.positional_consensus.entries[0].weight = 3;
+assertInvalid(validateLeaderboard, consensusUnknownField, "consensus entry with unknown field");
+
+const consensusBadAlgorithm = clone(withConsensus);
+consensusBadAlgorithm.positional_consensus.algorithm = "pagerank";
+assertInvalid(validateLeaderboard, consensusBadAlgorithm, "consensus with unrecognized algorithm");
 
 const ranking = clone(payload.ranking_groups[0].entries[0].ranking);
 const citations = clone(payload.ranking_groups[0].citations);

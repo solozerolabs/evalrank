@@ -33,8 +33,7 @@ PUBLIC_FIXTURE_KINDS = (
 
 
 _USE_CASE_ROWS = (
-    ("code-generation", "Code generation", "Produce correct code from a spec or prompt", ("model", "tool", "agent")),
-    ("autonomous-swe-agent", "Autonomous SWE agent", "Complete repository-level software engineering tasks", ("model", "agent")),
+    ("coding-general", "Coding (general)", "Rank coding models and agents on general software tasks: code generation, repository-level SWE, and terminal work", ("model", "tool", "agent")),
     (
         "function-calling",
         "Function and tool calling",
@@ -56,11 +55,8 @@ _USE_CASE_ROWS = (
     ("medical", "Medical", "Perform domain-grounded clinical reasoning and question answering", ("model", "tool", "agent")),
     ("multilingual", "Multilingual", "Maintain quality across languages and translation tasks", ("model", "tool", "agent")),
     ("vision-multimodal", "Vision and multimodal", "Reason over images, audio, or video", ("model", "agent")),
-    ("web-frontend-code-generation", "Web frontend code generation", "Build and iterate web interfaces from a specification", ("model", "agent")),
+    ("coding-frontend", "Coding (frontend)", "Rank models and agents on building and iterating web interfaces from a specification", ("model", "agent")),
     ("sre-incident-response", "SRE incident response", "Diagnose and repair live service or infrastructure incidents", ("agent",)),
-    ("devops-lifecycle", "DevOps lifecycle", "Build, configure, test, deploy, and monitor software delivery systems", ("agent",)),
-    ("terminal-generalist", "Terminal generalist", "Complete heterogeneous computer tasks through a terminal", ("agent",)),
-    ("mobile-codegen", "Mobile app code generation", "Build and iterate native or cross-platform mobile apps", ("model", "agent")),
     ("reasoning", "Reasoning", "Solve novel multi-step reasoning tasks", ("model",)),
     ("factuality", "Factuality", "Produce correct and grounded factual claims", ("model", "tool")),
     (
@@ -68,12 +64,6 @@ _USE_CASE_ROWS = (
         "Professional deliverables",
         "Create review-ready professional work products from a complete brief, domain context, and reference files.",
         ("model", "agent"),
-    ),
-    (
-        "machine-learning-engineering",
-        "Machine-learning engineering",
-        "Build, train, and optimize machine-learning solutions from datasets and scored task objectives.",
-        ("agent",),
     ),
     (
         "computational-research-reproduction",

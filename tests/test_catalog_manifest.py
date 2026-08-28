@@ -13,8 +13,7 @@ from evalrank_core.fixtures import sample_use_case_catalog  # noqa: E402
 
 
 EXPECTED_CELL_IDS = (
-    "code-generation",
-    "autonomous-swe-agent",
+    "coding-general",
     "function-calling",
     "mcp-tool-orchestration",
     "web-browsing",
@@ -31,15 +30,11 @@ EXPECTED_CELL_IDS = (
     "medical",
     "multilingual",
     "vision-multimodal",
-    "web-frontend-code-generation",
+    "coding-frontend",
     "sre-incident-response",
-    "devops-lifecycle",
-    "terminal-generalist",
-    "mobile-codegen",
     "reasoning",
     "factuality",
     "professional-deliverable-creation",
-    "machine-learning-engineering",
     "computational-research-reproduction",
 )
 
@@ -110,18 +105,12 @@ EXPECTED_FAMILY_IDS = (
     "itbench",
     "aiopslab",
     "sregym",
-    "devops-gym",
-    "android-bench",
-    "appforge",
-    "swifteval",
-    "swe-bench-mobile",
     "livebench-reasoning",
     "arc-agi-2",
     "swe-bench-verified",
     "swe-bench-pro",
     "steel-current-composites",
     "gdpval",
-    "mle-bench",
     "paperbench",
     "core-bench-reproducibility",
     "mcp-atlas",
@@ -140,7 +129,6 @@ EXPECTED_FAMILY_IDS = (
     "widesearch",
     "deepsearchqa",
     "gpqa-diamond",
-    "kernelbench",
     "profbench",
     "bixbench",
     "medxpertqa",
@@ -184,7 +172,6 @@ EXPECTED_FEED_IDS = tuple(
     for family_id in EXPECTED_FAMILY_IDS
     for feed_id in {
         "itbench": ("itbench-discovery", "itbench-aa-discovery"),
-        "mle-bench": ("mle-bench-v1-discovery",),
         "paperbench": ("paperbench-full-discovery",),
         "core-bench-reproducibility": (
             "core-bench-v1-1-mainline-discovery",
@@ -414,7 +401,7 @@ class CatalogManifestTests(unittest.TestCase):
 
         self.assertEqual("evalrank_manifest", payload["object"])
         self.assertEqual("1", payload["schema_version"])
-        self.assertEqual("2026-08-04.1", payload["manifest_version"])
+        self.assertEqual("2026-08-27.1", payload["manifest_version"])
         for key, id_key in (
             ("cells", "cell_id"),
             ("ranking_groups", "ranking_group_id"),
@@ -436,7 +423,7 @@ class CatalogManifestTests(unittest.TestCase):
             "terminal-bench-2-1-official-hub-repository-v1",
             feed["adapter_id"],
         )
-        self.assertEqual(["terminal-generalist"], feed["candidate_cells"])
+        self.assertEqual(["coding-general"], feed["candidate_cells"])
         self.assertTrue(feed["retention"]["store_artifact_bytes"])
 
     def test_manifest_is_the_exact_public_taxonomy(self):
@@ -453,6 +440,11 @@ class CatalogManifestTests(unittest.TestCase):
         new_cells = {row["cell_id"]: row for row in cells[-3:]}
         self.assertEqual(
             {
+                "factuality": {
+                    "name": "Factuality",
+                    "definition": "Produce correct and grounded factual claims",
+                    "entity_kinds": ["model", "tool"],
+                },
                 "professional-deliverable-creation": {
                     "name": "Professional deliverables",
                     "definition": (
@@ -460,14 +452,6 @@ class CatalogManifestTests(unittest.TestCase):
                         "brief, domain context, and reference files."
                     ),
                     "entity_kinds": ["model", "agent"],
-                },
-                "machine-learning-engineering": {
-                    "name": "Machine-learning engineering",
-                    "definition": (
-                        "Build, train, and optimize machine-learning solutions from datasets "
-                        "and scored task objectives."
-                    ),
-                    "entity_kinds": ["agent"],
                 },
                 "computational-research-reproduction": {
                     "name": "Computational research reproduction",
@@ -491,7 +475,7 @@ class CatalogManifestTests(unittest.TestCase):
     def test_every_cell_has_explicit_ordered_ranking_group_eligibility(self):
         payload = manifest()
         cell_ids = {cell["cell_id"] for cell in payload["cells"]}
-        self.assertEqual(42, len(payload["ranking_groups"]))
+        self.assertEqual(35, len(payload["ranking_groups"]))
         group_keys = set()
         covered_cells = set()
 
@@ -563,12 +547,13 @@ class CatalogManifestTests(unittest.TestCase):
         self.assertEqual(set(EXPECTED_CELL_IDS[-3:]), set(new_groups))
         self.assertEqual(
             {
+                "factuality": (
+                    "rg-factuality-model-configuration-direct-prompt-"
+                    "model-configuration-v1"
+                ),
                 "professional-deliverable-creation": (
                     "rg-professional-deliverable-creation-system-configuration-"
                     "system-system-configuration-v1"
-                ),
-                "machine-learning-engineering": (
-                    "rg-machine-learning-engineering-agent-system-agentic-agent-system-v1"
                 ),
                 "computational-research-reproduction": (
                     "rg-computational-research-reproduction-agent-system-agentic-"
@@ -581,6 +566,17 @@ class CatalogManifestTests(unittest.TestCase):
             },
         )
         self.assertEqual(
+            ("model_configuration", "direct_prompt", "model-configuration-v1"),
+            tuple(
+                new_groups["factuality"][key]
+                for key in (
+                    "entity_kind",
+                    "interaction_policy",
+                    "configuration_passport_class",
+                )
+            ),
+        )
+        self.assertEqual(
             ("system_configuration", "system", "system-configuration-v1"),
             tuple(
                 new_groups["professional-deliverable-creation"][key]
@@ -591,23 +587,29 @@ class CatalogManifestTests(unittest.TestCase):
                 )
             ),
         )
-        for cell_id in (
-            "machine-learning-engineering",
-            "computational-research-reproduction",
-        ):
-            self.assertEqual(
-                ("agent_system", "agentic", "agent-system-v1"),
-                tuple(
-                    new_groups[cell_id][key]
-                    for key in (
-                        "entity_kind",
-                        "interaction_policy",
-                        "configuration_passport_class",
-                    )
-                ),
-            )
+        self.assertEqual(
+            ("agent_system", "agentic", "agent-system-v1"),
+            tuple(
+                new_groups["computational-research-reproduction"][key]
+                for key in (
+                    "entity_kind",
+                    "interaction_policy",
+                    "configuration_passport_class",
+                )
+            ),
+        )
+        # The coding-taxonomy merge shifted the tail: ``factuality`` publishes a
+        # single-winner model-configuration group, while the two agent/system
+        # cells remain explorer-claim.
+        self.assertEqual("single_winner", new_groups["factuality"]["claim_ceiling"])
         self.assertTrue(
-            all(group["claim_ceiling"] == "explorer" for group in new_groups.values())
+            all(
+                new_groups[cell_id]["claim_ceiling"] == "explorer"
+                for cell_id in (
+                    "professional-deliverable-creation",
+                    "computational-research-reproduction",
+                )
+            )
         )
         self.assertTrue(all(group["state"] == "active" for group in new_groups.values()))
         self.assertTrue(
@@ -682,7 +684,7 @@ class CatalogManifestTests(unittest.TestCase):
             },
             active,
         )
-        self.assertEqual(103, len(families))
+        self.assertEqual(96, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -744,7 +746,7 @@ class CatalogManifestTests(unittest.TestCase):
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(115, len(feeds))
+        self.assertEqual(108, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_itbench_is_not_executable_without_exact_configuration_identity(self):
@@ -788,7 +790,7 @@ class CatalogManifestTests(unittest.TestCase):
             "automationbench": ("enterprise-crm-workflow", "rg-enterprise-crm-workflow-agent-system-agentic-agent-system-v1"),
             "officeqa-pro": ("rag-retrieval", "rg-rag-retrieval-system-configuration-system-system-configuration-v1"),
             "finance-agent-v2": ("finance", "rg-finance-agent-system-agentic-agent-system-v1"),
-            "deepswe": ("autonomous-swe-agent", "rg-autonomous-swe-agent-agent-system-agentic-agent-system-v1"),
+            "deepswe": ("coding-general", "rg-coding-general-agent-system-agentic-agent-system-v1"),
         }
 
         self.assertEqual(set(expected), set(feed_by_family))
@@ -954,20 +956,6 @@ class CatalogManifestTests(unittest.TestCase):
                     "automated-grader-not-independent",
                 },
             ),
-            "mle-bench": (
-                "MLE-bench",
-                "machine-learning-engineering",
-                "agent_system",
-                {
-                    "leaderboard-submissions-paused",
-                    "v1-known-health-defects",
-                    "v2-pending",
-                    "high-cost",
-                    "scaffold-sensitive",
-                    "competition-lineage",
-                    "contamination-risk",
-                },
-            ),
             "paperbench": (
                 "PaperBench",
                 "computational-research-reproduction",
@@ -1018,7 +1006,6 @@ class CatalogManifestTests(unittest.TestCase):
         self.assertEqual(
             {
                 "gdpval-discovery",
-                "mle-bench-v1-discovery",
                 "paperbench-full-discovery",
                 "core-bench-v1-1-mainline-discovery",
                 "core-bench-v1-1-ood-discovery",
@@ -1273,7 +1260,7 @@ class CatalogManifestTests(unittest.TestCase):
         # — the removed rules no longer withhold it. The live manifest already
         # publishes such a group, so it must carry no semantic errors.
         group_id = (
-            "rg-code-generation-model-configuration-direct-prompt-"
+            "rg-coding-general-model-configuration-direct-prompt-"
             "model-configuration-v1"
         )
         baseline = manifest()
@@ -1291,7 +1278,7 @@ class CatalogManifestTests(unittest.TestCase):
         # cell is not itself active is still incoherent and must error.
         broken = manifest()
         next(
-            cell for cell in broken["cells"] if cell["cell_id"] == "code-generation"
+            cell for cell in broken["cells"] if cell["cell_id"] == "coding-general"
         )["state"] = "preview"
         state_errors = manifest_semantic_errors(broken)
         self.assertTrue(

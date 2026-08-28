@@ -13,22 +13,22 @@
           "obs_ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
         ],
         "ranking_group": [
-          "code-generation",
+          "coding-general",
           "model_configuration",
           "direct_prompt",
           "model-configuration-v1"
         ]
       },
-      "aggregation_canonical": "{\"admission_cohort_digest\":\"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef\",\"calibration_report_id\":\"calibration_fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210\",\"methodology_version\":\"aggregation-v1\",\"observation_ids\":[\"obs_0000000000000000000000000000000000000000000000000000000000000001\",\"obs_7777777777777777777777777777777777777777777777777777777777777777\",\"obs_ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\"],\"ranking_group\":[\"code-generation\",\"model_configuration\",\"direct_prompt\",\"model-configuration-v1\"]}",
-      "aggregation_input_digest": "1388fb51c201c91e00f8db0d14042d16cbac0513f422234fcc8b1de4fd878a66",
+      "aggregation_canonical": "{\"admission_cohort_digest\":\"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef\",\"calibration_report_id\":\"calibration_fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210\",\"methodology_version\":\"aggregation-v1\",\"observation_ids\":[\"obs_0000000000000000000000000000000000000000000000000000000000000001\",\"obs_7777777777777777777777777777777777777777777777777777777777777777\",\"obs_ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\"],\"ranking_group\":[\"coding-general\",\"model_configuration\",\"direct_prompt\",\"model-configuration-v1\"]}",
+      "aggregation_input_digest": "f0ae4686da0110dbd95cc30eaddf07e8a19eda1b7723602d5f102ce03c2268fd",
       "seed_document": {
-        "aggregation_input_digest": "1388fb51c201c91e00f8db0d14042d16cbac0513f422234fcc8b1de4fd878a66",
+        "aggregation_input_digest": "f0ae4686da0110dbd95cc30eaddf07e8a19eda1b7723602d5f102ce03c2268fd",
         "methodology_version": "aggregation-v1"
       },
-      "seed_canonical": "{\"aggregation_input_digest\":\"1388fb51c201c91e00f8db0d14042d16cbac0513f422234fcc8b1de4fd878a66\",\"methodology_version\":\"aggregation-v1\"}",
-      "seed_digest": "e8fb200163ccc34890a994c3c9cf94287aa9beb176097314187f27652babd508",
-      "seed_first_eight_bytes_hex": "e8fb200163ccc348",
-      "bootstrap_seed": 7635014712607560
+      "seed_canonical": "{\"aggregation_input_digest\":\"f0ae4686da0110dbd95cc30eaddf07e8a19eda1b7723602d5f102ce03c2268fd\",\"methodology_version\":\"aggregation-v1\"}",
+      "seed_digest": "a069c6e795cfdfbca861d10ebd9abe5a0e54bc8a9b7989af76ff6e35c4fe43ad",
+      "seed_first_eight_bytes_hex": "a069c6e795cfdfbc",
+      "bootstrap_seed": 2751972743569340
     }
   ]
 }

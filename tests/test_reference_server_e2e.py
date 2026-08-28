@@ -201,16 +201,16 @@ class ReferenceServerE2ETests(unittest.TestCase):
         self.assertEqual(200, status)
         use_cases = json.loads(use_cases_body)
         self.assertEqual("use_case_catalog", use_cases["object"])
-        self.assertEqual(28, len(use_cases["use_cases"]))
+        self.assertEqual(23, len(use_cases["use_cases"]))
 
         status, _, health_body = self._request("/v1/benchmark-health")
         self.assertEqual(200, status)
         health = json.loads(health_body)
         self.assertEqual("benchmark_health", health["object"])
         self.assertEqual("1", health["schema_version"])
-        self.assertEqual("2026-08-04.1", health["manifest_version"])
+        self.assertEqual("2026-08-27.1", health["manifest_version"])
         self.assertEqual("2026-08-04T00:00:00Z", health["generated_at"])
-        self.assertEqual(28, len(health["cells"]))
+        self.assertEqual(23, len(health["cells"]))
         # v2: publication decoupled from validation. Every cell with a published
         # (active) ranking group is now "active", so none remain in the "preview"
         # or "unavailable" holding states.
@@ -241,12 +241,12 @@ class ReferenceServerE2ETests(unittest.TestCase):
         )
         manifest["cells"][0]["state"] = "quarantined"
         for group in manifest["ranking_groups"]:
-            if group["cell_id"] == "code-generation":
+            if group["cell_id"] == "coding-general":
                 group["state"] = "quarantined"
                 group["rank_eligible_count"] = None
                 group["quarantine_reason"] = "synthetic health regression"
         for feed in manifest["feeds"]:
-            if "code-generation" in feed["candidate_cells"]:
+            if "coding-general" in feed["candidate_cells"]:
                 feed["state"] = "quarantined"
                 feed["rank_eligible_count"] = None
                 feed["quarantine_reason"] = "synthetic health regression"
@@ -259,12 +259,12 @@ class ReferenceServerE2ETests(unittest.TestCase):
             )
             health = module._benchmark_health(root)
 
-        code_generation = next(
-            row for row in health["cells"] if row["cell_id"] == "code-generation"
+        coding_general = next(
+            row for row in health["cells"] if row["cell_id"] == "coding-general"
         )
-        self.assertEqual("unavailable", code_generation["status"])
-        self.assertEqual(0, code_generation["published_ranking_group_count"])
-        self.assertEqual(0, code_generation["implemented_feed_count"])
+        self.assertEqual("unavailable", coding_general["status"])
+        self.assertEqual(0, coding_general["published_ranking_group_count"])
+        self.assertEqual(0, coding_general["implemented_feed_count"])
         _assert_schema_valid("benchmark-health.schema.json", health)
 
     def test_reference_server_exercises_all_explorer_reads_and_validates_parameters(self):

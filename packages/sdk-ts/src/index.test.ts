@@ -20,11 +20,10 @@ import {
   type UseCaseCatalog,
 } from "./index.ts";
 
-test("the public catalog manifest owns the exact 28-cell taxonomy", () => {
+test("the public catalog manifest owns the exact 23-cell taxonomy", () => {
   const manifest = catalogManifest();
   const expected = [
-    "code-generation",
-    "autonomous-swe-agent",
+    "coding-general",
     "function-calling",
     "mcp-tool-orchestration",
     "web-browsing",
@@ -41,15 +40,11 @@ test("the public catalog manifest owns the exact 28-cell taxonomy", () => {
     "medical",
     "multilingual",
     "vision-multimodal",
-    "web-frontend-code-generation",
+    "coding-frontend",
     "sre-incident-response",
-    "devops-lifecycle",
-    "terminal-generalist",
-    "mobile-codegen",
     "reasoning",
     "factuality",
     "professional-deliverable-creation",
-    "machine-learning-engineering",
     "computational-research-reproduction",
   ];
 

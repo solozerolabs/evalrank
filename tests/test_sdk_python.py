@@ -207,7 +207,7 @@ class PythonSdkTests(unittest.TestCase):
         self.assertIs(UseCaseCatalog, CoreUseCaseCatalog)
         self.assertIsInstance(catalog, CoreUseCaseCatalog)
         self.assertEqual("use_case_catalog", catalog.to_dict()["object"])
-        self.assertEqual(28, len(catalog.to_dict()["use_cases"]))
+        self.assertEqual(23, len(catalog.to_dict()["use_cases"]))
         self.assertEqual(
             "computational-research-reproduction",
             catalog.to_dict()["use_cases"][-1]["id"],

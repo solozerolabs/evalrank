@@ -56,8 +56,8 @@ class CoreFixtureTests(unittest.TestCase):
         payload = sample_use_case_catalog().to_dict()
         self.assertEqual("2026-08-04.1.catalog-manifest-v1", PUBLIC_CATALOG_METHODOLOGY_VERSION)
         self.assertEqual("2026-08-04T00:00:00Z", PUBLIC_CATALOG_GENERATED_AT)
-        self.assertEqual(28, len(payload["use_cases"]))
-        self.assertEqual("code-generation", payload["use_cases"][0]["id"])
+        self.assertEqual(23, len(payload["use_cases"]))
+        self.assertEqual("coding-general", payload["use_cases"][0]["id"])
 
 
 if __name__ == "__main__":

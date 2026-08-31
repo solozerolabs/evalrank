@@ -36,6 +36,7 @@ EXPECTED_CELL_IDS = (
     "factuality",
     "professional-deliverable-creation",
     "computational-research-reproduction",
+    "writing",
 )
 
 EXPECTED_FAMILY_IDS = (
@@ -135,6 +136,7 @@ EXPECTED_FAMILY_IDS = (
     "bbeh",
     "musr",
     "legalagentbench",
+    "lmarena-creative-writing",
 )
 
 # MTEB families each expose an embedder + a reranker feed (both retrieval
@@ -440,11 +442,6 @@ class CatalogManifestTests(unittest.TestCase):
         new_cells = {row["cell_id"]: row for row in cells[-3:]}
         self.assertEqual(
             {
-                "factuality": {
-                    "name": "Factuality",
-                    "definition": "Produce correct and grounded factual claims",
-                    "entity_kinds": ["model", "tool"],
-                },
                 "professional-deliverable-creation": {
                     "name": "Professional deliverables",
                     "definition": (
@@ -461,6 +458,14 @@ class CatalogManifestTests(unittest.TestCase):
                     ),
                     "entity_kinds": ["agent"],
                 },
+                "writing": {
+                    "name": "Writing",
+                    "definition": (
+                        "Produce high-quality creative and long-form prose from an open "
+                        "prompt, judged on human-preference writing quality."
+                    ),
+                    "entity_kinds": ["model", "agent"],
+                },
             },
             {
                 cell_id: {
@@ -475,7 +480,7 @@ class CatalogManifestTests(unittest.TestCase):
     def test_every_cell_has_explicit_ordered_ranking_group_eligibility(self):
         payload = manifest()
         cell_ids = {cell["cell_id"] for cell in payload["cells"]}
-        self.assertEqual(35, len(payload["ranking_groups"]))
+        self.assertEqual(36, len(payload["ranking_groups"]))
         group_keys = set()
         covered_cells = set()
 
@@ -547,10 +552,6 @@ class CatalogManifestTests(unittest.TestCase):
         self.assertEqual(set(EXPECTED_CELL_IDS[-3:]), set(new_groups))
         self.assertEqual(
             {
-                "factuality": (
-                    "rg-factuality-model-configuration-direct-prompt-"
-                    "model-configuration-v1"
-                ),
                 "professional-deliverable-creation": (
                     "rg-professional-deliverable-creation-system-configuration-"
                     "system-system-configuration-v1"
@@ -559,6 +560,9 @@ class CatalogManifestTests(unittest.TestCase):
                     "rg-computational-research-reproduction-agent-system-agentic-"
                     "agent-system-v1"
                 ),
+                "writing": (
+                    "rg-writing-arena-system-crowd-pairwise-arena-system-v1"
+                ),
             },
             {
                 cell_id: group["ranking_group_id"]
@@ -566,9 +570,9 @@ class CatalogManifestTests(unittest.TestCase):
             },
         )
         self.assertEqual(
-            ("model_configuration", "direct_prompt", "model-configuration-v1"),
+            ("arena_system", "crowd_pairwise", "arena-system-v1"),
             tuple(
-                new_groups["factuality"][key]
+                new_groups["writing"][key]
                 for key in (
                     "entity_kind",
                     "interaction_policy",
@@ -598,10 +602,9 @@ class CatalogManifestTests(unittest.TestCase):
                 )
             ),
         )
-        # The coding-taxonomy merge shifted the tail: ``factuality`` publishes a
-        # single-winner model-configuration group, while the two agent/system
-        # cells remain explorer-claim.
-        self.assertEqual("single_winner", new_groups["factuality"]["claim_ceiling"])
+        # The writing cell publishes a single-winner arena-system group, while
+        # the two agent/system cells remain explorer-claim.
+        self.assertEqual("single_winner", new_groups["writing"]["claim_ceiling"])
         self.assertTrue(
             all(
                 new_groups[cell_id]["claim_ceiling"] == "explorer"
@@ -685,10 +688,11 @@ class CatalogManifestTests(unittest.TestCase):
                 "mteb-followir",
                 "mteb-rar-b",
                 "mteb-multilingual-v2",
+                "lmarena-creative-writing",
             },
             active,
         )
-        self.assertEqual(96, len(families))
+        self.assertEqual(97, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -746,11 +750,12 @@ class CatalogManifestTests(unittest.TestCase):
                 "mteb-followir": "mteb-followir",
                 "mteb-rar-b": "mteb-rar-b",
                 "mteb-multilingual-v2": "mteb-multilingual-v2",
+                "lmarena-creative-writing": "lmarena-creative-writing",
             },
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(108, len(feeds))
+        self.assertEqual(109, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_itbench_is_not_executable_without_exact_configuration_identity(self):
@@ -1188,6 +1193,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "mteb-rar-b-reranking-discovery": "higher",
                 "mteb-multilingual-v2-embedding-discovery": "higher",
                 "mteb-multilingual-v2-reranking-discovery": "higher",
+                "lmarena-creative-writing-discovery": "higher",
             },
             recovered_directions,
         )

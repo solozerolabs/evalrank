@@ -201,7 +201,7 @@ class ReferenceServerE2ETests(unittest.TestCase):
         self.assertEqual(200, status)
         use_cases = json.loads(use_cases_body)
         self.assertEqual("use_case_catalog", use_cases["object"])
-        self.assertEqual(23, len(use_cases["use_cases"]))
+        self.assertEqual(24, len(use_cases["use_cases"]))
 
         status, _, health_body = self._request("/v1/benchmark-health")
         self.assertEqual(200, status)
@@ -210,7 +210,7 @@ class ReferenceServerE2ETests(unittest.TestCase):
         self.assertEqual("1", health["schema_version"])
         self.assertEqual("2026-08-27.1", health["manifest_version"])
         self.assertEqual("2026-08-04T00:00:00Z", health["generated_at"])
-        self.assertEqual(23, len(health["cells"]))
+        self.assertEqual(24, len(health["cells"]))
         # v2: publication decoupled from validation. Every cell with a published
         # (active) ranking group is now "active", so none remain in the "preview"
         # or "unavailable" holding states.

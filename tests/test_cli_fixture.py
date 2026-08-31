@@ -60,7 +60,7 @@ class CliFixtureTests(unittest.TestCase):
         self.assertEqual(0, main(["fixture", "use-cases"], stdout=stdout, stderr=StringIO()))
         payload = json.loads(stdout.getvalue())
         self.assertEqual(sample_use_case_catalog().to_dict(), payload)
-        self.assertEqual(23, len(payload["use_cases"]))
+        self.assertEqual(24, len(payload["use_cases"]))
 
     def test_invalid_fixture_exits_nonzero(self):
         stderr = StringIO()

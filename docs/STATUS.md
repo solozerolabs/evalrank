@@ -9,7 +9,7 @@ Portable contract status: the seven-path receipt-first launch contract, Python/T
 Three documents are normative:
 
 - `docs/PRODUCT.md` defines the user job, entity ontology, receipt experience, demand boundary, and exclusions.
-- `catalog/manifest.json` defines the canonical 23-cell/35-ranking-group inventory, 96-family/108-feed research queue, native-metric direction, governance, cadence, lineage, retention, and eligibility. SRE incident response, DevOps lifecycle, and terminal-generalist work are separate decision cells; retired aliases are absent.
+- `catalog/manifest.json` defines the canonical 24-cell/36-ranking-group inventory, 97-family/109-feed research queue, native-metric direction, governance, cadence, lineage, retention, and eligibility. SRE incident response, DevOps lifecycle, and terminal-generalist work are separate decision cells; retired aliases are absent.
 - Aider Polyglot, ITBench SRE, Agents' Last Exam, and DeepSWE have replayed official result adapters but remain `shadow`: none has enough exact overlapping configurations or independent calibrated companion families to support a top set. Detailed admission evidence for the original independent-family wave is in `docs/build-log/2026-07-10-independent-family-admission.md`.
 - `methods/evidence-synthesis.md` defines native-metric synthesis, top and tie sets, uncertainty, sensitivity, abstention, and challenger promotion.
 

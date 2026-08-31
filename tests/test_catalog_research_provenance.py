@@ -41,7 +41,7 @@ class CatalogResearchProvenanceTests(unittest.TestCase):
         self.assertEqual("2026-08-27.1", self.provenance["manifest_version"])
         self.assertEqual(self.manifest["manifest_version"], self.provenance["manifest_version"])
         self.assertEqual(expected_ids, actual_ids)
-        self.assertEqual(96, len(actual_ids))
+        self.assertEqual(97, len(actual_ids))
         self.assertEqual(len(actual_ids), len(set(actual_ids)))
 
     def test_every_family_has_dated_primary_or_official_sources(self):

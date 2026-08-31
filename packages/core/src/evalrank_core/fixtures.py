@@ -71,6 +71,12 @@ _USE_CASE_ROWS = (
         "Reproduce published computational results by implementing or executing experiments from papers, code, data, and environments.",
         ("agent",),
     ),
+    (
+        "writing",
+        "Writing",
+        "Produce high-quality creative and long-form prose from an open prompt, judged on human-preference writing quality.",
+        ("model", "agent"),
+    ),
 )
 
 

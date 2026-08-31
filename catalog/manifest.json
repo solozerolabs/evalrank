@@ -245,6 +245,16 @@
         "agent"
       ],
       "state": "active"
+    },
+    {
+      "cell_id": "writing",
+      "name": "Writing",
+      "definition": "Produce high-quality creative and long-form prose from an open prompt, judged on human-preference writing quality.",
+      "entity_kinds": [
+        "model",
+        "agent"
+      ],
+      "state": "active"
     }
   ],
   "ranking_groups": [
@@ -1631,6 +1641,48 @@
         "superiority_threshold": null,
         "practical_effect_floor": null,
         "leave_one_family_out": null
+      },
+      "quarantine_reason": null
+    },
+    {
+      "ranking_group_id": "rg-writing-arena-system-crowd-pairwise-arena-system-v1",
+      "cell_id": "writing",
+      "entity_kind": "arena_system",
+      "interaction_policy": "crowd_pairwise",
+      "configuration_passport_class": "arena-system-v1",
+      "state": "active",
+      "rank_eligible_count": null,
+      "claim_ceiling": "single_winner",
+      "eligibility": {
+        "calibration_status": "unvalidated",
+        "explorer": {
+          "minimum_families": 1,
+          "minimum_overlap": 1
+        },
+        "top_set": {
+          "minimum_families": 3,
+          "minimum_overlap": 2
+        },
+        "single_winner": {
+          "minimum_families": 4,
+          "minimum_overlap": 3
+        },
+        "native_effect_policy": "family-native-likelihoods-only",
+        "missing_configuration_policy": "exclude-from-ranking-group-and-disclose",
+        "block_bootstrap": {
+          "replicates": 10000,
+          "seed_derivation": "uint64be(sha256(restricted_jcs({aggregation_input_digest,methodology_version}))[0:8])&9007199254740991"
+        },
+        "bootstrap_coverage_target": 0.95,
+        "superiority_threshold": 0.95,
+        "practical_effect_floor": {
+          "mode": "native-metric-calibrated",
+          "status": "unvalidated"
+        },
+        "leave_one_family_out": {
+          "required_for_single_winner": true,
+          "stable_top_set_required": true
+        }
       },
       "quarantine_reason": null
     }
@@ -3212,6 +3264,22 @@
       "research_flags": [
         "task-data-license-unverified"
       ],
+      "quarantine_reason": null
+    },
+    {
+      "benchmark_family_id": "lmarena-creative-writing",
+      "display_name": "LMArena Creative Writing",
+      "candidate_cells": [
+        "writing"
+      ],
+      "entity_kinds": [
+        "arena_system"
+      ],
+      "state": "active",
+      "rank_eligible_count": null,
+      "correlation_status": "declared",
+      "correlated_family_group": "lmarena-creative-writing",
+      "research_flags": [],
       "quarantine_reason": null
     }
   ],
@@ -8519,6 +8587,55 @@
       },
       "ranking_group_ids": [
         "rg-legal-system-configuration-system-system-configuration-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "lmarena-creative-writing-discovery",
+      "benchmark_family_id": "lmarena-creative-writing",
+      "adapter_id": "lmarena-creative-writing-hf-rows-v1",
+      "metric_direction": "higher",
+      "candidate_cells": [
+        "writing"
+      ],
+      "entity_kind": "arena_system",
+      "interaction_policy": "crowd_pairwise",
+      "configuration_passport_class": "arena-system-v1",
+      "state": "active",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": "not-applicable-hub-data-view",
+        "task_data_license": "CC-BY-4.0",
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "validated",
+        "mode": "periodic",
+        "stale_after_seconds": 172800,
+        "stop_recommending_after_seconds": 604800,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": true,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "validated",
+        "task_lineage_id": "lmarena-creative-writing-v1-tasks",
+        "environment_lineage_id": "lmarena-creative-writing-v1-environments",
+        "grader_lineage_id": "crowd-pairwise-votes",
+        "correlation_status": "declared",
+        "correlated_family_group": "lmarena-creative-writing"
+      },
+      "ranking_group_ids": [
+        "rg-writing-arena-system-crowd-pairwise-arena-system-v1"
       ],
       "quarantine_reason": null
     }

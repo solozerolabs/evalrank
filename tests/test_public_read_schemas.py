@@ -31,7 +31,18 @@ class PublicReadSchemaTests(unittest.TestCase):
                 )
                 self.assertEqual("object", schema["type"])
                 self.assertFalse(schema["additionalProperties"])
-                self.assertEqual(set(schema["properties"]), set(schema["required"]))
+                # Read contracts are closed and every property is required, with
+                # ONE deliberate exception: the leaderboard's derived, display-only
+                # positional_consensus rollup is absent for cells that have no
+                # explorer views to aggregate (e.g. a fully-active top_set cell).
+                optional = (
+                    {"positional_consensus"}
+                    if filename == "leaderboard.schema.json"
+                    else set()
+                )
+                self.assertEqual(
+                    set(schema["properties"]) - optional, set(schema["required"])
+                )
                 self.assertEqual("1", schema["properties"]["schema_version"]["const"])
 
     def test_benchmark_health_is_closed_and_uses_safe_nonnegative_counts(self):
@@ -318,10 +329,20 @@ const previewWithoutExplorerView = clone(unresolvedExplorer);
 previewWithoutExplorerView.ranking_groups[0].explorer_views = [];
 assertInvalid(validateLeaderboard, previewWithoutExplorerView, "preview without exact explorer evidence");
 
-const previewWithoutExactEvidence = clone(previewWithoutExplorerView);
-previewWithoutExactEvidence.snapshot_set_descriptor.ranking_group_snapshots[0].evidence_snapshot_id = snapshot("f");
-previewWithoutExactEvidence.ranking_groups[0].evidence_snapshot_id = snapshot("f");
-assertValid(validateLeaderboard, previewWithoutExactEvidence, "preview without exact evidence");
+// v2: publication state is decoupled from claim strength. An ACTIVE read carrying
+// an explorer claim (explorer evidence, disclosed gaps, a view, no in_top_set) is
+// valid — state no longer forces the top_set tier.
+const activeExplorer = clone(unresolvedExplorer);
+activeExplorer.cell_state = "active";
+activeExplorer.ranking_groups[0].state = "active";
+assertValid(validateLeaderboard, activeExplorer, "active explorer group decoupled from state");
+
+// An explorer claim must still carry explorer_ evidence; snapshot_ evidence under an
+// explorer claim is a claim/evidence inconsistency.
+const explorerClaimSnapshotEvidence = clone(unresolvedExplorer);
+explorerClaimSnapshotEvidence.snapshot_set_descriptor.ranking_group_snapshots[0].evidence_snapshot_id = snapshot("f");
+explorerClaimSnapshotEvidence.ranking_groups[0].evidence_snapshot_id = snapshot("f");
+assertInvalid(validateLeaderboard, explorerClaimSnapshotEvidence, "explorer claim with snapshot evidence");
 
 const explorerTopSetClaim = clone(unresolvedExplorer);
 explorerTopSetClaim.ranking_groups[0].explorer_views[0].entries = clone(payload.ranking_groups[0].entries);
@@ -378,6 +399,31 @@ const unknownGroupField = clone(payload);
 unknownGroupField.ranking_groups[0].scale = "other";
 assertInvalid(validateLeaderboard, unknownGroupField, "unknown group field");
 
+const withConsensus = clone(payload);
+withConsensus.positional_consensus = {
+  object: "positional_consensus",
+  algorithm: "size_aware_reciprocal_borda",
+  entries: [{
+    rank: 1,
+    model: "example-model-5",
+    score: 1.25,
+    benchmark_count: 2,
+    contributions: [
+      { benchmark_family_id: "livebench-reasoning", rank: 1 },
+      { benchmark_family_id: "scicode", rank: 2 }
+    ]
+  }]
+};
+assertValid(validateLeaderboard, withConsensus, "leaderboard with positional consensus");
+
+const consensusUnknownField = clone(withConsensus);
+consensusUnknownField.positional_consensus.entries[0].weight = 3;
+assertInvalid(validateLeaderboard, consensusUnknownField, "consensus entry with unknown field");
+
+const consensusBadAlgorithm = clone(withConsensus);
+consensusBadAlgorithm.positional_consensus.algorithm = "pagerank";
+assertInvalid(validateLeaderboard, consensusBadAlgorithm, "consensus with unrecognized algorithm");
+
 const ranking = clone(payload.ranking_groups[0].entries[0].ranking);
 const citations = clone(payload.ranking_groups[0].citations);
 const evaluatedConfiguration = {
@@ -432,6 +478,11 @@ assertInvalid(validateEntity, previewEntity, "preview entity claiming top-set me
 previewEntity.entity.ranking.in_top_set = false;
 assertValid(validateEntity, previewEntity, "preview entity without top-set claim");
 
+// v2: an ACTIVE entity carrying an explorer claim validates — state is decoupled.
+const activeExplorerEntity = clone(previewEntity);
+activeExplorerEntity.state = "active";
+assertValid(validateEntity, activeExplorerEntity, "active explorer entity decoupled from state");
+
 const duplicateEntityIdentity = clone(entity);
 duplicateEntityIdentity.entity_kind = "agent_system";
 assertInvalid(validateEntity, duplicateEntityIdentity, "duplicate envelope identity");
@@ -479,6 +530,11 @@ previewCompare.eligibility_summary = {
 assertInvalid(validateCompare, previewCompare, "preview compare claiming top-set membership");
 previewCompare.entities.forEach((item) => { item.ranking.in_top_set = false; });
 assertValid(validateCompare, previewCompare, "preview compare without top-set claim");
+
+// v2: an ACTIVE compare carrying an explorer claim validates — state is decoupled.
+const activeExplorerCompare = clone(previewCompare);
+activeExplorerCompare.state = "active";
+assertValid(validateCompare, activeExplorerCompare, "active explorer compare decoupled from state");
 
 const duplicateCompare = clone(compare);
 duplicateCompare.entities[1] = clone(duplicateCompare.entities[0]);

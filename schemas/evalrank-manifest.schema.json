@@ -612,55 +612,6 @@
               }
             }
           }
-        },
-        {
-          "if": {
-            "required": [
-              "state"
-            ],
-            "properties": {
-              "state": {
-                "const": "active"
-              }
-            }
-          },
-          "then": {
-            "properties": {
-              "claim_ceiling": {
-                "const": "single_winner"
-              },
-              "rank_eligible_count": {
-                "type": "integer",
-                "minimum": 2
-              },
-              "eligibility": {
-                "type": "object",
-                "required": [
-                  "calibration_status",
-                  "top_set"
-                ],
-                "properties": {
-                  "calibration_status": {
-                    "const": "validated"
-                  },
-                  "top_set": {
-                    "$ref": "#/$defs/EligibilityStage"
-                  },
-                  "practical_effect_floor": {
-                    "type": "object",
-                    "required": [
-                      "status"
-                    ],
-                    "properties": {
-                      "status": {
-                        "const": "validated"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
         }
       ]
     },
@@ -781,11 +732,8 @@
             }
           },
           "then": {
+            "$comment": "v2: publication decoupled from validation. An active family needs only resolved entity_kinds; correlation_status/correlated_family_group/rank_eligible_count carry their real values (CorrelationState still enforces status<->group consistency).",
             "properties": {
-              "rank_eligible_count": {
-                "type": "integer",
-                "minimum": 1
-              },
               "entity_kinds": {
                 "not": {
                   "type": "array",
@@ -793,12 +741,6 @@
                     "const": "unresolved"
                   }
                 }
-              },
-              "correlation_status": {
-                "const": "validated"
-              },
-              "correlated_family_group": {
-                "$ref": "#/$defs/Slug"
               }
             }
           }
@@ -1390,66 +1332,11 @@
             }
           },
           "then": {
+            "$comment": "v2: publication is decoupled from validation. An active feed needs only a resolved entity_kind; rights/cadence/lineage/retention carry their real (often unvalidated) values and no longer gate publication.",
             "properties": {
-              "rank_eligible_count": {
-                "type": "integer",
-                "minimum": 1
-              },
               "entity_kind": {
                 "not": {
                   "const": "unresolved"
-                }
-              },
-              "rights": {
-                "type": "object",
-                "required": [
-                  "status"
-                ],
-                "properties": {
-                  "status": {
-                    "const": "approved"
-                  }
-                }
-              },
-              "cadence": {
-                "type": "object",
-                "required": [
-                  "status"
-                ],
-                "properties": {
-                  "status": {
-                    "const": "validated"
-                  }
-                }
-              },
-              "lineage": {
-                "type": "object",
-                "required": [
-                  "validation_status",
-                  "correlation_status",
-                  "correlated_family_group"
-                ],
-                "properties": {
-                  "validation_status": {
-                    "const": "validated"
-                  },
-                  "correlation_status": {
-                    "const": "validated"
-                  },
-                  "correlated_family_group": {
-                    "$ref": "#/$defs/Slug"
-                  }
-                }
-              },
-              "retention": {
-                "type": "object",
-                "required": [
-                  "store_artifact_bytes"
-                ],
-                "properties": {
-                  "store_artifact_bytes": {
-                    "const": true
-                  }
                 }
               }
             }

@@ -607,7 +607,6 @@ export async function verifyLeaderboardSemantics(
     const hasTopSet = entries.some((entry) =>
       verifyReadRanking(record(entry, "leaderboard entry").ranking).inTopSet
     );
-    verifyNonactiveClaim(group.state, hasTopSet);
     if (!["active", "preview", "shadow", "quarantined"].includes(String(group.state))) {
       throw new TypeError("ranking group state is invalid");
     }
@@ -618,46 +617,36 @@ export async function verifyLeaderboardSemantics(
       throw new TypeError("ranking group identity is invalid");
     }
     const explorerViews = array(group.explorer_views, "explorer_views");
-    if (
-      group.state === "active"
-      && (typeof group.evidence_snapshot_id !== "string" || !group.evidence_snapshot_id.startsWith("snapshot_"))
-    ) {
-      throw new TypeError("active groups require snapshot evidence");
+    const evidenceSnapshotId = String(group.evidence_snapshot_id);
+    // Publication visibility (state) is decoupled from claim strength: evidence,
+    // exposure, and membership rules key on published_claim, not state. ANY published
+    // state may carry EITHER claim.
+    const publishedClaim = readPublishedClaim(group);
+    verifyClaimTopSet(publishedClaim, hasTopSet);
+    if (publishedClaim === "top_set" && !evidenceSnapshotId.startsWith("snapshot_")) {
+      throw new TypeError("top_set groups require snapshot evidence");
     }
-    if (group.state === "active" && explorerViews.length !== 0) {
-      throw new TypeError("active groups cannot expose explorer views");
+    if (publishedClaim === "explorer" && !evidenceSnapshotId.startsWith("explorer_")) {
+      throw new TypeError("explorer groups require explorer evidence");
     }
-    if (group.state === "active" && entries.length !== 0
+    if (publishedClaim === "top_set" && explorerViews.length !== 0) {
+      throw new TypeError("top_set groups cannot expose explorer views");
+    }
+    if (publishedClaim === "top_set" && entries.length !== 0
       && array(group.citations, "ranking group citations").length === 0) {
-      throw new TypeError("active ranking entries require group citations");
+      throw new TypeError("top_set ranking entries require group citations");
     }
     if (group.state === "quarantined" && entries.length !== 0) {
       throw new TypeError("quarantined groups cannot expose entries");
     }
-    if (
-      (group.state === "preview" || group.state === "shadow")
-      && (typeof group.evidence_snapshot_id !== "string" || !/^(?:explorer|snapshot)_[0-9a-f]{64}$/.test(group.evidence_snapshot_id))
-    ) {
-      throw new TypeError("preview and shadow groups require explorer evidence");
-    }
-    if ((group.state === "preview" || group.state === "shadow") && entries.length !== 0) {
+    if (publishedClaim === "explorer" && entries.length !== 0) {
       throw new TypeError("explorer groups cannot expose calibrated entries");
     }
-    if (group.state === "preview" || group.state === "shadow") {
-      if (
-        typeof group.evidence_snapshot_id === "string"
-        && group.evidence_snapshot_id.startsWith("explorer_")
-        && explorerViews.length === 0
-      ) {
-        throw new TypeError("explorer evidence requires an explorer view");
-      }
-      if (
-        typeof group.evidence_snapshot_id === "string"
-        && group.evidence_snapshot_id.startsWith("snapshot_")
-        && explorerViews.length !== 0
-      ) {
-        throw new TypeError("snapshot evidence cannot expose explorer views");
-      }
+    if (evidenceSnapshotId.startsWith("explorer_") && explorerViews.length === 0) {
+      throw new TypeError("explorer evidence requires an explorer view");
+    }
+    if (evidenceSnapshotId.startsWith("snapshot_") && explorerViews.length !== 0) {
+      throw new TypeError("snapshot evidence cannot expose explorer views");
     }
     const hasStaleView = verifyExplorerViews(explorerViews, generatedAt);
     const eligibility = verifyEligibility(group.eligibility_summary, {
@@ -741,7 +730,7 @@ export async function verifyEntityDetailSemantics(
   const projection = closed(document.entity, ["evaluated_configuration", "ranking", "citations"]);
   await parseEvaluatedConfigurationV1(projection.evaluated_configuration);
   const ranking = verifyReadRanking(projection.ranking);
-  verifyNonactiveClaim(document.state, ranking.inTopSet);
+  verifyClaimTopSet(readPublishedClaim(document), ranking.inTopSet);
   verifyEligibilitySummaryState(document.eligibility_summary, document.state);
   verifySelectedExplorerView(document, projection.citations);
   return descriptor;
@@ -787,7 +776,7 @@ export async function verifyCompareResultSemantics(
       throw new TypeError("compare ranks must be unique");
     }
     ranks.add(ranking.rank);
-    verifyNonactiveClaim(document.state, ranking.inTopSet);
+    verifyClaimTopSet(readPublishedClaim(document), ranking.inTopSet);
     verifySelectedExplorerView(document, entity.citations);
   }
   verifyEligibilitySummaryState(document.eligibility_summary, document.state);
@@ -820,19 +809,22 @@ async function verifySnapshotReference(
       "ranking-group snapshot pair must belong to snapshot_set_descriptor",
     );
   }
-  if (payload.state === "active" && !reference.evidence_snapshot_id.startsWith("snapshot_")) {
-    throw new TypeError("active reads require snapshot evidence");
+  // Evidence prefix is bound to the claim (top_set⇒snapshot_, explorer⇒explorer_),
+  // not to the publication state; any published state may carry either claim.
+  const publishedClaim = readPublishedClaim(payload);
+  if (publishedClaim === "top_set" && !reference.evidence_snapshot_id.startsWith("snapshot_")) {
+    throw new TypeError("top_set reads require snapshot evidence");
   }
-  if ((payload.state === "preview" || payload.state === "shadow") && !reference.evidence_snapshot_id.startsWith("explorer_")) {
-    throw new TypeError("preview and shadow reads require explorer evidence");
+  if (publishedClaim === "explorer" && !reference.evidence_snapshot_id.startsWith("explorer_")) {
+    throw new TypeError("explorer reads require explorer evidence");
   }
   return descriptor;
 }
 
 function verifySelectedExplorerView(payload: Record<string, unknown>, citations: unknown): void {
   let selector: Record<string, unknown> | null = null;
-  if (payload.state === "active") {
-    if (payload.explorer_view !== null) throw new TypeError("active reads cannot select an explorer view");
+  if (readPublishedClaim(payload) === "top_set") {
+    if (payload.explorer_view !== null) throw new TypeError("top_set reads cannot select an explorer view");
   } else {
     selector = closed(payload.explorer_view, ["benchmark_family_id", "feed_id"]);
     patternString(selector.benchmark_family_id, slugPattern, "benchmark_family_id");
@@ -984,8 +976,8 @@ function verifyEligibility(
       "unresolved groups must be empty and disclose unresolved_identity",
     );
   }
-  if (context.state === "active" && !context.hasTopSet) {
-    throw new TypeError("active ranking groups must publish at least one top-set member");
+  if (eligibility.published_claim === "top_set" && !context.hasTopSet) {
+    throw new TypeError("top_set ranking groups must publish at least one top-set member");
   }
   return eligibility;
 }
@@ -1014,18 +1006,13 @@ function verifyEligibilitySummaryState(
     || !["unvalidated", "validated"].includes(String(eligibility.calibration_status))) {
     throw new TypeError("eligibility enum value is invalid");
   }
-  if (state === "active") {
-    if (
-      eligibility.published_claim !== "top_set"
-      || eligibility.calibration_status !== "validated"
-      || gaps.length !== 0
-    ) {
-      throw new TypeError(
-        "active reads require a validated top_set claim with no gaps",
-      );
+  // Claim strength, not publication state, drives the calibration/gap gate.
+  if (eligibility.published_claim === "top_set") {
+    if (eligibility.calibration_status !== "validated" || gaps.length !== 0) {
+      throw new TypeError("top_set reads require validated calibration with no gaps");
     }
-  } else if (eligibility.published_claim !== "explorer" || gaps.length === 0) {
-    throw new TypeError("non-active reads require an explorer claim with explicit gaps");
+  } else if (gaps.length === 0) {
+    throw new TypeError("explorer reads require explicit gaps");
   }
   verifyEligibilityCountGaps(eligibility, new Set(gaps as string[]));
   if (state === "quarantined" && !gaps.includes("quarantined")) {
@@ -1083,9 +1070,15 @@ function verifyCountGap(
   }
 }
 
-function verifyNonactiveClaim(state: unknown, inTopSet: boolean): void {
-  if (state !== "active" && inTopSet) {
-    throw new TypeError("non-active reads cannot claim top-set membership");
+function readPublishedClaim(payload: Record<string, unknown>): unknown {
+  const eligibility = payload.eligibility_summary;
+  if (typeof eligibility !== "object" || eligibility === null) return undefined;
+  return (eligibility as Record<string, unknown>).published_claim;
+}
+
+function verifyClaimTopSet(publishedClaim: unknown, inTopSet: boolean): void {
+  if (publishedClaim === "explorer" && inTopSet) {
+    throw new TypeError("explorer reads cannot claim top-set membership");
   }
 }
 

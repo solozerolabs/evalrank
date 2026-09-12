@@ -118,8 +118,14 @@
     },
     {
       "if": {
-        "required": ["state"],
-        "properties": {"state": {"const": "active"}}
+        "required": ["eligibility_summary"],
+        "properties": {
+          "eligibility_summary": {
+            "type": "object",
+            "required": ["published_claim"],
+            "properties": {"published_claim": {"const": "top_set"}}
+          }
+        }
       },
       "then": {
         "properties": {
@@ -128,7 +134,6 @@
           "eligibility_summary": {
             "type": "object",
             "properties": {
-              "published_claim": {"const": "top_set"},
               "calibration_status": {"const": "validated"},
               "gap_codes": {"type": "array", "maxItems": 0}
             }

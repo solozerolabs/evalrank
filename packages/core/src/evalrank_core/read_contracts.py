@@ -375,26 +375,29 @@ def verify_leaderboard_semantics(payload: Any) -> SnapshotSetDescriptorV1:
             raise ValueError("ranking group identity or state is invalid")
         evidence_snapshot_id = group.get("evidence_snapshot_id")
         explorer_views = group.get("explorer_views")
-        if state == "active" and not str(evidence_snapshot_id).startswith("snapshot_"):
-            raise ValueError("active groups require snapshot evidence")
-        if state in {"preview", "shadow"} and not str(evidence_snapshot_id).startswith(("explorer_", "snapshot_")):
-            raise ValueError("preview and shadow groups require canonical evidence")
-        _verify_nonactive_claim(state, has_top_set)
-        if state == "active" and explorer_views:
-            raise ValueError("active groups cannot expose explorer views")
-        if state == "active" and entries and not citations:
-            raise ValueError("active ranking entries require group citations")
+        eligibility = group.get("eligibility_summary")
+        # Publication visibility (state) is decoupled from claim strength: a read's
+        # evidence, exposure, and membership rules key on published_claim, not state.
+        # ANY published state may carry EITHER claim.
+        published_claim = _read_published_claim(group)
+        _verify_claim_top_set(published_claim, has_top_set)
+        if published_claim == "top_set" and not str(evidence_snapshot_id).startswith("snapshot_"):
+            raise ValueError("top_set groups require snapshot evidence")
+        if published_claim == "explorer" and not str(evidence_snapshot_id).startswith("explorer_"):
+            raise ValueError("explorer groups require explorer evidence")
+        if published_claim == "top_set" and explorer_views:
+            raise ValueError("top_set groups cannot expose explorer views")
+        if published_claim == "top_set" and entries and not citations:
+            raise ValueError("top_set ranking entries require group citations")
         if state == "quarantined" and entries:
             raise ValueError("quarantined groups cannot expose entries")
-        if state in {"preview", "shadow"} and entries:
+        if published_claim == "explorer" and entries:
             raise ValueError("explorer groups cannot expose calibrated entries")
-        if state in {"preview", "shadow"}:
-            if str(evidence_snapshot_id).startswith("explorer_") and not explorer_views:
-                raise ValueError("explorer evidence requires an explorer view")
-            if str(evidence_snapshot_id).startswith("snapshot_") and explorer_views:
-                raise ValueError("snapshot evidence cannot expose explorer views")
+        if str(evidence_snapshot_id).startswith("explorer_") and not explorer_views:
+            raise ValueError("explorer evidence requires an explorer view")
+        if str(evidence_snapshot_id).startswith("snapshot_") and explorer_views:
+            raise ValueError("snapshot evidence cannot expose explorer views")
         has_stale_view = _verify_explorer_views(explorer_views, generated_at=generated_at)
-        eligibility = group.get("eligibility_summary")
         _verify_eligibility(
             eligibility,
             state=group.get("state"),
@@ -495,7 +498,7 @@ def verify_entity_detail_semantics(payload: Any) -> SnapshotSetDescriptorV1:
     ranking = projection.get("ranking")
     _verify_ranking(ranking)
     _verify_selected_explorer_view(payload, projection["citations"])
-    _verify_nonactive_claim(payload.get("state"), ranking["in_top_set"])
+    _verify_claim_top_set(_read_published_claim(payload), ranking["in_top_set"])
     _verify_eligibility_summary_state(payload.get("eligibility_summary"), payload.get("state"))
     if configuration.evaluated_configuration_id != projection["evaluated_configuration"]["evaluated_configuration_id"]:
         raise ValueError("entity detail evaluated_configuration_id is invalid")
@@ -549,7 +552,7 @@ def verify_compare_result_semantics(payload: Any) -> SnapshotSetDescriptorV1:
         if rank in ranks:
             raise ValueError("compare ranks must be unique")
         ranks.add(rank)
-        _verify_nonactive_claim(payload.get("state"), ranking["in_top_set"])
+        _verify_claim_top_set(_read_published_claim(payload), ranking["in_top_set"])
         _verify_selected_explorer_view(payload, entity["citations"])
     _verify_eligibility_summary_state(payload.get("eligibility_summary"), payload.get("state"))
     return descriptor
@@ -575,18 +578,21 @@ def _verify_snapshot_reference(payload: Any) -> SnapshotSetDescriptorV1:
     state = payload.get("state")
     if state not in {"active", "preview", "shadow"}:
         raise ValueError("public read state is invalid")
-    if state == "active" and not reference.evidence_snapshot_id.startswith("snapshot_"):
-        raise ValueError("active reads require snapshot evidence")
-    if state in {"preview", "shadow"} and not reference.evidence_snapshot_id.startswith("explorer_"):
-        raise ValueError("preview and shadow reads require explorer evidence")
+    # Evidence prefix is bound to the claim (top_set⇒snapshot_, explorer⇒explorer_),
+    # not to the publication state; any published state may carry either claim.
+    published_claim = _read_published_claim(payload)
+    if published_claim == "top_set" and not reference.evidence_snapshot_id.startswith("snapshot_"):
+        raise ValueError("top_set reads require snapshot evidence")
+    if published_claim == "explorer" and not reference.evidence_snapshot_id.startswith("explorer_"):
+        raise ValueError("explorer reads require explorer evidence")
     return descriptor
 
 
 def _verify_selected_explorer_view(payload: dict[str, Any], citations: Any) -> None:
     selector = payload["explorer_view"]
-    if payload["state"] == "active":
+    if _read_published_claim(payload) == "top_set":
         if selector is not None:
-            raise ValueError("active reads cannot select an explorer view")
+            raise ValueError("top_set reads cannot select an explorer view")
     else:
         _verify_fields(
             selector,
@@ -692,8 +698,8 @@ def _verify_eligibility(
     if entity_kind == "unresolved":
         if entry_count or "unresolved_identity" not in gaps:
             raise ValueError("unresolved groups must be empty and disclose unresolved_identity")
-    if state == "active" and not has_top_set:
-        raise ValueError("active ranking groups must publish at least one top-set member")
+    if value.get("published_claim") == "top_set" and not has_top_set:
+        raise ValueError("top_set ranking groups must publish at least one top-set member")
 
 
 def _verify_eligibility_summary_state(value: Any, state: Any) -> None:
@@ -712,20 +718,26 @@ def _verify_eligibility_summary_state(value: Any, state: Any) -> None:
         raise ValueError("eligibility gap_codes must be a unique array")
     if value.get("published_claim") not in {"explorer", "top_set"} or value.get("calibration_status") not in {"unvalidated", "validated"}:
         raise ValueError("eligibility enum value is invalid")
-    if state == "active":
-        if value.get("published_claim") != "top_set" or value.get("calibration_status") != "validated" or gaps:
-            raise ValueError("active reads require a validated top_set claim with no gaps")
+    # Claim strength, not publication state, drives the calibration/gap gate.
+    if value.get("published_claim") == "top_set":
+        if value.get("calibration_status") != "validated" or gaps:
+            raise ValueError("top_set reads require validated calibration with no gaps")
     else:
-        if value.get("published_claim") != "explorer" or not gaps:
-            raise ValueError("non-active reads require an explorer claim with explicit gaps")
+        if not gaps:
+            raise ValueError("explorer reads require explicit gaps")
     _verify_eligibility_count_gaps(value, gaps)
     if state == "quarantined" and "quarantined" not in gaps:
         raise ValueError("quarantined reads must disclose the quarantined gap")
 
 
-def _verify_nonactive_claim(state: Any, in_top_set: bool) -> None:
-    if state != "active" and in_top_set:
-        raise ValueError("non-active reads cannot claim top-set membership")
+def _read_published_claim(payload: Any) -> Any:
+    eligibility = payload.get("eligibility_summary") if isinstance(payload, dict) else None
+    return eligibility.get("published_claim") if isinstance(eligibility, dict) else None
+
+
+def _verify_claim_top_set(published_claim: Any, in_top_set: bool) -> None:
+    if published_claim == "explorer" and in_top_set:
+        raise ValueError("explorer reads cannot claim top-set membership")
 
 
 def _verify_count_gap(

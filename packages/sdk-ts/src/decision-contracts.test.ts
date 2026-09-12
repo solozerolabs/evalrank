@@ -814,34 +814,49 @@ test("read semantic verifiers reject the same leaderboard mutations as Python", 
     /insufficient_independent_families/,
   );
 
-  const activeExplorer = structuredClone(leaderboard);
-  activeExplorer.ranking_groups[0].explorer_views = [{ entries: [] }];
+  const topSetExplorer = structuredClone(leaderboard);
+  topSetExplorer.ranking_groups[0].explorer_views = [{ entries: [] }];
   await assert.rejects(
-    () => verifyLeaderboardSemantics(activeExplorer),
-    /active groups cannot expose explorer views/,
+    () => verifyLeaderboardSemantics(topSetExplorer),
+    /top_set groups cannot expose explorer views/,
   );
 
-  const activeExplorerIdentity = structuredClone(leaderboard);
-  activeExplorerIdentity.snapshot_set_descriptor.ranking_group_snapshots[0].evidence_snapshot_id = `explorer_${"e".repeat(64)}`;
-  activeExplorerIdentity.ranking_groups[0].evidence_snapshot_id = `explorer_${"e".repeat(64)}`;
-  activeExplorerIdentity.snapshot_set_id = await snapshotSetId(activeExplorerIdentity.snapshot_set_descriptor);
+  const topSetExplorerIdentity = structuredClone(leaderboard);
+  topSetExplorerIdentity.snapshot_set_descriptor.ranking_group_snapshots[0].evidence_snapshot_id = `explorer_${"e".repeat(64)}`;
+  topSetExplorerIdentity.ranking_groups[0].evidence_snapshot_id = `explorer_${"e".repeat(64)}`;
+  topSetExplorerIdentity.snapshot_set_id = await snapshotSetId(topSetExplorerIdentity.snapshot_set_descriptor);
   await assert.rejects(
-    () => verifyLeaderboardSemantics(activeExplorerIdentity),
-    /active groups require snapshot evidence/,
+    () => verifyLeaderboardSemantics(topSetExplorerIdentity),
+    /top_set groups require snapshot evidence/,
   );
 
-  for (const state of ["preview", "shadow"] as const) {
-    const snapshotWithView = await previewLeaderboard(leaderboard);
-    snapshotWithView.ranking_groups[0].state = state;
-    snapshotWithView.snapshot_set_descriptor.ranking_group_snapshots[0].evidence_snapshot_id = `snapshot_${"a".repeat(64)}`;
-    snapshotWithView.ranking_groups[0].evidence_snapshot_id = `snapshot_${"a".repeat(64)}`;
-    snapshotWithView.snapshot_set_id = await snapshotSetId(snapshotWithView.snapshot_set_descriptor);
+  // A top_set claim (snapshot evidence) may never expose explorer views, in ANY
+  // published state — the rule keys on the claim, not the state.
+  for (const state of ["active", "preview", "shadow"] as const) {
+    const topSetWithView = structuredClone(leaderboard);
+    topSetWithView.ranking_groups[0].state = state;
+    topSetWithView.ranking_groups[0].explorer_views = [{ entries: [] }];
     await assert.rejects(
-      () => verifyLeaderboardSemantics(snapshotWithView),
-      /snapshot evidence/,
+      () => verifyLeaderboardSemantics(topSetWithView),
+      /top_set groups cannot expose explorer views/,
     );
-    snapshotWithView.ranking_groups[0].explorer_views = [];
-    await verifyLeaderboardSemantics(snapshotWithView);
+  }
+
+  // An explorer claim validates in ANY published state (state is decoupled from
+  // claim strength), but its evidence must be explorer_-prefixed.
+  for (const state of ["active", "preview", "shadow"] as const) {
+    const explorerGroup = await previewLeaderboard(leaderboard);
+    explorerGroup.ranking_groups[0].state = state;
+    await verifyLeaderboardSemantics(explorerGroup);
+
+    const snapshotEvidence = structuredClone(explorerGroup);
+    snapshotEvidence.snapshot_set_descriptor.ranking_group_snapshots[0].evidence_snapshot_id = `snapshot_${"a".repeat(64)}`;
+    snapshotEvidence.ranking_groups[0].evidence_snapshot_id = `snapshot_${"a".repeat(64)}`;
+    snapshotEvidence.snapshot_set_id = await snapshotSetId(snapshotEvidence.snapshot_set_descriptor);
+    await assert.rejects(
+      () => verifyLeaderboardSemantics(snapshotEvidence),
+      /explorer groups require explorer evidence/,
+    );
   }
 
   const explorerWithoutView = await previewLeaderboard(leaderboard);
@@ -872,6 +887,25 @@ test("read semantic verifiers reject the same leaderboard mutations as Python", 
   await assert.rejects(
     () => verifyLeaderboardSemantics(previewTopSet),
     /explorer views cannot claim top-set membership/,
+  );
+
+  // An explorer claim cannot carry a calibrated top-set member (group-level).
+  const explorerClaimsTopSet = await previewLeaderboard(leaderboard);
+  const claimEntry = structuredClone(explorerClaimsTopSet.ranking_groups[0].explorer_views[0].entries[0]);
+  claimEntry.ranking.in_top_set = true;
+  explorerClaimsTopSet.ranking_groups[0].entries = [claimEntry];
+  await assert.rejects(
+    () => verifyLeaderboardSemantics(explorerClaimsTopSet),
+    /explorer reads cannot claim top-set membership/,
+  );
+
+  // v2 rejection: a top_set claim must carry validated calibration and no gaps.
+  const topSetWithGaps = structuredClone(leaderboard);
+  topSetWithGaps.ranking_groups[0].eligibility_summary.calibration_status = "unvalidated";
+  topSetWithGaps.ranking_groups[0].eligibility_summary.gap_codes = ["calibration_unvalidated"];
+  await assert.rejects(
+    () => verifyLeaderboardSemantics(topSetWithGaps),
+    /top_set reads require validated calibration with no gaps/,
   );
 
   for (const [label, mutate, pattern] of [

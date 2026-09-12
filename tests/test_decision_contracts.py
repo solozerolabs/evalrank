@@ -1161,8 +1161,8 @@ def _offer_link() -> EvaluationToOfferLinkV1:
 
 def _query(**overrides) -> DecisionQueryV1:
     values = {
-        "cell_id": "code-generation",
-        "ranking_group_id": "rg-code-generation-model-configuration-direct-prompt-model-configuration-v1",
+        "cell_id": "coding-general",
+        "ranking_group_id": "rg-coding-general-model-configuration-direct-prompt-model-configuration-v1",
         "entity_kind": "model_configuration",
         "interaction_policy": "direct_prompt",
         "configuration_passport_class": "model-configuration-v1",
@@ -1217,7 +1217,7 @@ def _receipt_kwargs() -> dict:
         "query": _query(),
         "publication_snapshot": PublicationSnapshotRefV1(
             publication_snapshot_id="snapshot_" + HASH_B,
-            ranking_group_id="rg-code-generation-model-configuration-direct-prompt-model-configuration-v1",
+            ranking_group_id="rg-coding-general-model-configuration-direct-prompt-model-configuration-v1",
             manifest_version="2026-07-09.2",
             published_at="2026-07-09T00:00:00Z",
         ),

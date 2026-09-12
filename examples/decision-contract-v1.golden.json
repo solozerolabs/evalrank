@@ -14,8 +14,8 @@
     "input": {
       "object": "decision_query",
       "schema_version": "1",
-      "cell_id": "code-generation",
-      "ranking_group_id": "rg-code-generation-model-configuration-direct-prompt-model-configuration-v1",
+      "cell_id": "coding-general",
+      "ranking_group_id": "rg-coding-general-model-configuration-direct-prompt-model-configuration-v1",
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
@@ -52,7 +52,7 @@
       },
       "monthly_budget_microusd": 50000000
     },
-    "canonical": "{\"cell_id\":\"code-generation\",\"configuration_passport_class\":\"model-configuration-v1\",\"entity_kind\":\"model_configuration\",\"interaction_policy\":\"direct_prompt\",\"minimum_context_tokens\":32000,\"monthly_budget_microusd\":50000000,\"object\":\"decision_query\",\"objective\":\"lowest_cost_within_top_set\",\"provider_ids\":[\"provider-a\",\"provider-b\"],\"ranking_group_id\":\"rg-code-generation-model-configuration-direct-prompt-model-configuration-v1\",\"regions\":[\"eu-west\",\"us-west\"],\"schema_version\":\"1\",\"usage_profile\":{\"basis\":\"estimated\",\"cache_storage_token_seconds\":3600000000,\"cache_writes\":[{\"tokens\":5000000,\"ttl_seconds\":300}],\"cached_read_tokens\":5000000,\"output_tokens\":5000000,\"uncached_input_tokens\":10000000},\"zero_cache_sensitivity_usage_profile\":{\"basis\":\"estimated\",\"cache_storage_token_seconds\":0,\"cache_writes\":[],\"cached_read_tokens\":0,\"output_tokens\":5000000,\"uncached_input_tokens\":20000000}}"
+    "canonical": "{\"cell_id\":\"coding-general\",\"configuration_passport_class\":\"model-configuration-v1\",\"entity_kind\":\"model_configuration\",\"interaction_policy\":\"direct_prompt\",\"minimum_context_tokens\":32000,\"monthly_budget_microusd\":50000000,\"object\":\"decision_query\",\"objective\":\"lowest_cost_within_top_set\",\"provider_ids\":[\"provider-a\",\"provider-b\"],\"ranking_group_id\":\"rg-coding-general-model-configuration-direct-prompt-model-configuration-v1\",\"regions\":[\"eu-west\",\"us-west\"],\"schema_version\":\"1\",\"usage_profile\":{\"basis\":\"estimated\",\"cache_storage_token_seconds\":3600000000,\"cache_writes\":[{\"tokens\":5000000,\"ttl_seconds\":300}],\"cached_read_tokens\":5000000,\"output_tokens\":5000000,\"uncached_input_tokens\":10000000},\"zero_cache_sensitivity_usage_profile\":{\"basis\":\"estimated\",\"cache_storage_token_seconds\":0,\"cache_writes\":[],\"cached_read_tokens\":0,\"output_tokens\":5000000,\"uncached_input_tokens\":20000000}}"
   },
   "receipt": {
     "body": {
@@ -61,8 +61,8 @@
       "query": {
         "object": "decision_query",
         "schema_version": "1",
-        "cell_id": "code-generation",
-        "ranking_group_id": "rg-code-generation-model-configuration-direct-prompt-model-configuration-v1",
+        "cell_id": "coding-general",
+        "ranking_group_id": "rg-coding-general-model-configuration-direct-prompt-model-configuration-v1",
         "entity_kind": "model_configuration",
         "interaction_policy": "direct_prompt",
         "configuration_passport_class": "model-configuration-v1",
@@ -99,7 +99,7 @@
       },
       "publication_snapshot": {
         "publication_snapshot_id": "snapshot_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-        "ranking_group_id": "rg-code-generation-model-configuration-direct-prompt-model-configuration-v1",
+        "ranking_group_id": "rg-coding-general-model-configuration-direct-prompt-model-configuration-v1",
         "manifest_version": "2026-07-09.2",
         "published_at": "2026-07-09T00:00:00Z"
       },
@@ -454,8 +454,8 @@
       },
       "abstention_reason": null
     },
-    "body_sha256": "ea20662a931a2d5066a2ac7c8131a8e4ebd92b2e4e1395bd52e42fbfe2fa22ac",
-    "receipt_id": "receipt_ea20662a931a2d5066a2ac7c8131a8e4ebd92b2e4e1395bd52e42fbfe2fa22ac"
+    "body_sha256": "743cd9318f2eb262a312dcc601cfa3ec00b56411169561fad9f23caf361972a4",
+    "receipt_id": "receipt_743cd9318f2eb262a312dcc601cfa3ec00b56411169561fad9f23caf361972a4"
   },
   "rejection_vectors": [
     {
@@ -471,8 +471,8 @@
       "value": {
         "object": "decision_query",
         "schema_version": "1",
-        "cell_id": "code-generation",
-        "ranking_group_id": "rg-code-generation-model-configuration-direct-prompt-model-configuration-v1",
+        "cell_id": "coding-general",
+        "ranking_group_id": "rg-coding-general-model-configuration-direct-prompt-model-configuration-v1",
         "entity_kind": "model_configuration",
         "interaction_policy": "direct_prompt",
         "configuration_passport_class": "model-configuration-v1",

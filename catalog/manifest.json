@@ -7133,8 +7133,8 @@
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
-        "harness_code_license": null,
-        "task_data_license": null,
+        "harness_code_license": "MIT",
+        "task_data_license": "CC-BY-4.0",
         "commercial_use": "allowed",
         "result_redistribution": "allowed",
         "trajectory_redistribution": "allowed",

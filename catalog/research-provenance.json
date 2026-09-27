@@ -6770,16 +6770,35 @@
           "source_id": "paper",
           "kind": "primary_paper",
           "url": "https://arxiv.org/abs/2602.00933"
+        },
+        {
+          "source_id": "repository_license",
+          "kind": "official_repository",
+          "url": "https://github.com/scaleapi/mcp-atlas/blob/main/LICENSE"
+        },
+        {
+          "source_id": "dataset",
+          "kind": "official_dataset",
+          "url": "https://huggingface.co/datasets/ScaleAI/MCP-Atlas"
         }
       ],
       "claims": [
         {
+          "topic": "harness_code_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official repository licenses the benchmark code under MIT.",
+          "source_ids": [
+            "repository_license"
+          ]
+        },
+        {
           "topic": "task_data_license",
           "research_flag": null,
-          "basis": "owner_attestation",
-          "statement": "EvalRank has direct source-owner permission to ingest and use this source data independently of any separately published license metadata.",
+          "basis": "direct_source",
+          "statement": "The official MCP-Atlas dataset declares the CC-BY-4.0 license.",
           "source_ids": [
-            "leaderboard"
+            "dataset"
           ]
         },
         {

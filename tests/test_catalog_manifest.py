@@ -47,6 +47,7 @@ EXPECTED_FAMILY_IDS = (
     "swe-bench-live",
     "terminal-bench-2-1",
     "terminal-bench-4-0",
+    "livebench-agentic-coding",
     "swe-lancer",
     "swe-rebench",
     "liveswebench",
@@ -457,6 +458,31 @@ class CatalogManifestTests(unittest.TestCase):
             current["lineage"]["correlated_family_group"],
         )
 
+    def test_livebench_agentic_coding_feed_mirrors_reasoning_governance(self):
+        payload = manifest()
+        families = {row["benchmark_family_id"]: row for row in payload["benchmark_families"]}
+        feeds = {row["feed_id"]: row for row in payload["feeds"]}
+        current = feeds["livebench-agentic-coding-discovery"]
+        reasoning = feeds["livebench-reasoning-discovery"]
+
+        self.assertEqual("livebench-agentic-coding", current["benchmark_family_id"])
+        self.assertEqual("active", families["livebench-agentic-coding"]["state"])
+        self.assertEqual("active", current["state"])
+        # One LiveBench adapter reads the same release artifact pair; the feed picks the category.
+        self.assertEqual(reasoning["adapter_id"], current["adapter_id"])
+        self.assertEqual("livebench-official-html-artifact-set-v2", current["adapter_id"])
+        for key in ("metric_direction", "rights", "cadence", "retention", "lineage"):
+            with self.subTest(key=key):
+                self.assertEqual(reasoning[key], current[key])
+        self.assertEqual(["coding-general"], current["candidate_cells"])
+        self.assertEqual("agent_system", current["entity_kind"])
+        self.assertEqual("agentic", current["interaction_policy"])
+        self.assertEqual("agent-system-v1", current["configuration_passport_class"])
+        self.assertEqual(
+            ["rg-coding-general-agent-system-agentic-agent-system-v1"],
+            current["ranking_group_ids"],
+        )
+
     def test_manifest_is_the_exact_public_taxonomy(self):
         payload = manifest()
         cells = payload["cells"]
@@ -707,6 +733,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "arc-agi-2",
                 "deepswe",
                 "hle",
+                "livebench-agentic-coding",
                 "livebench-reasoning",
                 "livecodebench",
                 "mcp-atlas",
@@ -724,7 +751,7 @@ class CatalogManifestTests(unittest.TestCase):
             },
             active,
         )
-        self.assertEqual(98, len(families))
+        self.assertEqual(99, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -789,7 +816,7 @@ class CatalogManifestTests(unittest.TestCase):
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(110, len(feeds))
+        self.assertEqual(111, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_itbench_is_not_executable_without_exact_configuration_identity(self):
@@ -1205,6 +1232,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "frontiermath-v2-discovery": "higher",
                 "hle-discovery": "higher",
                 "itbench-discovery": "higher",
+                "livebench-agentic-coding-discovery": "higher",
                 "livebench-reasoning-discovery": "higher",
                 "livecodebench-discovery": "higher",
                 "mcp-atlas-discovery": "higher",

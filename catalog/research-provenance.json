@@ -871,6 +871,108 @@
       ]
     },
     {
+      "benchmark_family_id": "livebench-agentic-coding",
+      "checked_on": "2026-09-27",
+      "sources": [
+        {
+          "source_id": "repository",
+          "kind": "official_repository",
+          "url": "https://github.com/LiveBench/LiveBench"
+        },
+        {
+          "source_id": "leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://livebench.ai/"
+        },
+        {
+          "source_id": "table",
+          "kind": "official_dataset",
+          "url": "https://livebench.ai/table_2026_06_25.csv"
+        },
+        {
+          "source_id": "categories",
+          "kind": "official_dataset",
+          "url": "https://livebench.ai/categories_2026_06_25.json"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "version_status",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official application identifies 2026-06-25 as the current release and fetches its table and category artifacts as one pair; on 2026-09-27 the categories artifact names an Agentic Coding category (javascript, typescript, python tasks) and all 63 table rows score it.",
+          "source_ids": [
+            "leaderboard",
+            "table",
+            "categories"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank has direct source-owner permission to ingest and use this source data independently of any separately published license metadata.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes commercial use of this source data.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of this source data.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes use of the source environment for this feed.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes retention of fetched source artifacts.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes publication of rankings derived from this source data.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source.",
+          "source_ids": [
+            "repository"
+          ]
+        }
+      ]
+    },
+    {
       "benchmark_family_id": "swe-lancer",
       "checked_on": "2026-07-23",
       "sources": [

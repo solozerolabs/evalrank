@@ -1785,6 +1785,22 @@
       "quarantine_reason": "The newest model this leaderboard scores was released 2026-07-08 (81 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh."
     },
     {
+      "benchmark_family_id": "terminal-bench-4-0",
+      "display_name": "Terminal-Bench 4.0",
+      "candidate_cells": [
+        "coding-general"
+      ],
+      "entity_kinds": [
+        "agent_system"
+      ],
+      "state": "active",
+      "rank_eligible_count": null,
+      "correlation_status": "declared",
+      "correlated_family_group": "terminal-bench-2-1",
+      "research_flags": [],
+      "quarantine_reason": null
+    },
+    {
       "benchmark_family_id": "swe-lancer",
       "display_name": "SWE-Lancer",
       "candidate_cells": [
@@ -3577,6 +3593,55 @@
         "rg-coding-general-agent-system-agentic-agent-system-v1"
       ],
       "quarantine_reason": "The newest model this leaderboard scores was released 2026-07-08 (81 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh."
+    },
+    {
+      "feed_id": "terminal-bench-4-0-discovery",
+      "benchmark_family_id": "terminal-bench-4-0",
+      "adapter_id": "terminal-bench-4-0-official-hub-board-v1",
+      "metric_direction": "higher",
+      "candidate_cells": [
+        "coding-general"
+      ],
+      "entity_kind": "agent_system",
+      "interaction_policy": "agentic",
+      "configuration_passport_class": "agent-system-v1",
+      "state": "active",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": "Apache-2.0",
+        "task_data_license": "Apache-2.0",
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "validated",
+        "mode": "periodic",
+        "stale_after_seconds": 1209600,
+        "stop_recommending_after_seconds": 7776000,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": true,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "declared",
+        "task_lineage_id": "terminal-bench-4-0-tasks",
+        "environment_lineage_id": "harbor-4-0-environments",
+        "grader_lineage_id": "terminal-bench-4-0-graders",
+        "correlation_status": "declared",
+        "correlated_family_group": "terminal-bench-2-1"
+      },
+      "ranking_group_ids": [
+        "rg-coding-general-agent-system-agentic-agent-system-v1"
+      ],
+      "quarantine_reason": null
     },
     {
       "feed_id": "swe-lancer-discovery",

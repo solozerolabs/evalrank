@@ -46,6 +46,7 @@ EXPECTED_FAMILY_IDS = (
     "scicode",
     "swe-bench-live",
     "terminal-bench-2-1",
+    "terminal-bench-4-0",
     "swe-lancer",
     "swe-rebench",
     "liveswebench",
@@ -428,6 +429,34 @@ class CatalogManifestTests(unittest.TestCase):
         self.assertEqual(["coding-general"], feed["candidate_cells"])
         self.assertTrue(feed["retention"]["store_artifact_bytes"])
 
+    def test_terminal_bench_4_0_feed_mirrors_2_1_governance_on_the_board_adapter(self):
+        payload = manifest()
+        feeds = {row["feed_id"]: row for row in payload["feeds"]}
+        current = feeds["terminal-bench-4-0-discovery"]
+        previous = feeds["terminal-bench-2-1-discovery"]
+
+        self.assertEqual("terminal-bench-4-0-official-hub-board-v1", current["adapter_id"])
+        self.assertEqual("active", current["state"])
+        self.assertEqual("quarantined", previous["state"])
+        for key in (
+            "metric_direction",
+            "candidate_cells",
+            "entity_kind",
+            "interaction_policy",
+            "configuration_passport_class",
+            "rights",
+            "cadence",
+            "retention",
+            "ranking_group_ids",
+        ):
+            with self.subTest(key=key):
+                self.assertEqual(previous[key], current[key])
+        # One benchmark lineage: both versions count as one independent family.
+        self.assertEqual(
+            previous["lineage"]["correlated_family_group"],
+            current["lineage"]["correlated_family_group"],
+        )
+
     def test_manifest_is_the_exact_public_taxonomy(self):
         payload = manifest()
         cells = payload["cells"]
@@ -683,6 +712,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "mcp-atlas",
                 "scicode",
                 "simpleqa-verified",
+                "terminal-bench-4-0",
                 "webdev-arena",
                 "mteb-beir",
                 "mteb-eng-v2",
@@ -694,7 +724,7 @@ class CatalogManifestTests(unittest.TestCase):
             },
             active,
         )
-        self.assertEqual(97, len(families))
+        self.assertEqual(98, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -739,6 +769,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "browsecomp-plus": "browsecomp",
                 "browsecomp": "browsecomp",
                 "terminal-bench-2-1": "terminal-bench-2-1",
+                "terminal-bench-4-0": "terminal-bench-2-1",
                 "scicode": "scicode",
                 "arc-agi-2": "arc-agi-2",
                 "frontiermath-v2": "frontiermath",
@@ -758,7 +789,7 @@ class CatalogManifestTests(unittest.TestCase):
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(109, len(feeds))
+        self.assertEqual(110, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_itbench_is_not_executable_without_exact_configuration_identity(self):
@@ -1183,6 +1214,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "tau2-bench-discovery": "higher",
                 "tau-voice-discovery": "higher",
                 "terminal-bench-2-1-discovery": "higher",
+                "terminal-bench-4-0-discovery": "higher",
                 "theagentcompany-discovery": "higher",
                 "video-mme-discovery": "higher",
                 "webdev-arena-discovery": "higher",

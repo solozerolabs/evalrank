@@ -719,6 +719,158 @@
       ]
     },
     {
+      "benchmark_family_id": "terminal-bench-4-0",
+      "checked_on": "2026-09-27",
+      "sources": [
+        {
+          "source_id": "release",
+          "kind": "official_site",
+          "url": "https://www.tbench.ai/news/terminal-bench-4-0"
+        },
+        {
+          "source_id": "leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://www.tbench.ai/leaderboard/terminal-bench/4.0"
+        },
+        {
+          "source_id": "hub_dataset",
+          "kind": "official_dataset",
+          "url": "https://hub.harborframework.com/datasets/terminal-bench/terminal-bench/4"
+        },
+        {
+          "source_id": "hub_terms",
+          "kind": "official_site",
+          "url": "https://hub.harborframework.com/terms"
+        },
+        {
+          "source_id": "repository",
+          "kind": "official_repository",
+          "url": "https://github.com/harbor-framework/terminal-bench"
+        },
+        {
+          "source_id": "release_tag",
+          "kind": "official_repository",
+          "url": "https://github.com/harbor-framework/terminal-bench/releases/tag/v4.0.0"
+        },
+        {
+          "source_id": "repository_license",
+          "kind": "official_repository",
+          "url": "https://github.com/harbor-framework/terminal-bench/blob/v4.0.0/LICENSE"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official Terminal-Bench 4.0 leaderboard scores agent and model configurations on the Terminal-Bench 4.0 dataset, whose task set is the repository release tag v4.0.0 and the Harbor Hub dataset terminal-bench/terminal-bench@4.0.0.",
+          "source_ids": [
+            "release",
+            "leaderboard",
+            "hub_dataset",
+            "release_tag"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "On 2026-09-27, EvalRank's exact-byte probe of the anonymous leaderboard-read response for board terminal-bench/terminal-bench 4-0-0 (SHA-256 293e2aaec553a10dba5d12d0cbaebfdcbadfaa274569206dfdee40046cfed62a) found 27 display rows scoring dataset version 1922072f-a433-429a-8929-350d5e1bcf02, each with 330 trials over the 66 tasks at repository commit 452bf305c6daa62fc59061d22133a7cbc7c1572e, and every reported accuracy equal to its successes over trials. No row links a pull request and the repository holds no result submissions, so the adapter reads the board alone.",
+          "source_ids": [
+            "leaderboard",
+            "hub_dataset",
+            "release_tag"
+          ]
+        },
+        {
+          "topic": "version_status",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Terminal-Bench is a continuous, semantically versioned benchmark; 4.0 changed task resources and removed saturated tasks, breaking changes that require re-running trials, so 4.0 scores are not comparable with earlier versions.",
+          "source_ids": [
+            "release"
+          ]
+        },
+        {
+          "topic": "harness_code_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official repository licenses the Terminal-Bench 4.0 code under Apache-2.0 at release tag v4.0.0.",
+          "source_ids": [
+            "repository_license"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official repository's Apache-2.0 license covers the Terminal-Bench 4.0 tasks published under tasks/ at release tag v4.0.0.",
+          "source_ids": [
+            "release_tag",
+            "repository_license"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Apache-2.0 grants use and distribution rights without a noncommercial restriction.",
+          "source_ids": [
+            "repository_license"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official repository publishes the Harbor task environment definitions for Terminal-Bench 4.0 under Apache-2.0.",
+          "source_ids": [
+            "repository",
+            "repository_license"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The Terminal-Bench 4.0 scores are published only on the Harbor Hub leaderboard, not in the Apache-2.0 repository, and the Hub Terms of Service grant no third-party license to them; EvalRank's owner extended the direct source-owner permission recorded for Terminal-Bench 2.1 (same publisher, same anonymous endpoint) to redistribution of independently produced 4.0 result records on 2026-09-27.",
+          "source_ids": [
+            "leaderboard",
+            "hub_terms"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission, extended from Terminal-Bench 2.1 by EvalRank's owner on 2026-09-27, authorizes redistribution of trajectories associated with this source.",
+          "source_ids": [
+            "release"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The Terminal-Bench 4.0 scores are published only on the Harbor Hub leaderboard, not in the Apache-2.0 repository, and the Hub Terms of Service grant no third-party license to them; EvalRank's owner extended the direct source-owner permission recorded for Terminal-Bench 2.1 to retaining the exact leaderboard response bytes on 2026-09-27.",
+          "source_ids": [
+            "leaderboard",
+            "hub_terms"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The Terminal-Bench 4.0 scores are published only on the Harbor Hub leaderboard, not in the Apache-2.0 repository, and the Hub Terms of Service grant no third-party license to them; EvalRank's owner extended the direct source-owner permission recorded for Terminal-Bench 2.1 to publishing independently derived scores on 2026-09-27.",
+          "source_ids": [
+            "leaderboard",
+            "hub_terms"
+          ]
+        }
+      ]
+    },
+    {
       "benchmark_family_id": "swe-lancer",
       "checked_on": "2026-07-23",
       "sources": [

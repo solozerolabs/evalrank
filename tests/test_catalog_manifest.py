@@ -674,6 +674,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "hle",
                 "livebench-reasoning",
                 "livecodebench",
+                "mcp-atlas",
                 "scicode",
                 "simpleqa-verified",
                 "tau2-bench",
@@ -751,6 +752,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "mteb-rar-b": "mteb-rar-b",
                 "mteb-multilingual-v2": "mteb-multilingual-v2",
                 "lmarena-creative-writing": "lmarena-creative-writing",
+                "mcp-atlas": "mcp-atlas",
             },
             declared_correlations,
         )
@@ -856,7 +858,7 @@ class CatalogManifestTests(unittest.TestCase):
                 self.assertEqual([cell_id], family["candidate_cells"])
                 self.assertEqual([cell_id], feed["candidate_cells"])
                 self.assertEqual([group_id], feed["ranking_group_ids"])
-                if family_id not in {"agents-last-exam", "deepswe"}:
+                if family_id not in {"agents-last-exam", "deepswe", "mcp-atlas"}:
                     self.assertEqual("discovered", family["state"])
                     self.assertEqual("discovered", feed["state"])
                     self.assertIsNone(feed["adapter_id"])
@@ -1172,6 +1174,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "itbench-discovery": "higher",
                 "livebench-reasoning-discovery": "higher",
                 "livecodebench-discovery": "higher",
+                "mcp-atlas-discovery": "higher",
                 "scicode-discovery": "higher",
                 "simpleqa-verified-discovery": "higher",
                 "swe-bench-live-discovery": "higher",

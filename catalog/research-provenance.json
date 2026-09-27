@@ -706,6 +706,15 @@
           "source_ids": [
             "release"
           ]
+        },
+        {
+          "topic": "quarantine_reason",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The newest model this leaderboard scores was released 2026-07-08 (81 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh.",
+          "source_ids": [
+            "release"
+          ]
         }
       ]
     },
@@ -1231,6 +1240,15 @@
           "research_flag": null,
           "basis": "owner_attestation",
           "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "quarantine_reason",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The newest model this leaderboard scores was released 2026-07-24 (65 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh.",
           "source_ids": [
             "repository"
           ]
@@ -2420,6 +2438,15 @@
           "source_ids": [
             "site"
           ]
+        },
+        {
+          "topic": "quarantine_reason",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "This leaderboard scores no current catalog model, while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh.",
+          "source_ids": [
+            "site"
+          ]
         }
       ]
     },
@@ -2756,6 +2783,15 @@
           "source_ids": [
             "repository"
           ]
+        },
+        {
+          "topic": "quarantine_reason",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The newest model this leaderboard scores was released 2025-09-29 (363 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh.",
+          "source_ids": [
+            "repository"
+          ]
         }
       ]
     },
@@ -3013,6 +3049,15 @@
           "research_flag": null,
           "basis": "owner_attestation",
           "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source.",
+          "source_ids": [
+            "site"
+          ]
+        },
+        {
+          "topic": "quarantine_reason",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The newest model this leaderboard scores was released 2026-05-27 (123 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh.",
           "source_ids": [
             "site"
           ]
@@ -5220,6 +5265,15 @@
           "source_ids": [
             "repository"
           ]
+        },
+        {
+          "topic": "quarantine_reason",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The newest model this leaderboard scores was released 2025-02-01 (603 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh.",
+          "source_ids": [
+            "repository"
+          ]
         }
       ]
     },
@@ -7053,6 +7107,15 @@
           "research_flag": null,
           "basis": "owner_attestation",
           "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source.",
+          "source_ids": [
+            "site"
+          ]
+        },
+        {
+          "topic": "quarantine_reason",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The newest model this leaderboard scores was released 2026-07-09 (80 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh.",
           "source_ids": [
             "site"
           ]

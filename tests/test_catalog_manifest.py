@@ -662,26 +662,27 @@ class CatalogManifestTests(unittest.TestCase):
                 "swe-bench-verified",
                 "swe-bench-pro",
                 "steel-current-composites",
+                # Rosters trail the live frontier (newest scored model > 45 days, 2026-09-27).
+                "agents-last-exam",
+                "frontiermath-v2",
+                "tau2-bench",
+                "tau-voice",
+                "terminal-bench-2-1",
+                "theagentcompany",
+                "video-mme",
             },
             quarantined,
         )
         self.assertEqual(
             {
-                "agents-last-exam",
                 "arc-agi-2",
                 "deepswe",
-                "frontiermath-v2",
                 "hle",
                 "livebench-reasoning",
                 "livecodebench",
                 "mcp-atlas",
                 "scicode",
                 "simpleqa-verified",
-                "tau2-bench",
-                "tau-voice",
-                "terminal-bench-2-1",
-                "theagentcompany",
-                "video-mme",
                 "webdev-arena",
                 "mteb-beir",
                 "mteb-eng-v2",
@@ -879,9 +880,10 @@ class CatalogManifestTests(unittest.TestCase):
             with self.subTest(family_id=family_id):
                 family = families[family_id]
                 feed = feeds[family_id]
-                # v2: now published (active); evidence fields unchanged.
-                self.assertEqual("active", family["state"])
-                self.assertEqual("active", feed["state"])
+                # agents-last-exam is quarantined as stale (roster trails the frontier).
+                expected_state = "quarantined" if family_id == "agents-last-exam" else "active"
+                self.assertEqual(expected_state, family["state"])
+                self.assertEqual(expected_state, feed["state"])
                 self.assertEqual(adapter_id, feed["adapter_id"])
                 self.assertEqual("higher", feed["metric_direction"])
                 self.assertIsNone(feed["rank_eligible_count"])
@@ -906,7 +908,7 @@ class CatalogManifestTests(unittest.TestCase):
                 self.assertEqual("unknown", feed["lineage"]["correlation_status"])
                 self.assertIsNone(feed["lineage"]["correlated_family_group"])
 
-    def test_tau2_feeds_are_active_published(self):
+    def test_tau2_feeds_are_quarantined_as_stale(self):
         payload = manifest()
         families = {row["benchmark_family_id"]: row for row in payload["benchmark_families"]}
         feeds = {row["benchmark_family_id"]: row for row in payload["feeds"]}
@@ -919,10 +921,10 @@ class CatalogManifestTests(unittest.TestCase):
             with self.subTest(family_id=family_id):
                 family = families[family_id]
                 feed = feeds[family_id]
-                # v2: publication decoupled from validation — now active while
-                # keeping their declared correlation lineage.
-                self.assertEqual("active", family["state"])
-                self.assertEqual("active", feed["state"])
+                # Roster trails the live frontier (2026-09-27): withdrawn, evidence kept.
+                self.assertEqual("quarantined", family["state"])
+                self.assertEqual("quarantined", feed["state"])
+                self.assertIn("trails the live model landscape", feed["quarantine_reason"])
                 self.assertEqual(adapter_id, feed["adapter_id"])
                 self.assertEqual("higher", feed["metric_direction"])
                 self.assertIsNone(feed["rank_eligible_count"])

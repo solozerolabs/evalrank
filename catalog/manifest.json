@@ -378,7 +378,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "claim_ceiling": "single_winner",
       "eligibility": {
@@ -412,7 +412,7 @@
           "stable_top_set_required": true
         }
       },
-      "quarantine_reason": null
+      "quarantine_reason": "Its only feed (tau2-bench) is quarantined: the leaderboard's roster trails the live model landscape."
     },
     {
       "ranking_group_id": "rg-function-calling-model-configuration-direct-prompt-model-configuration-v1",
@@ -1777,12 +1777,12 @@
       "entity_kinds": [
         "agent_system"
       ],
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "terminal-bench-2-1",
       "research_flags": [],
-      "quarantine_reason": null
+      "quarantine_reason": "The newest model this leaderboard scores was released 2026-07-08 (81 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh."
     },
     {
       "benchmark_family_id": "swe-lancer",
@@ -1874,12 +1874,12 @@
       "entity_kinds": [
         "agent_system"
       ],
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "tau2",
       "research_flags": [],
-      "quarantine_reason": null
+      "quarantine_reason": "The newest model this leaderboard scores was released 2026-07-24 (65 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh."
     },
     {
       "benchmark_family_id": "mcp-universe",
@@ -2119,12 +2119,12 @@
       "entity_kinds": [
         "agent_system"
       ],
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "tau2",
       "research_flags": [],
-      "quarantine_reason": null
+      "quarantine_reason": "This leaderboard scores no current catalog model, while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh."
     },
     {
       "benchmark_family_id": "crmarena-pro-service",
@@ -2183,12 +2183,12 @@
       "entity_kinds": [
         "agent_system"
       ],
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "theagentcompany",
       "research_flags": [],
-      "quarantine_reason": null
+      "quarantine_reason": "The newest model this leaderboard scores was released 2025-09-29 (363 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh."
     },
     {
       "benchmark_family_id": "gaia2-are",
@@ -2231,12 +2231,12 @@
       "entity_kinds": [
         "model_configuration"
       ],
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "frontiermath",
       "research_flags": [],
-      "quarantine_reason": null
+      "quarantine_reason": "The newest model this leaderboard scores was released 2026-05-27 (123 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh."
     },
     {
       "benchmark_family_id": "putnambench",
@@ -2658,12 +2658,12 @@
       "entity_kinds": [
         "model_configuration"
       ],
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "video-mme",
       "research_flags": [],
-      "quarantine_reason": null
+      "quarantine_reason": "The newest model this leaderboard scores was released 2025-02-01 (603 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh."
     },
     {
       "benchmark_family_id": "webdev-arena",
@@ -2964,12 +2964,12 @@
       "entity_kinds": [
         "system_configuration"
       ],
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "correlation_status": "unknown",
       "correlated_family_group": null,
       "research_flags": [],
-      "quarantine_reason": null
+      "quarantine_reason": "The newest model this leaderboard scores was released 2026-07-09 (80 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh."
     },
     {
       "benchmark_family_id": "automationbench",
@@ -3540,7 +3540,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -3576,7 +3576,7 @@
       "ranking_group_ids": [
         "rg-coding-general-agent-system-agentic-agent-system-v1"
       ],
-      "quarantine_reason": null
+      "quarantine_reason": "The newest model this leaderboard scores was released 2026-07-08 (81 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh."
     },
     {
       "feed_id": "swe-lancer-discovery",
@@ -3835,7 +3835,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -3872,7 +3872,7 @@
         "rg-function-calling-agent-system-agentic-agent-system-v1",
         "rg-customer-support-agent-system-agentic-agent-system-v1"
       ],
-      "quarantine_reason": null
+      "quarantine_reason": "The newest model this leaderboard scores was released 2026-07-24 (65 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh."
     },
     {
       "feed_id": "mcp-universe-discovery",
@@ -4622,7 +4622,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -4658,7 +4658,7 @@
       "ranking_group_ids": [
         "rg-customer-support-agent-system-agentic-agent-system-v1"
       ],
-      "quarantine_reason": null
+      "quarantine_reason": "This leaderboard scores no current catalog model, while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh."
     },
     {
       "feed_id": "crmarena-pro-service-discovery",
@@ -4818,7 +4818,7 @@
       "entity_kind": "agent_system",
       "interaction_policy": "agentic",
       "configuration_passport_class": "agent-system-v1",
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -4854,7 +4854,7 @@
       "ranking_group_ids": [
         "rg-enterprise-crm-workflow-agent-system-agentic-agent-system-v1"
       ],
-      "quarantine_reason": null
+      "quarantine_reason": "The newest model this leaderboard scores was released 2025-09-29 (363 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh."
     },
     {
       "feed_id": "gaia2-are-discovery",
@@ -4965,7 +4965,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -5001,7 +5001,7 @@
       "ranking_group_ids": [
         "rg-math-reasoning-model-configuration-direct-prompt-model-configuration-v1"
       ],
-      "quarantine_reason": null
+      "quarantine_reason": "The newest model this leaderboard scores was released 2026-05-27 (123 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh."
     },
     {
       "feed_id": "putnambench-discovery",
@@ -6296,7 +6296,7 @@
       "entity_kind": "model_configuration",
       "interaction_policy": "direct_prompt",
       "configuration_passport_class": "model-configuration-v1",
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -6332,7 +6332,7 @@
       "ranking_group_ids": [
         "rg-vision-multimodal-model-configuration-direct-prompt-model-configuration-v1"
       ],
-      "quarantine_reason": null
+      "quarantine_reason": "The newest model this leaderboard scores was released 2025-02-01 (603 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh."
     },
     {
       "feed_id": "webdev-arena-discovery",
@@ -7325,7 +7325,7 @@
       "entity_kind": "system_configuration",
       "interaction_policy": "system",
       "configuration_passport_class": "system-configuration-v1",
-      "state": "active",
+      "state": "quarantined",
       "rank_eligible_count": null,
       "rights": {
         "status": "approved",
@@ -7361,7 +7361,7 @@
       "ranking_group_ids": [
         "rg-professional-deliverable-creation-system-configuration-system-system-configuration-v1"
       ],
-      "quarantine_reason": null
+      "quarantine_reason": "The newest model this leaderboard scores was released 2026-07-09 (80 days before 2026-09-27), while the frontier moved monthly (Sep 2026: GPT-6 Astra, Claude Fable 5.1, GLM 5.3, Qwen3.8); its evidence trails the live model landscape, so the feed is withdrawn from runtime refresh."
     },
     {
       "feed_id": "automationbench-discovery",

@@ -3684,22 +3684,22 @@
         "derived_score_publication": "allowed"
       },
       "cadence": {
-        "status": "unvalidated",
-        "mode": null,
-        "stale_after_seconds": null,
-        "stop_recommending_after_seconds": null,
+        "status": "validated",
+        "mode": "periodic",
+        "stale_after_seconds": 1209600,
+        "stop_recommending_after_seconds": 7776000,
         "as_of": null,
         "upstream_version": null
       },
       "retention": {
-        "store_artifact_bytes": false,
+        "store_artifact_bytes": true,
         "maximum_days": null
       },
       "lineage": {
-        "validation_status": "unknown",
-        "task_lineage_id": null,
-        "environment_lineage_id": null,
-        "grader_lineage_id": null,
+        "validation_status": "declared",
+        "task_lineage_id": "livebench-agentic-coding-tasks",
+        "environment_lineage_id": "livebench-agentic-coding-environments",
+        "grader_lineage_id": "livebench-agentic-coding-graders",
         "correlation_status": "unknown",
         "correlated_family_group": null
       },
@@ -6832,22 +6832,22 @@
         "derived_score_publication": "allowed"
       },
       "cadence": {
-        "status": "unvalidated",
-        "mode": null,
-        "stale_after_seconds": null,
-        "stop_recommending_after_seconds": null,
+        "status": "validated",
+        "mode": "periodic",
+        "stale_after_seconds": 1209600,
+        "stop_recommending_after_seconds": 7776000,
         "as_of": null,
         "upstream_version": null
       },
       "retention": {
-        "store_artifact_bytes": false,
+        "store_artifact_bytes": true,
         "maximum_days": null
       },
       "lineage": {
-        "validation_status": "unknown",
-        "task_lineage_id": null,
-        "environment_lineage_id": null,
-        "grader_lineage_id": null,
+        "validation_status": "declared",
+        "task_lineage_id": "livebench-reasoning-tasks",
+        "environment_lineage_id": "livebench-reasoning-environments",
+        "grader_lineage_id": "livebench-reasoning-graders",
         "correlation_status": "unknown",
         "correlated_family_group": null
       },

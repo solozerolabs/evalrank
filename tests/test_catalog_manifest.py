@@ -471,9 +471,39 @@ class CatalogManifestTests(unittest.TestCase):
         # One LiveBench adapter reads the same release artifact pair; the feed picks the category.
         self.assertEqual(reasoning["adapter_id"], current["adapter_id"])
         self.assertEqual("livebench-official-html-artifact-set-v2", current["adapter_id"])
-        for key in ("metric_direction", "rights", "cadence", "retention", "lineage"):
+        for key in ("metric_direction", "rights", "cadence", "retention"):
             with self.subTest(key=key):
                 self.assertEqual(reasoning[key], current[key])
+        # Both LiveBench feeds are scheduler-refreshable: validated periodic cadence
+        # (14d stale / 90d stop recommending, measured from the last successful
+        # re-verification), retained bytes, and per-category declared lineage.
+        for feed in (reasoning, current):
+            family_id = feed["benchmark_family_id"]
+            with self.subTest(feed_id=feed["feed_id"]):
+                self.assertEqual("allowed", feed["rights"]["artifact_retention"])
+                self.assertEqual(
+                    {
+                        "status": "validated",
+                        "mode": "periodic",
+                        "stale_after_seconds": 1_209_600,
+                        "stop_recommending_after_seconds": 7_776_000,
+                        "as_of": None,
+                        "upstream_version": None,
+                    },
+                    feed["cadence"],
+                )
+                self.assertTrue(feed["retention"]["store_artifact_bytes"])
+                self.assertEqual(
+                    {
+                        "validation_status": "declared",
+                        "task_lineage_id": f"{family_id}-tasks",
+                        "environment_lineage_id": f"{family_id}-environments",
+                        "grader_lineage_id": f"{family_id}-graders",
+                        "correlation_status": "unknown",
+                        "correlated_family_group": None,
+                    },
+                    feed["lineage"],
+                )
         self.assertEqual(["coding-general"], current["candidate_cells"])
         self.assertEqual("agent_system", current["entity_kind"])
         self.assertEqual("agentic", current["interaction_policy"])

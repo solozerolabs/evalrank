@@ -720,7 +720,7 @@
     },
     {
       "benchmark_family_id": "terminal-bench-4-0",
-      "checked_on": "2026-09-27",
+      "checked_on": "2026-09-28",
       "sources": [
         {
           "source_id": "release",
@@ -756,6 +756,11 @@
           "source_id": "repository_license",
           "kind": "official_repository",
           "url": "https://github.com/harbor-framework/terminal-bench/blob/v4.0.0/LICENSE"
+        },
+        {
+          "source_id": "vals_leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://www.vals.ai/benchmarks/terminal-bench-4"
         }
       ],
       "claims": [
@@ -833,39 +838,63 @@
           "topic": "result_redistribution",
           "research_flag": null,
           "basis": "owner_attestation",
-          "statement": "The Terminal-Bench 4.0 scores are published only on the Harbor Hub leaderboard, not in the Apache-2.0 repository, and the Hub Terms of Service grant no third-party license to them; EvalRank's owner extended the direct source-owner permission recorded for Terminal-Bench 2.1 (same publisher, same anonymous endpoint) to redistribution of independently produced 4.0 result records on 2026-09-27.",
+          "statement": "The Terminal-Bench 4.0 scores are published only on the Harbor Hub leaderboard, not in the Apache-2.0 repository, and the Hub Terms of Service grant no third-party license to them; EvalRank's owner extended the direct source-owner permission recorded for Terminal-Bench 2.1 (same publisher, same anonymous endpoint) to redistribution of independently produced 4.0 result records on 2026-09-27. For the Vals AI Terminus 2 leaderboard, EvalRank's owner ruled on 2026-09-28 that EvalRank holds direct source-owner permission covering the same use.",
           "source_ids": [
             "leaderboard",
-            "hub_terms"
+            "hub_terms",
+            "vals_leaderboard"
           ]
         },
         {
           "topic": "trajectory_redistribution",
           "research_flag": null,
           "basis": "owner_attestation",
-          "statement": "Direct source-owner permission, extended from Terminal-Bench 2.1 by EvalRank's owner on 2026-09-27, authorizes redistribution of trajectories associated with this source.",
+          "statement": "Direct source-owner permission, extended from Terminal-Bench 2.1 by EvalRank's owner on 2026-09-27, authorizes redistribution of trajectories associated with this source. For the Vals AI Terminus 2 leaderboard, EvalRank's owner ruled on 2026-09-28 that EvalRank holds direct source-owner permission covering the same use.",
           "source_ids": [
-            "release"
+            "release",
+            "vals_leaderboard"
           ]
         },
         {
           "topic": "artifact_retention",
           "research_flag": null,
           "basis": "owner_attestation",
-          "statement": "The Terminal-Bench 4.0 scores are published only on the Harbor Hub leaderboard, not in the Apache-2.0 repository, and the Hub Terms of Service grant no third-party license to them; EvalRank's owner extended the direct source-owner permission recorded for Terminal-Bench 2.1 to retaining the exact leaderboard response bytes on 2026-09-27.",
+          "statement": "The Terminal-Bench 4.0 scores are published only on the Harbor Hub leaderboard, not in the Apache-2.0 repository, and the Hub Terms of Service grant no third-party license to them; EvalRank's owner extended the direct source-owner permission recorded for Terminal-Bench 2.1 to retaining the exact leaderboard response bytes on 2026-09-27. For the Vals AI Terminus 2 leaderboard, EvalRank's owner ruled on 2026-09-28 that EvalRank holds direct source-owner permission covering the same use.",
           "source_ids": [
             "leaderboard",
-            "hub_terms"
+            "hub_terms",
+            "vals_leaderboard"
           ]
         },
         {
           "topic": "derived_score_publication",
           "research_flag": null,
           "basis": "owner_attestation",
-          "statement": "The Terminal-Bench 4.0 scores are published only on the Harbor Hub leaderboard, not in the Apache-2.0 repository, and the Hub Terms of Service grant no third-party license to them; EvalRank's owner extended the direct source-owner permission recorded for Terminal-Bench 2.1 to publishing independently derived scores on 2026-09-27.",
+          "statement": "The Terminal-Bench 4.0 scores are published only on the Harbor Hub leaderboard, not in the Apache-2.0 repository, and the Hub Terms of Service grant no third-party license to them; EvalRank's owner extended the direct source-owner permission recorded for Terminal-Bench 2.1 to publishing independently derived scores on 2026-09-27. For the Vals AI Terminus 2 leaderboard, EvalRank's owner ruled on 2026-09-28 that EvalRank holds direct source-owner permission covering the same use.",
           "source_ids": [
             "leaderboard",
-            "hub_terms"
+            "hub_terms",
+            "vals_leaderboard"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The 2026-09-28 EvalRank catalog audit found that the Vals AI Terminal-Bench 4.0 leaderboard runs every model under one fixed harness (Terminus 2) and scores 37 models, while the official Hub board holds vendor-submitted rows across 4 different harnesses (Claude Code, Codex, Grok Build, mini-SWE-agent) for 15 models. Each Vals row is a model driven by one fixed agentic harness, so it resolves to the same agent-system identity as the Hub feed; both feeds read the same Terminal-Bench 4.0 task, environment and grader lineage.",
+          "source_ids": [
+            "vals_leaderboard",
+            "leaderboard"
+          ]
+        },
+        {
+          "topic": "quarantine_reason",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "Vendor-submitted rows across 4 different harnesses (Claude Code, Codex, Grok Build, mini-SWE-agent), 15 models; replaced by terminal-bench-4-0-vals-discovery (one harness for all, 37 models) (2026-09-28 audit).",
+          "source_ids": [
+            "leaderboard",
+            "vals_leaderboard"
           ]
         }
       ]
@@ -973,6 +1002,114 @@
       ]
     },
     {
+      "benchmark_family_id": "frontiercode",
+      "checked_on": "2026-09-28",
+      "sources": [
+        {
+          "source_id": "site",
+          "kind": "official_site",
+          "url": "https://cognition.com/frontiercode"
+        },
+        {
+          "source_id": "epoch_hub",
+          "kind": "official_site",
+          "url": "https://epoch.ai/benchmarks/use-this-data"
+        },
+        {
+          "source_id": "epoch_data",
+          "kind": "official_dataset",
+          "url": "https://epoch.ai/data/benchmark_data.zip"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "harness_code_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The Epoch AI hub distributes result data only; no harness code ships with this feed, so the recorded value marks the field not applicable to the hub data view.",
+          "source_ids": [
+            "epoch_hub"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Epoch AI publishes its benchmark data hub under CC-BY-4.0 with per-source license pass-through, covering the FrontierCode results distributed as the frontiercode_external.csv member of benchmark_data.zip.",
+          "source_ids": [
+            "epoch_hub",
+            "epoch_data"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "CC-BY-4.0 grants use and distribution rights without a noncommercial restriction.",
+          "source_ids": [
+            "epoch_hub"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "CC-BY-4.0 permits redistribution of the published benchmark data with attribution, so ingested result records may be redistributed.",
+          "source_ids": [
+            "epoch_hub",
+            "epoch_data"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The hub data view involves no execution environment; ingesting the published CC-BY-4.0 data imposes no additional environment terms.",
+          "source_ids": [
+            "epoch_hub"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "CC-BY-4.0 grants reproduction rights for the published data, permitting retained copies with attribution.",
+          "source_ids": [
+            "epoch_hub",
+            "epoch_data"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "CC-BY-4.0 grants public display and distribution rights for the data and derivative material, permitting publication of independently derived scores with attribution.",
+          "source_ids": [
+            "epoch_hub"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The Epoch AI hub view republishes externally reported FrontierCode results (frontiercode_external.csv), one row per model under a named agent harness, so each row resolves to an agent system. No other catalog family shares its tasks, so its correlation stays unknown.",
+          "source_ids": [
+            "epoch_hub",
+            "epoch_data"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source.",
+          "source_ids": [
+            "site"
+          ]
+        }
+      ]
+    },
+    {
       "benchmark_family_id": "swe-lancer",
       "checked_on": "2026-07-23",
       "sources": [
@@ -1050,7 +1187,7 @@
     },
     {
       "benchmark_family_id": "swe-rebench",
-      "checked_on": "2026-07-23",
+      "checked_on": "2026-09-28",
       "sources": [
         {
           "source_id": "site",
@@ -1061,6 +1198,11 @@
           "source_id": "hf_dataset",
           "kind": "official_dataset",
           "url": "https://huggingface.co/datasets/nebius/SWE-rebench-leaderboard"
+        },
+        {
+          "source_id": "leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://swe-rebench.com"
         }
       ],
       "claims": [
@@ -1068,10 +1210,11 @@
           "topic": "version_status",
           "research_flag": null,
           "basis": "direct_source",
-          "statement": "Verified 2026-07-21: the CC-BY-4.0 Hugging Face dataset contains task instances rather than leaderboard scores, and the site leaderboard ships as embedded React Server Component state without a data contract, so no licensed score artifact exists and the feed stays unscheduled pending a granted permission request or a published score artifact.",
+          "statement": "Verified 2026-07-21: the CC-BY-4.0 Hugging Face dataset contains task instances rather than leaderboard scores, and the site leaderboard ships as embedded React Server Component state without a data contract, so no licensed score artifact exists and the feed stays unscheduled pending a granted permission request or a published score artifact. Superseded on 2026-09-28: EvalRank's owner ruled that EvalRank holds direct source-owner permission for this source, and the feed reads the leaderboard page.",
           "source_ids": [
             "hf_dataset",
-            "site"
+            "site",
+            "leaderboard"
           ]
         },
         {
@@ -1135,6 +1278,15 @@
           "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source.",
           "source_ids": [
             "site"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The swe-rebench.com leaderboard embeds per-model rows for a tools mode and a text mode; the feed reads the tools-mode rows only, where each row is a model driven by the leaderboard's own agent scaffold on fresh GitHub-issue tasks.",
+          "source_ids": [
+            "leaderboard"
           ]
         }
       ]
@@ -1724,6 +1876,106 @@
           "statement": "Direct source-owner permission authorizes publication of rankings derived from this source data.",
           "source_ids": [
             "repository"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source.",
+          "source_ids": [
+            "repository"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "tau3-banking-knowledge",
+      "checked_on": "2026-09-28",
+      "sources": [
+        {
+          "source_id": "repository",
+          "kind": "official_repository",
+          "url": "https://github.com/sierra-research/tau2-bench"
+        },
+        {
+          "source_id": "submissions",
+          "kind": "official_repository",
+          "url": "https://github.com/sierra-research/tau2-bench/tree/main/web/leaderboard/public/submissions"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "harness_code_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This feed ingests published leaderboard result JSON only; no harness code ships with the data view, so the field is not applicable to it.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The tau2-bench repository ships its leaderboard submission results under the repository's MIT LICENSE.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "MIT grants use and distribution rights without a noncommercial restriction.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "MIT permits redistribution of the published leaderboard results, so ingested result records may be redistributed.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This feed ingests published leaderboard result JSON only, involving no execution environment; the repository's MIT license imposes no additional environment terms.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "MIT grants reproduction rights for the published data, permitting retained copies.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "MIT grants public display and distribution rights for the data and derivative material, permitting publication of independently derived scores.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The feed reads the sierra-research/tau2-bench leaderboard submissions and keeps only text-modality results for the banking_knowledge domain. It shares the tau2 framework, user simulator and submission set with tau2-bench and tau-voice, so it declares correlated_family_group tau2 and is never counted as independent evidence against them.",
+          "source_ids": [
+            "repository",
+            "submissions"
           ]
         },
         {
@@ -3396,7 +3648,7 @@
     },
     {
       "benchmark_family_id": "hle",
-      "checked_on": "2026-07-23",
+      "checked_on": "2026-09-28",
       "sources": [
         {
           "source_id": "paper",
@@ -3499,12 +3751,21 @@
           "source_ids": [
             "paper"
           ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The 2026-09-28 EvalRank catalog audit removed the factuality cell from this family: Humanity's Last Exam measures expert recall and reasoning from memory, not grounding in supplied context. It stays in general-knowledge-qa and reasoning.",
+          "source_ids": [
+            "epoch_hub"
+          ]
         }
       ]
     },
     {
       "benchmark_family_id": "simpleqa-verified",
-      "checked_on": "2026-07-23",
+      "checked_on": "2026-09-28",
       "sources": [
         {
           "source_id": "paper",
@@ -3606,6 +3867,15 @@
           "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source.",
           "source_ids": [
             "paper"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The 2026-09-28 EvalRank catalog audit removed the factuality cell from this family: SimpleQA Verified measures short-form recall from memory, not grounding in supplied context, and agreed with FACTS Grounding at only 0.34 on shared models. It stays in general-knowledge-qa.",
+          "source_ids": [
+            "epoch_hub"
           ]
         }
       ]
@@ -3811,7 +4081,7 @@
     },
     {
       "benchmark_family_id": "facts-grounding-v2",
-      "checked_on": "2026-08-04",
+      "checked_on": "2026-09-28",
       "sources": [
         {
           "source_id": "release",
@@ -3822,6 +4092,11 @@
           "source_id": "kaggle-leaderboard",
           "kind": "official_leaderboard",
           "url": "https://www.kaggle.com/benchmarks/google/facts"
+        },
+        {
+          "source_id": "kaggle-api",
+          "kind": "official_leaderboard",
+          "url": "https://www.kaggle.com/api/v1/benchmarks/google/facts-grounding/leaderboard"
         }
       ],
       "claims": [
@@ -3898,6 +4173,15 @@
           ]
         },
         {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The Kaggle benchmarks API serves the FACTS Grounding leaderboard as JSON; the feed reads that endpoint, where a higher score means more responses fully grounded in the provided context document.",
+          "source_ids": [
+            "kaggle-api"
+          ]
+        },
+        {
           "topic": "research_flag",
           "research_flag": "aggregator-rights-by-attestation",
           "basis": "owner_attestation",
@@ -3905,6 +4189,105 @@
             "kaggle-leaderboard"
           ],
           "statement": "EvalRank holds direct permission, reported by the repo owner on 2026-08-04, from Kaggle to collect and use the public benchmark data published on its website. This permission is the sole basis for this field where those scores are concerned and overrides the access terms published on that website, which prohibit automated collection. It is not derived from any licence on the benchmark itself."
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "vectara-hhem",
+      "checked_on": "2026-09-28",
+      "sources": [
+        {
+          "source_id": "repository",
+          "kind": "official_repository",
+          "url": "https://github.com/vectara/hallucination-leaderboard"
+        },
+        {
+          "source_id": "repository_license",
+          "kind": "official_repository",
+          "url": "https://github.com/vectara/hallucination-leaderboard/blob/main/LICENSE"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The repository README publishes the leaderboard table (hallucination rate, factual consistency rate, answer rate, average summary length) for models summarizing supplied documents, scored by Vectara's HHEM-2.3 hallucination evaluation model; the feed reads the factual consistency rate, where higher is better.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "harness_code_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This feed ingests the published README leaderboard table only; no harness code ships with the data view, so the field is not applicable to it.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official repository, including the README leaderboard table, is licensed under Apache-2.0.",
+          "source_ids": [
+            "repository_license"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Apache-2.0 grants use and distribution rights without a noncommercial restriction.",
+          "source_ids": [
+            "repository_license"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Apache-2.0 permits redistribution of the published leaderboard results, so ingested result records may be redistributed.",
+          "source_ids": [
+            "repository_license"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "This feed ingests the published README table only, involving no execution environment; Apache-2.0 imposes no additional environment terms.",
+          "source_ids": [
+            "repository_license"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Apache-2.0 grants reproduction rights for the published data, permitting retained copies.",
+          "source_ids": [
+            "repository_license"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Apache-2.0 grants public display and distribution rights for the data and derivative works, permitting publication of independently derived scores.",
+          "source_ids": [
+            "repository_license"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source.",
+          "source_ids": [
+            "repository"
+          ]
         }
       ]
     },
@@ -7208,12 +7591,17 @@
     },
     {
       "benchmark_family_id": "toolathlon",
-      "checked_on": "2026-07-23",
+      "checked_on": "2026-09-28",
       "sources": [
         {
           "source_id": "repository",
           "kind": "official_repository",
           "url": "https://github.com/hkust-nlp/Toolathlon"
+        },
+        {
+          "source_id": "leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://toolathlon.xyz/docs/leaderboard.md"
         }
       ],
       "claims": [
@@ -7278,6 +7666,15 @@
           "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source.",
           "source_ids": [
             "repository"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official leaderboard document publishes a Toolathlon-Verified table, a major revision that starts a new official score series not comparable with earlier Toolathlon scores; the feed reads the Verified table only.",
+          "source_ids": [
+            "leaderboard"
           ]
         }
       ]
@@ -9166,7 +9563,7 @@
     },
     {
       "benchmark_family_id": "lmarena-creative-writing",
-      "checked_on": "2026-08-30",
+      "checked_on": "2026-09-28",
       "sources": [
         {
           "source_id": "release",
@@ -9260,6 +9657,226 @@
           "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source.",
           "source_ids": [
             "release"
+          ]
+        },
+        {
+          "topic": "quarantine_reason",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "Replaced by lmarena-instruction-following (2026-09-28 audit): the writing cell ranks brand-voice marketing/professional prose with length/tone/format constraints; the creative_writing category is fiction/poetry crowd votes, and among the top 40 models it agrees with instruction_following at only 0.69.",
+          "source_ids": [
+            "dataset"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "lmarena-instruction-following",
+      "checked_on": "2026-09-28",
+      "sources": [
+        {
+          "source_id": "release",
+          "kind": "official_site",
+          "url": "https://lmarena.ai/leaderboard/text"
+        },
+        {
+          "source_id": "dataset",
+          "kind": "official_dataset",
+          "url": "https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "harness_code_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The dataset distributes leaderboard rows only; no harness code ships with this feed, so the recorded value marks the field not applicable to the hub data view.",
+          "source_ids": [
+            "dataset"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official lmarena-ai leaderboard-dataset card declares the CC-BY-4.0 license, covering the published LMArena instruction-following leaderboard rows.",
+          "source_ids": [
+            "dataset"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "CC-BY-4.0 grants use and distribution rights without a noncommercial restriction.",
+          "source_ids": [
+            "dataset"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "CC-BY-4.0 permits redistribution of the published leaderboard data with attribution, so ingested result records may be redistributed.",
+          "source_ids": [
+            "dataset"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Ingesting the published CC-BY-4.0 dataset involves no execution environment and imposes no additional environment terms.",
+          "source_ids": [
+            "dataset"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "CC-BY-4.0 grants reproduction rights for the published data, permitting retained copies with attribution.",
+          "source_ids": [
+            "dataset"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "CC-BY-4.0 grants public display and distribution rights for the data and derivative material, permitting publication of independently derived scores with attribution.",
+          "source_ids": [
+            "dataset"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The feed ingests crowd pairwise vote aggregates for the text arena's instruction_following category from the leaderboard dataset's text_style_control parquet. Text-arena categories tag overlapping battles from one vote pool, so the family declares correlated_family_group lmarena-creative-writing and never counts as independent evidence against the creative_writing view of the same votes.",
+          "source_ids": [
+            "dataset",
+            "release"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source.",
+          "source_ids": [
+            "release"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "eqbench-creative-writing-v3",
+      "checked_on": "2026-09-28",
+      "sources": [
+        {
+          "source_id": "leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://eqbench.com/creative_writing.html"
+        },
+        {
+          "source_id": "data",
+          "kind": "official_dataset",
+          "url": "https://eqbench.com/creative_writing.js"
+        },
+        {
+          "source_id": "about",
+          "kind": "official_site",
+          "url": "https://eqbench.com/about.html"
+        },
+        {
+          "source_id": "repository",
+          "kind": "official_repository",
+          "url": "https://github.com/EQ-bench/creative-writing-bench"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "EQ-Bench Creative Writing v3 scores each model's own completions of fixed writing prompts; the leaderboard Elo comes from pairwise matchups against neighbouring models judged by Claude Sonnet 4.6 (the judge since 2026-03-01), rated with the Glicko system. The leaderboard's table ships as a CSV embedded in the creative_writing.js site asset, which the feed reads.",
+          "source_ids": [
+            "leaderboard",
+            "data",
+            "about"
+          ]
+        },
+        {
+          "topic": "research_flag",
+          "research_flag": "judge-self-preference",
+          "basis": "direct_source",
+          "statement": "Scores are LLM-judged by one Anthropic model (Claude Sonnet 4.6). The publisher states that judge self-bias and family bias (a judge preferring its own or similar models' outputs) is not quantified or adjusted for, so Anthropic-family entries may be favoured.",
+          "source_ids": [
+            "about"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank has direct source-owner permission to ingest and use this source data independently of any separately published license metadata.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes commercial use of this source data.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of this source data.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes use of the source environment for this feed.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes retention of fetched source artifacts.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes publication of rankings derived from this source data.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source.",
+          "source_ids": [
+            "repository"
           ]
         }
       ]

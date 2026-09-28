@@ -48,6 +48,7 @@ EXPECTED_FAMILY_IDS = (
     "terminal-bench-2-1",
     "terminal-bench-4-0",
     "livebench-agentic-coding",
+    "frontiercode",
     "swe-lancer",
     "swe-rebench",
     "liveswebench",
@@ -57,6 +58,7 @@ EXPECTED_FAMILY_IDS = (
     "mcp-universe",
     "mcpmark",
     "mcp-bench",
+    "tau3-banking-knowledge",
     "webarena-verified",
     "online-mind2web",
     "browsecomp-plus",
@@ -82,6 +84,7 @@ EXPECTED_FAMILY_IDS = (
     "facts-parametric",
     "mmlu-pro",
     "facts-grounding-v2",
+    "vectara-hhem",
     "mteb-beir",
     "crag",
     "frames",
@@ -139,6 +142,8 @@ EXPECTED_FAMILY_IDS = (
     "musr",
     "legalagentbench",
     "lmarena-creative-writing",
+    "lmarena-instruction-following",
+    "eqbench-creative-writing-v3",
 )
 
 # MTEB families each expose an embedder + a reranker feed (both retrieval
@@ -171,6 +176,17 @@ _AGGREGATED_FAMILY_FEEDS = {
     ),
 }
 
+# A family whose original board is withdrawn in favour of a second source for the
+# same identity keeps the quarantined feed (its evidence stays attributable) beside
+# the replacement feed. Terminal-Bench 4.0: the vendor-submitted Hub board mixes
+# four harnesses; the Vals AI board runs every model under one fixed harness.
+_REPLACED_SOURCE_FAMILY_FEEDS = {
+    "terminal-bench-4-0": (
+        "terminal-bench-4-0-discovery",
+        "terminal-bench-4-0-vals-discovery",
+    ),
+}
+
 EXPECTED_FEED_IDS = tuple(
     feed_id
     for family_id in EXPECTED_FAMILY_IDS
@@ -186,6 +202,7 @@ EXPECTED_FEED_IDS = tuple(
             for fam in _MTEB_FAMILY_IDS
         },
         **_AGGREGATED_FAMILY_FEEDS,
+        **_REPLACED_SOURCE_FAMILY_FEEDS,
     }.get(family_id, (f"{family_id}-discovery",))
 )
 
@@ -433,11 +450,13 @@ class CatalogManifestTests(unittest.TestCase):
     def test_terminal_bench_4_0_feed_mirrors_2_1_governance_on_the_board_adapter(self):
         payload = manifest()
         feeds = {row["feed_id"]: row for row in payload["feeds"]}
-        current = feeds["terminal-bench-4-0-discovery"]
+        hub = feeds["terminal-bench-4-0-discovery"]
         previous = feeds["terminal-bench-2-1-discovery"]
 
-        self.assertEqual("terminal-bench-4-0-official-hub-board-v1", current["adapter_id"])
-        self.assertEqual("active", current["state"])
+        self.assertEqual("terminal-bench-4-0-official-hub-board-v1", hub["adapter_id"])
+        # 2026-09-28 audit: the vendor-submitted Hub board is replaced by the Vals board.
+        self.assertEqual("quarantined", hub["state"])
+        self.assertIn("4 different harnesses", hub["quarantine_reason"])
         self.assertEqual("quarantined", previous["state"])
         for key in (
             "metric_direction",
@@ -451,12 +470,42 @@ class CatalogManifestTests(unittest.TestCase):
             "ranking_group_ids",
         ):
             with self.subTest(key=key):
-                self.assertEqual(previous[key], current[key])
+                self.assertEqual(previous[key], hub[key])
         # One benchmark lineage: both versions count as one independent family.
         self.assertEqual(
             previous["lineage"]["correlated_family_group"],
-            current["lineage"]["correlated_family_group"],
+            hub["lineage"]["correlated_family_group"],
         )
+
+    def test_terminal_bench_4_0_vals_feed_replaces_the_hub_board_in_one_identity(self):
+        payload = manifest()
+        families = {row["benchmark_family_id"]: row for row in payload["benchmark_families"]}
+        feeds = {row["feed_id"]: row for row in payload["feeds"]}
+        vals = feeds["terminal-bench-4-0-vals-discovery"]
+        hub = feeds["terminal-bench-4-0-discovery"]
+
+        self.assertEqual("terminal-bench-4-0", vals["benchmark_family_id"])
+        self.assertEqual("terminal-bench-4-0-vals-page-v1", vals["adapter_id"])
+        self.assertEqual("active", vals["state"])
+        # The family stays active through the replacement feed.
+        self.assertEqual("active", families["terminal-bench-4-0"]["state"])
+        self.assertIsNone(families["terminal-bench-4-0"]["quarantine_reason"])
+        # A model under one fixed harness (Terminus 2) is an agent system, exactly
+        # like the Hub board and LiveBench's fixed-harness agentic coding board.
+        for key in (
+            "metric_direction",
+            "candidate_cells",
+            "entity_kind",
+            "interaction_policy",
+            "configuration_passport_class",
+            "rights",
+            "cadence",
+            "retention",
+            "lineage",
+            "ranking_group_ids",
+        ):
+            with self.subTest(key=key):
+                self.assertEqual(hub[key], vals[key])
 
     def test_livebench_agentic_coding_feed_mirrors_reasoning_governance(self):
         payload = manifest()
@@ -513,6 +562,116 @@ class CatalogManifestTests(unittest.TestCase):
             current["ranking_group_ids"],
         )
 
+    def test_2026_09_28_audit_feeds_are_scheduler_refreshable(self):
+        payload = manifest()
+        families = {row["benchmark_family_id"]: row for row in payload["benchmark_families"]}
+        feeds = {row["feed_id"]: row for row in payload["feeds"]}
+        expected = {
+            "lmarena-instruction-following-discovery": (
+                "lmarena-instruction-following-hf-parquet-v1",
+                "rg-writing-arena-system-crowd-pairwise-arena-system-v1",
+            ),
+            "eqbench-creative-writing-v3-discovery": (
+                "eqbench-creative-writing-v3-js-csv-v1",
+                "rg-writing-model-configuration-direct-prompt-model-configuration-v1",
+            ),
+            "terminal-bench-4-0-vals-discovery": (
+                "terminal-bench-4-0-vals-page-v1",
+                "rg-coding-general-agent-system-agentic-agent-system-v1",
+            ),
+            "swe-rebench-discovery": (
+                "swe-rebench-page-v1",
+                "rg-coding-general-agent-system-agentic-agent-system-v1",
+            ),
+            "frontiercode-discovery": (
+                "frontiercode-epoch-hub-csv-v1",
+                "rg-coding-general-agent-system-agentic-agent-system-v1",
+            ),
+            "toolathlon-discovery": (
+                "toolathlon-verified-md-table-v1",
+                "rg-mcp-tool-orchestration-agent-system-agentic-agent-system-v1",
+            ),
+            "tau3-banking-knowledge-discovery": (
+                "tau2-bench-submissions-json-banking-v1",
+                "rg-mcp-tool-orchestration-agent-system-agentic-agent-system-v1",
+            ),
+            "facts-grounding-v2-discovery": (
+                "facts-grounding-v2-kaggle-json-v1",
+                "rg-factuality-model-configuration-direct-prompt-model-configuration-v1",
+            ),
+            "vectara-hhem-discovery": (
+                "vectara-hhem-readme-table-v1",
+                "rg-factuality-model-configuration-direct-prompt-model-configuration-v1",
+            ),
+        }
+
+        for feed_id, (adapter_id, group_id) in expected.items():
+            feed = feeds[feed_id]
+            with self.subTest(feed_id=feed_id):
+                self.assertEqual(adapter_id, feed["adapter_id"])
+                self.assertEqual("active", feed["state"])
+                self.assertEqual("active", families[feed["benchmark_family_id"]]["state"])
+                self.assertEqual("higher", feed["metric_direction"])
+                self.assertIn(group_id, feed["ranking_group_ids"])
+                self.assertEqual("approved", feed["rights"]["status"])
+                self.assertEqual("allowed", feed["rights"]["artifact_retention"])
+                self.assertEqual(
+                    {
+                        "status": "validated",
+                        "mode": "periodic",
+                        "stale_after_seconds": 1_209_600,
+                        "stop_recommending_after_seconds": 7_776_000,
+                        "as_of": None,
+                        "upstream_version": None,
+                    },
+                    feed["cadence"],
+                )
+                self.assertEqual(
+                    {"store_artifact_bytes": True, "maximum_days": None},
+                    feed["retention"],
+                )
+                self.assertEqual("declared", feed["lineage"]["validation_status"])
+                for key in ("task_lineage_id", "environment_lineage_id", "grader_lineage_id"):
+                    self.assertTrue(feed["lineage"][key])
+
+        # The instruction-following view mirrors the creative-writing feed's source rights.
+        self.assertEqual(
+            feeds["lmarena-creative-writing-discovery"]["rights"],
+            feeds["lmarena-instruction-following-discovery"]["rights"],
+        )
+        self.assertEqual(
+            feeds["hle-discovery"]["rights"], feeds["frontiercode-discovery"]["rights"]
+        )
+        self.assertEqual(
+            feeds["tau2-bench-discovery"]["rights"],
+            feeds["tau3-banking-knowledge-discovery"]["rights"],
+        )
+        self.assertEqual(
+            ["judge-self-preference"],
+            families["eqbench-creative-writing-v3"]["research_flags"],
+        )
+        creative = feeds["lmarena-creative-writing-discovery"]
+        self.assertEqual("quarantined", creative["state"])
+        self.assertIn("instruction_following at only 0.69", creative["quarantine_reason"])
+        self.assertEqual(
+            creative["quarantine_reason"],
+            families["lmarena-creative-writing"]["quarantine_reason"],
+        )
+        # Recall-from-memory families leave factuality but keep their other cells.
+        self.assertEqual(
+            ["general-knowledge-qa", "reasoning"], families["hle"]["candidate_cells"]
+        )
+        self.assertEqual(
+            ["general-knowledge-qa"], families["simpleqa-verified"]["candidate_cells"]
+        )
+        for feed_id in ("hle-discovery", "simpleqa-verified-discovery"):
+            with self.subTest(feed_id=feed_id):
+                self.assertNotIn("factuality", feeds[feed_id]["candidate_cells"])
+                self.assertNotIn(
+                    "rg-factuality-model-configuration-direct-prompt-model-configuration-v1",
+                    feeds[feed_id]["ranking_group_ids"],
+                )
+
     def test_manifest_is_the_exact_public_taxonomy(self):
         payload = manifest()
         cells = payload["cells"]
@@ -565,7 +724,7 @@ class CatalogManifestTests(unittest.TestCase):
     def test_every_cell_has_explicit_ordered_ranking_group_eligibility(self):
         payload = manifest()
         cell_ids = {cell["cell_id"] for cell in payload["cells"]}
-        self.assertEqual(36, len(payload["ranking_groups"]))
+        self.assertEqual(37, len(payload["ranking_groups"]))
         group_keys = set()
         covered_cells = set()
 
@@ -710,6 +869,32 @@ class CatalogManifestTests(unittest.TestCase):
             )
         )
 
+        # The writing cell carries a second, model-configuration group for
+        # judge-scored direct-prompt boards (EQ-Bench Creative Writing v3); the
+        # crowd-pairwise arena group above stays the cell's first published group.
+        writing_model_group = next(
+            group
+            for group in payload["ranking_groups"]
+            if group["ranking_group_id"]
+            == "rg-writing-model-configuration-direct-prompt-model-configuration-v1"
+        )
+        self.assertEqual(
+            ("writing", "model_configuration", "direct_prompt", "model-configuration-v1"),
+            tuple(
+                writing_model_group[key]
+                for key in (
+                    "cell_id",
+                    "entity_kind",
+                    "interaction_policy",
+                    "configuration_passport_class",
+                )
+            ),
+        )
+        self.assertEqual("active", writing_model_group["state"])
+        self.assertEqual(
+            new_groups["writing"]["eligibility"], writing_model_group["eligibility"]
+        )
+
         feed_states_by_group = {group["ranking_group_id"]: [] for group in payload["ranking_groups"]}
         for feed in payload["feeds"]:
             for group_id in feed["ranking_group_ids"]:
@@ -755,6 +940,8 @@ class CatalogManifestTests(unittest.TestCase):
                 "terminal-bench-2-1",
                 "theagentcompany",
                 "video-mme",
+                # Replaced by lmarena-instruction-following (2026-09-28 audit).
+                "lmarena-creative-writing",
             },
             quarantined,
         )
@@ -777,11 +964,19 @@ class CatalogManifestTests(unittest.TestCase):
                 "mteb-followir",
                 "mteb-rar-b",
                 "mteb-multilingual-v2",
-                "lmarena-creative-writing",
+                # 2026-09-28 audit: new and activated scheduler-refreshable feeds.
+                "lmarena-instruction-following",
+                "eqbench-creative-writing-v3",
+                "frontiercode",
+                "swe-rebench",
+                "toolathlon",
+                "tau3-banking-knowledge",
+                "facts-grounding-v2",
+                "vectara-hhem",
             },
             active,
         )
-        self.assertEqual(99, len(families))
+        self.assertEqual(104, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -842,11 +1037,13 @@ class CatalogManifestTests(unittest.TestCase):
                 "mteb-multilingual-v2": "mteb-multilingual-v2",
                 "lmarena-creative-writing": "lmarena-creative-writing",
                 "mcp-atlas": "mcp-atlas",
+                "lmarena-instruction-following": "lmarena-creative-writing",
+                "tau3-banking-knowledge": "tau2",
             },
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(111, len(feeds))
+        self.assertEqual(117, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_itbench_is_not_executable_without_exact_configuration_identity(self):
@@ -947,7 +1144,7 @@ class CatalogManifestTests(unittest.TestCase):
                 self.assertEqual([cell_id], family["candidate_cells"])
                 self.assertEqual([cell_id], feed["candidate_cells"])
                 self.assertEqual([group_id], feed["ranking_group_ids"])
-                if family_id not in {"agents-last-exam", "deepswe", "mcp-atlas"}:
+                if family_id not in {"agents-last-exam", "deepswe", "mcp-atlas", "toolathlon"}:
                     self.assertEqual("discovered", family["state"])
                     self.assertEqual("discovered", feed["state"])
                     self.assertIsNone(feed["adapter_id"])
@@ -1289,6 +1486,15 @@ class CatalogManifestTests(unittest.TestCase):
                 "mteb-multilingual-v2-embedding-discovery": "higher",
                 "mteb-multilingual-v2-reranking-discovery": "higher",
                 "lmarena-creative-writing-discovery": "higher",
+                "lmarena-instruction-following-discovery": "higher",
+                "eqbench-creative-writing-v3-discovery": "higher",
+                "terminal-bench-4-0-vals-discovery": "higher",
+                "frontiercode-discovery": "higher",
+                "swe-rebench-discovery": "higher",
+                "toolathlon-discovery": "higher",
+                "tau3-banking-knowledge-discovery": "higher",
+                "facts-grounding-v2-discovery": "higher",
+                "vectara-hhem-discovery": "higher",
             },
             recovered_directions,
         )
@@ -1302,6 +1508,8 @@ class CatalogManifestTests(unittest.TestCase):
         # aggregator's feed alongside their own discovery feed.
         for aggregated_family, expected_feeds in _AGGREGATED_FAMILY_FEEDS.items():
             self.assertEqual(len(expected_feeds), feed_counts.pop(aggregated_family))
+        for replaced_family, expected_feeds in _REPLACED_SOURCE_FAMILY_FEEDS.items():
+            self.assertEqual(len(expected_feeds), feed_counts.pop(replaced_family))
         self.assertTrue(all(count == 1 for count in feed_counts.values()))
 
         self.assertEqual([], manifest_semantic_errors(payload))

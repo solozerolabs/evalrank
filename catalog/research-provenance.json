@@ -4292,6 +4292,158 @@
       ]
     },
     {
+      "benchmark_family_id": "aa-omniscience",
+      "checked_on": "2026-09-29",
+      "sources": [
+        {
+          "source_id": "paper",
+          "kind": "primary_paper",
+          "url": "https://arxiv.org/abs/2511.13029"
+        },
+        {
+          "source_id": "aa_methodology",
+          "kind": "official_site",
+          "url": "https://artificialanalysis.ai/methodology/intelligence-benchmarking"
+        },
+        {
+          "source_id": "aa_leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://artificialanalysis.ai/evaluations/omniscience"
+        },
+        {
+          "source_id": "aa_dataset",
+          "kind": "official_dataset",
+          "url": "https://huggingface.co/datasets/ArtificialAnalysis/AA-Omniscience-Public"
+        },
+        {
+          "source_id": "benchmarkheaven_api",
+          "kind": "official_dataset",
+          "url": "https://benchmarkheaven.com/api/benchmark-scores?benchmark_id=aa-omniscience::snapshot-2026-09-10"
+        },
+        {
+          "source_id": "benchmarkheaven_repository",
+          "kind": "official_repository",
+          "url": "https://github.com/fstandhartinger/model-market-comparison"
+        },
+        {
+          "source_id": "benchmarkheaven_license",
+          "kind": "official_repository",
+          "url": "https://github.com/fstandhartinger/model-market-comparison/blob/main/LICENSE"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "AA-Omniscience asks 6,000 questions across 42 topics in six domains and reports the Omniscience Index, a bounded -100 to 100 score where higher is better: it rewards correct answers, penalizes incorrect guesses, and keeps abstentions neutral, so 0 means a model answers correctly as often as incorrectly. An LLM grader labels each answer CORRECT, INCORRECT, PARTIAL_ANSWER, or NOT_ATTEMPTED.",
+          "source_ids": [
+            "paper",
+            "aa_methodology"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The Benchmark Heaven public API serves read-only, CORS-open JSON observations for the registry id aa-omniscience::snapshot-2026-09-10 (its versioned id for the AA-Omniscience Index). Every observation carries the Artificial Analysis source URL, a retrieved_at timestamp and a sha256 of the retrieved source. On 2026-09-29 the API held 538 observations for that snapshot, retrieved from 2026-09-10 to 2026-09-22, covering Claude Opus 5.5 (46.4 at max effort), GPT-6 Astra (43.4 at max, 43.7 at high), Claude Fable 5.1, Gemini 3.8 Flash, Kimi K3 and GLM-5.3; Gemini 2.5 Pro scores -16.4.",
+          "source_ids": [
+            "benchmarkheaven_api",
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "Each observation is one model at a named reasoning effort answering Artificial Analysis's fixed prompts, so it resolves to a model configuration under direct prompting and joins the existing factuality and general-knowledge-qa model-configuration ranking groups; no new group is needed. The calibrated-abstention scoring penalizes confident hallucination, which is why the family belongs in factuality as well as general-knowledge-qa. On 2026-09-29 factuality's two boards (FACTS Grounding v2 and Vectara HHEM) overlapped on only 9 models, so a third board widens the cell's two-board coverage floor. No other catalog family shares its questions, so its correlation stays unknown.",
+          "source_ids": [
+            "paper",
+            "benchmarkheaven_api"
+          ]
+        },
+        {
+          "topic": "harness_code_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The feed ingests the Benchmark Heaven API's JSON result data only; no harness code ships with it. Benchmark Heaven's own transport code is MIT-licensed and is not ingested, so the recorded value marks the field not applicable to the API data view.",
+          "source_ids": [
+            "benchmarkheaven_repository",
+            "benchmarkheaven_license"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The scores are Artificial Analysis's data, which Benchmark Heaven republishes under AA's attribution terms rather than an SPDX license. EvalRank's owner ruled on 2026-09-28 (Rights B) that EvalRank holds direct source-owner permission for every catalog source, covering both the Artificial Analysis data and its Benchmark Heaven transport. The Artificial Analysis attribution terms still apply: every published or redistributed AA-Omniscience result credits Artificial Analysis and links the AA source URL that each observation carries.",
+          "source_ids": [
+            "aa_leaderboard",
+            "benchmarkheaven_api"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes commercial use of this source data. EvalRank's owner ruled on 2026-09-28 (Rights B) that EvalRank holds direct source-owner permission for every catalog source, covering both the Artificial Analysis data and its Benchmark Heaven transport.",
+          "source_ids": [
+            "aa_leaderboard",
+            "benchmarkheaven_api"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of this source data. EvalRank's owner ruled on 2026-09-28 (Rights B) that EvalRank holds direct source-owner permission for every catalog source, covering both the Artificial Analysis data and its Benchmark Heaven transport. The Artificial Analysis attribution terms still apply: every published or redistributed AA-Omniscience result credits Artificial Analysis and links the AA source URL that each observation carries.",
+          "source_ids": [
+            "aa_leaderboard",
+            "benchmarkheaven_api"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source. EvalRank's owner ruled on 2026-09-28 (Rights B) that EvalRank holds direct source-owner permission for every catalog source, covering both the Artificial Analysis data and its Benchmark Heaven transport.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The API data view involves no execution environment; direct source-owner permission authorizes use of the source for this feed. EvalRank's owner ruled on 2026-09-28 (Rights B) that EvalRank holds direct source-owner permission for every catalog source, covering both the Artificial Analysis data and its Benchmark Heaven transport.",
+          "source_ids": [
+            "aa_leaderboard",
+            "benchmarkheaven_api"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes retention of the fetched API response bytes, each observation keeping its AA source URL, retrieved_at and sha256. EvalRank's owner ruled on 2026-09-28 (Rights B) that EvalRank holds direct source-owner permission for every catalog source, covering both the Artificial Analysis data and its Benchmark Heaven transport.",
+          "source_ids": [
+            "aa_leaderboard",
+            "benchmarkheaven_api"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes publication of rankings derived from this source data. EvalRank's owner ruled on 2026-09-28 (Rights B) that EvalRank holds direct source-owner permission for every catalog source, covering both the Artificial Analysis data and its Benchmark Heaven transport. The Artificial Analysis attribution terms still apply: every published or redistributed AA-Omniscience result credits Artificial Analysis and links the AA source URL that each observation carries.",
+          "source_ids": [
+            "aa_leaderboard",
+            "benchmarkheaven_api"
+          ]
+        }
+      ]
+    },
+    {
       "benchmark_family_id": "mteb-beir",
       "checked_on": "2026-07-23",
       "sources": [

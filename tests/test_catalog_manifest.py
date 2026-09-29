@@ -85,6 +85,7 @@ EXPECTED_FAMILY_IDS = (
     "mmlu-pro",
     "facts-grounding-v2",
     "vectara-hhem",
+    "aa-omniscience",
     "mteb-beir",
     "crag",
     "frames",
@@ -193,6 +194,8 @@ EXPECTED_FEED_IDS = tuple(
     for feed_id in {
         "itbench": ("itbench-discovery", "itbench-aa-discovery"),
         "paperbench": ("paperbench-full-discovery",),
+        # Artificial Analysis data carried by the Benchmark Heaven API transport.
+        "aa-omniscience": ("aa-omniscience-benchmarkheaven-discovery",),
         "core-bench-reproducibility": (
             "core-bench-v1-1-mainline-discovery",
             "core-bench-v1-1-ood-discovery",
@@ -672,6 +675,70 @@ class CatalogManifestTests(unittest.TestCase):
                     feeds[feed_id]["ranking_group_ids"],
                 )
 
+    def test_aa_omniscience_benchmarkheaven_feed_is_scheduler_refreshable(self):
+        payload = manifest()
+        families = {row["benchmark_family_id"]: row for row in payload["benchmark_families"]}
+        feeds = {row["feed_id"]: row for row in payload["feeds"]}
+        family = families["aa-omniscience"]
+        feed = feeds["aa-omniscience-benchmarkheaven-discovery"]
+        cells = ["factuality", "general-knowledge-qa"]
+
+        self.assertEqual("AA-Omniscience (Artificial Analysis)", family["display_name"])
+        self.assertEqual("active", family["state"])
+        self.assertEqual(cells, family["candidate_cells"])
+        self.assertEqual(["model_configuration"], family["entity_kinds"])
+        self.assertEqual([], family["research_flags"])
+        self.assertEqual("aa-omniscience", feed["benchmark_family_id"])
+        self.assertEqual("benchmarkheaven-api-json-v1", feed["adapter_id"])
+        self.assertEqual("active", feed["state"])
+        self.assertEqual("higher", feed["metric_direction"])
+        self.assertEqual(cells, feed["candidate_cells"])
+        # Calibrated abstention joins the existing model-configuration groups of
+        # both cells, exactly as FACTS Grounding v2 joined factuality.
+        self.assertEqual(
+            [
+                "rg-factuality-model-configuration-direct-prompt-model-configuration-v1",
+                "rg-general-knowledge-qa-model-configuration-direct-prompt-model-configuration-v1",
+            ],
+            feed["ranking_group_ids"],
+        )
+        for key in (
+            "entity_kind",
+            "interaction_policy",
+            "configuration_passport_class",
+            "cadence",
+            "retention",
+        ):
+            with self.subTest(key=key):
+                self.assertEqual(feeds["facts-grounding-v2-discovery"][key], feed[key])
+        # Aggregator transport: the data view ships no harness code; the
+        # Artificial Analysis data rights rest on the 2026-09-28 Rights B ruling.
+        self.assertEqual(
+            {
+                "status": "approved",
+                "harness_code_license": "not-applicable-api-data-view",
+                "task_data_license": None,
+                "commercial_use": "allowed",
+                "result_redistribution": "allowed",
+                "trajectory_redistribution": "allowed",
+                "environment_terms": "allowed",
+                "artifact_retention": "allowed",
+                "derived_score_publication": "allowed",
+            },
+            feed["rights"],
+        )
+        self.assertEqual(
+            {
+                "validation_status": "declared",
+                "task_lineage_id": "aa-omniscience-tasks",
+                "environment_lineage_id": "aa-omniscience-environments",
+                "grader_lineage_id": "aa-omniscience-graders",
+                "correlation_status": "unknown",
+                "correlated_family_group": None,
+            },
+            feed["lineage"],
+        )
+
     def test_manifest_is_the_exact_public_taxonomy(self):
         payload = manifest()
         cells = payload["cells"]
@@ -973,10 +1040,12 @@ class CatalogManifestTests(unittest.TestCase):
                 "tau3-banking-knowledge",
                 "facts-grounding-v2",
                 "vectara-hhem",
+                # 2026-09-29: AA-Omniscience via the Benchmark Heaven API.
+                "aa-omniscience",
             },
             active,
         )
-        self.assertEqual(104, len(families))
+        self.assertEqual(105, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -1043,7 +1112,7 @@ class CatalogManifestTests(unittest.TestCase):
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(117, len(feeds))
+        self.assertEqual(118, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_itbench_is_not_executable_without_exact_configuration_identity(self):
@@ -1495,6 +1564,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "tau3-banking-knowledge-discovery": "higher",
                 "facts-grounding-v2-discovery": "higher",
                 "vectara-hhem-discovery": "higher",
+                "aa-omniscience-benchmarkheaven-discovery": "higher",
             },
             recovered_directions,
         )

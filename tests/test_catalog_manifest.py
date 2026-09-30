@@ -37,6 +37,7 @@ EXPECTED_CELL_IDS = (
     "professional-deliverable-creation",
     "computational-research-reproduction",
     "writing",
+    "security-code-review",
 )
 
 EXPECTED_FAMILY_IDS = (
@@ -145,6 +146,10 @@ EXPECTED_FAMILY_IDS = (
     "lmarena-creative-writing",
     "lmarena-instruction-following",
     "eqbench-creative-writing-v3",
+    "deepsecbench-aa",
+    "cwe-bench-aa",
+    "cybergym-e2e-aa",
+    "deepsecbench-aa-refusal",
 )
 
 # MTEB families each expose an embedder + a reranker feed (both retrieval
@@ -739,6 +744,64 @@ class CatalogManifestTests(unittest.TestCase):
             feed["lineage"],
         )
 
+    def test_security_code_review_binds_only_the_review_shaped_aa_boards(self):
+        payload = manifest()
+        families = {row["benchmark_family_id"]: row for row in payload["benchmark_families"]}
+        feeds = {row["feed_id"]: row for row in payload["feeds"]}
+        group = "rg-security-code-review-agent-system-agentic-agent-system-v1"
+        expected = {
+            "deepsecbench-aa": ("active", "higher"),
+            "cwe-bench-aa": ("active", "higher"),
+            # Ingested and published as exploratory evidence, never ranked: a crash
+            # proof-of-concept is not code review, and a refusal rate is a veto input.
+            "cybergym-e2e-aa": ("shadow", "higher"),
+            "deepsecbench-aa-refusal": ("shadow", "lower"),
+        }
+        bound = {
+            row["benchmark_family_id"]
+            for row in payload["feeds"]
+            if row["state"] == "active" and "security-code-review" in row["candidate_cells"]
+        }
+        self.assertEqual({"deepsecbench-aa", "cwe-bench-aa"}, bound)
+        for family_id, (state, direction) in expected.items():
+            with self.subTest(family_id=family_id):
+                family = families[family_id]
+                feed = feeds[f"{family_id}-discovery"]
+                self.assertEqual(state, family["state"])
+                self.assertEqual(state, feed["state"])
+                self.assertEqual(direction, feed["metric_direction"])
+                self.assertEqual(["security-code-review"], feed["candidate_cells"])
+                self.assertEqual([group], feed["ranking_group_ids"])
+                self.assertEqual("artificialanalysis-eval-page-flight-v1", feed["adapter_id"])
+                self.assertEqual(
+                    ("agent_system", "agentic", "agent-system-v1"),
+                    (
+                        feed["entity_kind"],
+                        feed["interaction_policy"],
+                        feed["configuration_passport_class"],
+                    ),
+                )
+                self.assertEqual("approved", feed["rights"]["status"])
+                self.assertTrue(
+                    all(
+                        feed["rights"][axis] == "allowed"
+                        for axis in (
+                            "commercial_use",
+                            "result_redistribution",
+                            "trajectory_redistribution",
+                            "environment_terms",
+                            "artifact_retention",
+                            "derived_score_publication",
+                        )
+                    )
+                )
+                self.assertEqual(
+                    feeds["aa-omniscience-benchmarkheaven-discovery"]["cadence"],
+                    feed["cadence"],
+                )
+                self.assertTrue(feed["retention"]["store_artifact_bytes"])
+                self.assertEqual("declared", feed["lineage"]["validation_status"])
+
     def test_manifest_is_the_exact_public_taxonomy(self):
         payload = manifest()
         cells = payload["cells"]
@@ -750,7 +813,7 @@ class CatalogManifestTests(unittest.TestCase):
         self.assertTrue(all("rank_eligible_count" not in row for row in cells))
         self.assertTrue(all("eligibility" not in row for row in cells))
         self.assertNotIn("safety-robustness", EXPECTED_CELL_IDS)
-        new_cells = {row["cell_id"]: row for row in cells[-3:]}
+        new_cells = {row["cell_id"]: row for row in cells[-4:]}
         self.assertEqual(
             {
                 "professional-deliverable-creation": {
@@ -777,6 +840,14 @@ class CatalogManifestTests(unittest.TestCase):
                     ),
                     "entity_kinds": ["model", "agent"],
                 },
+                "security-code-review": {
+                    "name": "Security code review",
+                    "definition": (
+                        "Find security vulnerabilities in real application code and fix "
+                        "them without breaking legitimate behavior"
+                    ),
+                    "entity_kinds": ["agent"],
+                },
             },
             {
                 cell_id: {
@@ -791,7 +862,7 @@ class CatalogManifestTests(unittest.TestCase):
     def test_every_cell_has_explicit_ordered_ranking_group_eligibility(self):
         payload = manifest()
         cell_ids = {cell["cell_id"] for cell in payload["cells"]}
-        self.assertEqual(37, len(payload["ranking_groups"]))
+        self.assertEqual(38, len(payload["ranking_groups"]))
         group_keys = set()
         covered_cells = set()
 
@@ -858,9 +929,9 @@ class CatalogManifestTests(unittest.TestCase):
         new_groups = {
             group["cell_id"]: group
             for group in payload["ranking_groups"]
-            if group["cell_id"] in set(EXPECTED_CELL_IDS[-3:])
+            if group["cell_id"] in set(EXPECTED_CELL_IDS[-4:])
         }
-        self.assertEqual(set(EXPECTED_CELL_IDS[-3:]), set(new_groups))
+        self.assertEqual(set(EXPECTED_CELL_IDS[-4:]), set(new_groups))
         self.assertEqual(
             {
                 "professional-deliverable-creation": (
@@ -873,6 +944,9 @@ class CatalogManifestTests(unittest.TestCase):
                 ),
                 "writing": (
                     "rg-writing-arena-system-crowd-pairwise-arena-system-v1"
+                ),
+                "security-code-review": (
+                    "rg-security-code-review-agent-system-agentic-agent-system-v1"
                 ),
             },
             {
@@ -902,19 +976,20 @@ class CatalogManifestTests(unittest.TestCase):
                 )
             ),
         )
-        self.assertEqual(
-            ("agent_system", "agentic", "agent-system-v1"),
-            tuple(
-                new_groups["computational-research-reproduction"][key]
-                for key in (
-                    "entity_kind",
-                    "interaction_policy",
-                    "configuration_passport_class",
-                )
-            ),
-        )
+        for cell_id in ("computational-research-reproduction", "security-code-review"):
+            self.assertEqual(
+                ("agent_system", "agentic", "agent-system-v1"),
+                tuple(
+                    new_groups[cell_id][key]
+                    for key in (
+                        "entity_kind",
+                        "interaction_policy",
+                        "configuration_passport_class",
+                    )
+                ),
+            )
         # The writing cell publishes a single-winner arena-system group, while
-        # the two agent/system cells remain explorer-claim.
+        # the agent/system cells remain explorer-claim.
         self.assertEqual("single_winner", new_groups["writing"]["claim_ceiling"])
         self.assertTrue(
             all(
@@ -922,6 +997,7 @@ class CatalogManifestTests(unittest.TestCase):
                 for cell_id in (
                     "professional-deliverable-creation",
                     "computational-research-reproduction",
+                    "security-code-review",
                 )
             )
         )
@@ -1042,10 +1118,13 @@ class CatalogManifestTests(unittest.TestCase):
                 "vectara-hhem",
                 # 2026-09-29: AA-Omniscience via the Benchmark Heaven API.
                 "aa-omniscience",
+                # 2026-09-30: the security-code-review cell's two ranking families.
+                "deepsecbench-aa",
+                "cwe-bench-aa",
             },
             active,
         )
-        self.assertEqual(105, len(families))
+        self.assertEqual(109, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -1056,10 +1135,18 @@ class CatalogManifestTests(unittest.TestCase):
                 for row in families
             )
         )
+        # Parsed and ingested but deliberately non-ranking: exploit-PoC work is not code
+        # review, and a refusal rate is a veto input, never a quality score.
+        shadow = {
+            family_id
+            for family_id, row in family_by_id.items()
+            if row["state"] == "shadow"
+        }
+        self.assertEqual({"cybergym-e2e-aa", "deepsecbench-aa-refusal"}, shadow)
         self.assertTrue(all(
             row["state"] == "discovered"
             for row in families
-            if row["benchmark_family_id"] not in quarantined | active
+            if row["benchmark_family_id"] not in quarantined | active | shadow
         ))
 
         declared_correlations = {
@@ -1112,7 +1199,7 @@ class CatalogManifestTests(unittest.TestCase):
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(118, len(feeds))
+        self.assertEqual(122, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_itbench_is_not_executable_without_exact_configuration_identity(self):
@@ -1565,6 +1652,11 @@ class CatalogManifestTests(unittest.TestCase):
                 "facts-grounding-v2-discovery": "higher",
                 "vectara-hhem-discovery": "higher",
                 "aa-omniscience-benchmarkheaven-discovery": "higher",
+                "deepsecbench-aa-discovery": "higher",
+                "cwe-bench-aa-discovery": "higher",
+                "cybergym-e2e-aa-discovery": "higher",
+                # The one lower-is-better feed: a refusal rate, shadow and never ranked.
+                "deepsecbench-aa-refusal-discovery": "lower",
             },
             recovered_directions,
         )

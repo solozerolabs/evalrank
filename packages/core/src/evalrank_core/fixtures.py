@@ -77,6 +77,12 @@ _USE_CASE_ROWS = (
         "Produce high-quality creative and long-form prose from an open prompt, judged on human-preference writing quality.",
         ("model", "agent"),
     ),
+    (
+        "security-code-review",
+        "Security code review",
+        "Find security vulnerabilities in real application code and fix them without breaking legitimate behavior",
+        ("agent",),
+    ),
 )
 
 

@@ -10032,6 +10032,426 @@
           ]
         }
       ]
+    },
+    {
+      "benchmark_family_id": "deepsecbench-aa",
+      "checked_on": "2026-09-29",
+      "sources": [
+        {
+          "source_id": "aa_leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://artificialanalysis.ai/evaluations/deepsecbench-aa"
+        },
+        {
+          "source_id": "aa_cyber_index",
+          "kind": "official_site",
+          "url": "https://artificialanalysis.ai/evaluations/artificial-analysis-cyber-index"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "DeepsecBench-AA is Artificial Analysis' implementation of Vercel's DeepsecBench, a defensive benchmark: the agent reviews real open-source application source code pinned before major vulnerability fixes and reports the vulnerabilities and significant bugs it finds, without running or exploiting the application. A judge model marks each finding true or false and matches it to an expert-verified golden set; the headline is the median F2 of three runs (recall weighted above precision, false positives and duplicates counted against precision), reported as a 0-1 fraction where higher is better.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The page server-renders its full model roster into the page's Next.js data stream; every row carries the Artificial Analysis Cyber Index block (CWE-Bench-AA, DeepsecBench-AA and CyberGym-E2E-AA scores with their refusal rates). Artificial Analysis runs every model in its own open-source Stirrup agent harness with the same prompts and tools, so each row resolves to an agent system. On 2026-09-29 the rosters held 17 to 19 models, including Claude Opus 5.5, Claude Fable 5.1, GPT-6 Sol, GPT-6 Astra, GPT-6 Luna, Grok 4.7, Gemini 3.8 Flash, GLM-5.3 and Kimi K3.",
+          "source_ids": [
+            "aa_leaderboard",
+            "aa_cyber_index"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank has direct source-owner permission to ingest and use this source data independently of any separately published license metadata. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes commercial use of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The page data view involves no execution environment; direct source-owner permission authorizes automated fetching of the page for this feed. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes retention of the fetched page bytes. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes publication of rankings derived from this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "cwe-bench-aa",
+      "checked_on": "2026-09-29",
+      "sources": [
+        {
+          "source_id": "aa_leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://artificialanalysis.ai/evaluations/cwe-bench-aa"
+        },
+        {
+          "source_id": "aa_cyber_index",
+          "kind": "official_site",
+          "url": "https://artificialanalysis.ai/evaluations/artificial-analysis-cyber-index"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "CWE-Bench-AA is Artificial Analysis' implementation of Collinear AI's CWE-bench: 120 held-out tasks covering all ten OWASP Top 10 (2025) categories across C/C++, Go, Java, JavaScript/TypeScript, Python and Rust. The agent audits a real repository around a described area of concern and patches the vulnerability; a deterministic verifier counts a task solved only when the exploit no longer triggers and legitimate behaviour still works. The headline is pass@1 as a 0-1 fraction, higher is better.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The page server-renders its full model roster into the page's Next.js data stream; every row carries the Artificial Analysis Cyber Index block (CWE-Bench-AA, DeepsecBench-AA and CyberGym-E2E-AA scores with their refusal rates). Artificial Analysis runs every model in its own open-source Stirrup agent harness with the same prompts and tools, so each row resolves to an agent system. On 2026-09-29 the rosters held 17 to 19 models, including Claude Opus 5.5, Claude Fable 5.1, GPT-6 Sol, GPT-6 Astra, GPT-6 Luna, Grok 4.7, Gemini 3.8 Flash, GLM-5.3 and Kimi K3.",
+          "source_ids": [
+            "aa_leaderboard",
+            "aa_cyber_index"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank has direct source-owner permission to ingest and use this source data independently of any separately published license metadata. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes commercial use of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The page data view involves no execution environment; direct source-owner permission authorizes automated fetching of the page for this feed. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes retention of the fetched page bytes. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes publication of rankings derived from this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "cybergym-e2e-aa",
+      "checked_on": "2026-09-29",
+      "sources": [
+        {
+          "source_id": "aa_leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://artificialanalysis.ai/evaluations/cybergym-e2e-aa"
+        },
+        {
+          "source_id": "aa_cyber_index",
+          "kind": "official_site",
+          "url": "https://artificialanalysis.ai/evaluations/artificial-analysis-cyber-index"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "CyberGym-E2E-AA is Artificial Analysis' implementation of Berkeley RDI's CyberGym-E2E: 131 real memory-safety vulnerabilities in C/C++ OSS-Fuzz projects. The agent must locate the bug, write a proof-of-concept input that crashes the unpatched build under a sanitizer, and patch it so the project's functionality tests still pass. The headline is pass@1 as a 0-1 fraction, higher is better.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The page server-renders its full model roster into the page's Next.js data stream; every row carries the Artificial Analysis Cyber Index block (CWE-Bench-AA, DeepsecBench-AA and CyberGym-E2E-AA scores with their refusal rates). Artificial Analysis runs every model in its own open-source Stirrup agent harness with the same prompts and tools, so each row resolves to an agent system. On 2026-09-29 the rosters held 17 to 19 models, including Claude Opus 5.5, Claude Fable 5.1, GPT-6 Sol, GPT-6 Astra, GPT-6 Luna, Grok 4.7, Gemini 3.8 Flash, GLM-5.3 and Kimi K3.",
+          "source_ids": [
+            "aa_leaderboard",
+            "aa_cyber_index"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The feed is ingested and published as exploratory evidence but stays shadow: reproducing a crash with a proof-of-concept input is a different task shape from reviewing code for vulnerabilities, and on 2026-09-29 its scores for every Claude and GPT-6 model were dominated by provider safety refusals (98-100% of tasks declined), which measures a refusal policy rather than review capability.",
+          "source_ids": [
+            "aa_leaderboard",
+            "aa_cyber_index"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank has direct source-owner permission to ingest and use this source data independently of any separately published license metadata. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes commercial use of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The page data view involves no execution environment; direct source-owner permission authorizes automated fetching of the page for this feed. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes retention of the fetched page bytes. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes publication of rankings derived from this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "deepsecbench-aa-refusal",
+      "checked_on": "2026-09-29",
+      "sources": [
+        {
+          "source_id": "aa_leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://artificialanalysis.ai/evaluations/deepsecbench-aa"
+        },
+        {
+          "source_id": "aa_cyber_index",
+          "kind": "official_site",
+          "url": "https://artificialanalysis.ai/evaluations/artificial-analysis-cyber-index"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The DeepsecBench-AA evaluation page publishes, per model, the share of tasks the model or its provider declined on safety grounds, as flagged by the provider's safety systems, as a 0-1 fraction where lower is better. A declined task already scores zero on the DeepsecBench-AA board.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The page server-renders its full model roster into the page's Next.js data stream; every row carries the Artificial Analysis Cyber Index block (CWE-Bench-AA, DeepsecBench-AA and CyberGym-E2E-AA scores with their refusal rates). Artificial Analysis runs every model in its own open-source Stirrup agent harness with the same prompts and tools, so each row resolves to an agent system. On 2026-09-29 the rosters held 17 to 19 models, including Claude Opus 5.5, Claude Fable 5.1, GPT-6 Sol, GPT-6 Astra, GPT-6 Luna, Grok 4.7, Gemini 3.8 Flash, GLM-5.3 and Kimi K3.",
+          "source_ids": [
+            "aa_leaderboard",
+            "aa_cyber_index"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The refusal rate is a veto input, never a quality score: it stays shadow so it cannot rank the cell, and its evidence lets a consumer refuse to route security review to a model whose provider declines the work.",
+          "source_ids": [
+            "aa_leaderboard",
+            "aa_cyber_index"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank has direct source-owner permission to ingest and use this source data independently of any separately published license metadata. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes commercial use of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The page data view involves no execution environment; direct source-owner permission authorizes automated fetching of the page for this feed. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes retention of the fetched page bytes. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes publication of rankings derived from this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        }
+      ]
     }
   ]
 }

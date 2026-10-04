@@ -83,6 +83,12 @@ _USE_CASE_ROWS = (
         "Find security vulnerabilities in real application code and fix them without breaking legitimate behavior",
         ("agent",),
     ),
+    (
+        "code-review",
+        "Code review",
+        "Review a code change and catch the real bugs it introduces without burying them in invalid or low-value comments",
+        ("agent",),
+    ),
 )
 
 

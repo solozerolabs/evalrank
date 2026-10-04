@@ -38,6 +38,7 @@ EXPECTED_CELL_IDS = (
     "computational-research-reproduction",
     "writing",
     "security-code-review",
+    "code-review",
 )
 
 EXPECTED_FAMILY_IDS = (
@@ -150,6 +151,8 @@ EXPECTED_FAMILY_IDS = (
     "cwe-bench-aa",
     "cybergym-e2e-aa",
     "deepsecbench-aa-refusal",
+    "macroscopebench-medium",
+    "macroscopebench",
 )
 
 # MTEB families each expose an embedder + a reranker feed (both retrieval
@@ -802,6 +805,71 @@ class CatalogManifestTests(unittest.TestCase):
                 self.assertTrue(feed["retention"]["store_artifact_bytes"])
                 self.assertEqual("declared", feed["lineage"]["validation_status"])
 
+    def test_code_review_ranks_only_the_medium_effort_macroscopebench_board(self):
+        payload = manifest()
+        families = {row["benchmark_family_id"]: row for row in payload["benchmark_families"]}
+        feeds = {row["feed_id"]: row for row in payload["feeds"]}
+        group = "rg-code-review-agent-system-agentic-agent-system-v1"
+        # One board, two families: the medium-effort rows rank the cell; every
+        # configuration (model x reasoning effort) is published as shadow evidence,
+        # because pooling efforts would rank each model at its best effort.
+        expected = {
+            "macroscopebench-medium": "active",
+            "macroscopebench": "shadow",
+        }
+        bound = {
+            row["benchmark_family_id"]
+            for row in payload["feeds"]
+            if row["state"] == "active" and "code-review" in row["candidate_cells"]
+        }
+        self.assertEqual({"macroscopebench-medium"}, bound)
+        for family_id, state in expected.items():
+            with self.subTest(family_id=family_id):
+                family = families[family_id]
+                feed = feeds[f"{family_id}-discovery"]
+                self.assertEqual(state, family["state"])
+                self.assertEqual(state, feed["state"])
+                self.assertEqual("higher", feed["metric_direction"])
+                self.assertEqual(["code-review"], feed["candidate_cells"])
+                self.assertEqual([group], feed["ranking_group_ids"])
+                self.assertEqual("macroscope-benchmark-html-table-v1", feed["adapter_id"])
+                self.assertEqual(
+                    ("agent_system", "agentic", "agent-system-v1"),
+                    (
+                        feed["entity_kind"],
+                        feed["interaction_policy"],
+                        feed["configuration_passport_class"],
+                    ),
+                )
+                self.assertEqual("approved", feed["rights"]["status"])
+                self.assertTrue(
+                    all(
+                        feed["rights"][axis] == "allowed"
+                        for axis in (
+                            "commercial_use",
+                            "result_redistribution",
+                            "trajectory_redistribution",
+                            "environment_terms",
+                            "artifact_retention",
+                            "derived_score_publication",
+                        )
+                    )
+                )
+                self.assertEqual(
+                    feeds["aa-omniscience-benchmarkheaven-discovery"]["cadence"],
+                    feed["cadence"],
+                )
+                self.assertTrue(feed["retention"]["store_artifact_bytes"])
+                self.assertEqual("declared", feed["lineage"]["validation_status"])
+                self.assertEqual("macroscopebench", family["correlated_family_group"])
+                self.assertEqual(
+                    "macroscopebench", feed["lineage"]["correlated_family_group"]
+                )
+        self.assertEqual(
+            feeds["macroscopebench-medium-discovery"]["lineage"],
+            feeds["macroscopebench-discovery"]["lineage"],
+        )
+
     def test_manifest_is_the_exact_public_taxonomy(self):
         payload = manifest()
         cells = payload["cells"]
@@ -813,7 +881,7 @@ class CatalogManifestTests(unittest.TestCase):
         self.assertTrue(all("rank_eligible_count" not in row for row in cells))
         self.assertTrue(all("eligibility" not in row for row in cells))
         self.assertNotIn("safety-robustness", EXPECTED_CELL_IDS)
-        new_cells = {row["cell_id"]: row for row in cells[-4:]}
+        new_cells = {row["cell_id"]: row for row in cells[-5:]}
         self.assertEqual(
             {
                 "professional-deliverable-creation": {
@@ -848,6 +916,14 @@ class CatalogManifestTests(unittest.TestCase):
                     ),
                     "entity_kinds": ["agent"],
                 },
+                "code-review": {
+                    "name": "Code review",
+                    "definition": (
+                        "Review a code change and catch the real bugs it introduces without "
+                        "burying them in invalid or low-value comments"
+                    ),
+                    "entity_kinds": ["agent"],
+                },
             },
             {
                 cell_id: {
@@ -862,7 +938,7 @@ class CatalogManifestTests(unittest.TestCase):
     def test_every_cell_has_explicit_ordered_ranking_group_eligibility(self):
         payload = manifest()
         cell_ids = {cell["cell_id"] for cell in payload["cells"]}
-        self.assertEqual(38, len(payload["ranking_groups"]))
+        self.assertEqual(39, len(payload["ranking_groups"]))
         group_keys = set()
         covered_cells = set()
 
@@ -929,9 +1005,9 @@ class CatalogManifestTests(unittest.TestCase):
         new_groups = {
             group["cell_id"]: group
             for group in payload["ranking_groups"]
-            if group["cell_id"] in set(EXPECTED_CELL_IDS[-4:])
+            if group["cell_id"] in set(EXPECTED_CELL_IDS[-5:])
         }
-        self.assertEqual(set(EXPECTED_CELL_IDS[-4:]), set(new_groups))
+        self.assertEqual(set(EXPECTED_CELL_IDS[-5:]), set(new_groups))
         self.assertEqual(
             {
                 "professional-deliverable-creation": (
@@ -947,6 +1023,9 @@ class CatalogManifestTests(unittest.TestCase):
                 ),
                 "security-code-review": (
                     "rg-security-code-review-agent-system-agentic-agent-system-v1"
+                ),
+                "code-review": (
+                    "rg-code-review-agent-system-agentic-agent-system-v1"
                 ),
             },
             {
@@ -976,7 +1055,11 @@ class CatalogManifestTests(unittest.TestCase):
                 )
             ),
         )
-        for cell_id in ("computational-research-reproduction", "security-code-review"):
+        for cell_id in (
+            "computational-research-reproduction",
+            "security-code-review",
+            "code-review",
+        ):
             self.assertEqual(
                 ("agent_system", "agentic", "agent-system-v1"),
                 tuple(
@@ -998,6 +1081,7 @@ class CatalogManifestTests(unittest.TestCase):
                     "professional-deliverable-creation",
                     "computational-research-reproduction",
                     "security-code-review",
+                    "code-review",
                 )
             )
         )
@@ -1121,10 +1205,12 @@ class CatalogManifestTests(unittest.TestCase):
                 # 2026-09-30: the security-code-review cell's two ranking families.
                 "deepsecbench-aa",
                 "cwe-bench-aa",
+                # 2026-10-04: the code-review cell's one ranking family.
+                "macroscopebench-medium",
             },
             active,
         )
-        self.assertEqual(109, len(families))
+        self.assertEqual(111, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -1136,13 +1222,16 @@ class CatalogManifestTests(unittest.TestCase):
             )
         )
         # Parsed and ingested but deliberately non-ranking: exploit-PoC work is not code
-        # review, and a refusal rate is a veto input, never a quality score.
+        # review, a refusal rate is a veto input, never a quality score, and the
+        # every-effort MacroscopeBench board would rank each model at its best effort.
         shadow = {
             family_id
             for family_id, row in family_by_id.items()
             if row["state"] == "shadow"
         }
-        self.assertEqual({"cybergym-e2e-aa", "deepsecbench-aa-refusal"}, shadow)
+        self.assertEqual(
+            {"cybergym-e2e-aa", "deepsecbench-aa-refusal", "macroscopebench"}, shadow
+        )
         self.assertTrue(all(
             row["state"] == "discovered"
             for row in families
@@ -1195,11 +1284,15 @@ class CatalogManifestTests(unittest.TestCase):
                 "mcp-atlas": "mcp-atlas",
                 "lmarena-instruction-following": "lmarena-creative-writing",
                 "tau3-banking-knowledge": "tau2",
+                # One board read twice: the medium-effort rows are a subset of the
+                # every-effort table, so the two families are never independent evidence.
+                "macroscopebench-medium": "macroscopebench",
+                "macroscopebench": "macroscopebench",
             },
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(122, len(feeds))
+        self.assertEqual(124, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_itbench_is_not_executable_without_exact_configuration_identity(self):
@@ -1657,6 +1750,8 @@ class CatalogManifestTests(unittest.TestCase):
                 "cybergym-e2e-aa-discovery": "higher",
                 # The one lower-is-better feed: a refusal rate, shadow and never ranked.
                 "deepsecbench-aa-refusal-discovery": "lower",
+                "macroscopebench-medium-discovery": "higher",
+                "macroscopebench-discovery": "higher",
             },
             recovered_directions,
         )

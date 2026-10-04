@@ -10452,6 +10452,212 @@
           ]
         }
       ]
+    },
+    {
+      "benchmark_family_id": "macroscopebench-medium",
+      "checked_on": "2026-10-04",
+      "sources": [
+        {
+          "source_id": "macroscope_benchmark",
+          "kind": "official_leaderboard",
+          "url": "https://www.macroscope.com/benchmark"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "MacroscopeBench is Macroscope's code-review benchmark: it tests whether a code reviewer catches real bugs at the commits that introduced them, and Macroscope uses it to build and tune Macroscope Code Review. Every model is run three independent times and every metric is the mean of the three runs. Score (0-100, higher is better) is the harmonic mean of known-bug recall and precision. Recall is the share of the benchmark's catalogued bugs, each later explicitly identified and fixed in its codebase, that an LLM judge matches to a reported bug (credited once per bug). Precision is the share of all reported bugs that an LLM judge, able to explore the codebase, finds to be valid bugs introduced or exposed by the reviewed commit; invalid, subjective and out-of-scope findings count against it. The default view counts every severity bucket. The page also reports a signal-to-noise ratio, the model inference cost per review task and the median review duration.",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The page server-renders one HTML table with the columns Model, Score, Recall, Precision, Signal / noise, Cost and Duration. Each row is one model at one reasoning effort (max, xhigh, high, medium or low), so each row resolves to an agent system: the model at that effort inside Macroscope's own review pipeline. On 2026-10-04 the table held 41 rows over 12 models: Claude Opus 5.5, Claude Opus 5, GPT-6.1 Sol, GPT-6 Sol, GPT-6 Astra, GPT-6 Luna, GPT-5.6 Sol, GLM 5.3, Grok 4.6, Kimi K3, DeepSeek V4.1 Flash and Gemini 3.8 Flash.",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "This family keeps only the medium-effort rows (7 models on 2026-10-04: GPT-6.1 Sol, Grok 4.6, Gemini 3.8 Flash, Claude Opus 5.5, GPT-6 Sol, Claude Opus 5 and GPT-6 Luna) and is the family that ranks the code-review cell. Model order changes with reasoning effort: at max effort GPT-6 Sol leads GPT-6.1 Sol (80.3 to 78.5), at medium effort it trails (69.2 to 73.5). A ranking that pools every effort would rank each model at its best effort rather than at the effort a reviewer is actually run at, so the ranked family holds one fixed effort.",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank has direct source-owner permission to use this source data independently of any separately published license metadata; only the per-configuration results the page publishes are used, never the benchmark's tasks. EvalRank's owner reports that Macroscope Support granted permission, by email on 2026-10-04, to republish MacroscopeBench data (\"You have permission to republish for Macroscope.\"). Every published or redistributed result credits Macroscope with a \"Source: Macroscope\" link to https://www.macroscope.com/benchmark.",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The permission places no restriction on commercial use, and EvalRank reads it as covering commercial use of the published results. EvalRank's owner reports that Macroscope Support granted permission, by email on 2026-10-04, to republish MacroscopeBench data (\"You have permission to republish for Macroscope.\").",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of the published results. EvalRank's owner reports that Macroscope Support granted permission, by email on 2026-10-04, to republish MacroscopeBench data (\"You have permission to republish for Macroscope.\"). Every published or redistributed result credits Macroscope with a \"Source: Macroscope\" link to https://www.macroscope.com/benchmark.",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The page publishes no review trajectories and EvalRank redistributes none; only the published per-configuration results are republished. EvalRank's owner reports that Macroscope Support granted permission, by email on 2026-10-04, to republish MacroscopeBench data (\"You have permission to republish for Macroscope.\").",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The benchmark page is a public, server-rendered data view with no execution environment; the republication permission is the basis for fetching it on a daily schedule. EvalRank's owner reports that Macroscope Support granted permission, by email on 2026-10-04, to republish MacroscopeBench data (\"You have permission to republish for Macroscope.\").",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The fetched page bytes are retained as the citation behind every republished result, under the same republication permission. EvalRank's owner reports that Macroscope Support granted permission, by email on 2026-10-04, to republish MacroscopeBench data (\"You have permission to republish for Macroscope.\").",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes publication of rankings derived from the published results. EvalRank's owner reports that Macroscope Support granted permission, by email on 2026-10-04, to republish MacroscopeBench data (\"You have permission to republish for Macroscope.\"). Every published or redistributed result credits Macroscope with a \"Source: Macroscope\" link to https://www.macroscope.com/benchmark.",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "macroscopebench",
+      "checked_on": "2026-10-04",
+      "sources": [
+        {
+          "source_id": "macroscope_benchmark",
+          "kind": "official_leaderboard",
+          "url": "https://www.macroscope.com/benchmark"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "MacroscopeBench is Macroscope's code-review benchmark: it tests whether a code reviewer catches real bugs at the commits that introduced them, and Macroscope uses it to build and tune Macroscope Code Review. Every model is run three independent times and every metric is the mean of the three runs. Score (0-100, higher is better) is the harmonic mean of known-bug recall and precision. Recall is the share of the benchmark's catalogued bugs, each later explicitly identified and fixed in its codebase, that an LLM judge matches to a reported bug (credited once per bug). Precision is the share of all reported bugs that an LLM judge, able to explore the codebase, finds to be valid bugs introduced or exposed by the reviewed commit; invalid, subjective and out-of-scope findings count against it. The default view counts every severity bucket. The page also reports a signal-to-noise ratio, the model inference cost per review task and the median review duration.",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The page server-renders one HTML table with the columns Model, Score, Recall, Precision, Signal / noise, Cost and Duration. Each row is one model at one reasoning effort (max, xhigh, high, medium or low), so each row resolves to an agent system: the model at that effort inside Macroscope's own review pipeline. On 2026-10-04 the table held 41 rows over 12 models: Claude Opus 5.5, Claude Opus 5, GPT-6.1 Sol, GPT-6 Sol, GPT-6 Astra, GPT-6 Luna, GPT-5.6 Sol, GLM 5.3, Grok 4.6, Kimi K3, DeepSeek V4.1 Flash and Gemini 3.8 Flash.",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "This family carries every published configuration (each model at each reasoning effort) as exploratory evidence. It stays shadow and never ranks: pooling efforts would rank each model at its best effort. The medium-effort rows rank the cell through macroscopebench-medium.",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank has direct source-owner permission to use this source data independently of any separately published license metadata; only the per-configuration results the page publishes are used, never the benchmark's tasks. EvalRank's owner reports that Macroscope Support granted permission, by email on 2026-10-04, to republish MacroscopeBench data (\"You have permission to republish for Macroscope.\"). Every published or redistributed result credits Macroscope with a \"Source: Macroscope\" link to https://www.macroscope.com/benchmark.",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The permission places no restriction on commercial use, and EvalRank reads it as covering commercial use of the published results. EvalRank's owner reports that Macroscope Support granted permission, by email on 2026-10-04, to republish MacroscopeBench data (\"You have permission to republish for Macroscope.\").",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of the published results. EvalRank's owner reports that Macroscope Support granted permission, by email on 2026-10-04, to republish MacroscopeBench data (\"You have permission to republish for Macroscope.\"). Every published or redistributed result credits Macroscope with a \"Source: Macroscope\" link to https://www.macroscope.com/benchmark.",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The page publishes no review trajectories and EvalRank redistributes none; only the published per-configuration results are republished. EvalRank's owner reports that Macroscope Support granted permission, by email on 2026-10-04, to republish MacroscopeBench data (\"You have permission to republish for Macroscope.\").",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The benchmark page is a public, server-rendered data view with no execution environment; the republication permission is the basis for fetching it on a daily schedule. EvalRank's owner reports that Macroscope Support granted permission, by email on 2026-10-04, to republish MacroscopeBench data (\"You have permission to republish for Macroscope.\").",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The fetched page bytes are retained as the citation behind every republished result, under the same republication permission. EvalRank's owner reports that Macroscope Support granted permission, by email on 2026-10-04, to republish MacroscopeBench data (\"You have permission to republish for Macroscope.\").",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes publication of rankings derived from the published results. EvalRank's owner reports that Macroscope Support granted permission, by email on 2026-10-04, to republish MacroscopeBench data (\"You have permission to republish for Macroscope.\"). Every published or redistributed result credits Macroscope with a \"Source: Macroscope\" link to https://www.macroscope.com/benchmark.",
+          "source_ids": [
+            "macroscope_benchmark"
+          ]
+        }
+      ]
     }
   ]
 }

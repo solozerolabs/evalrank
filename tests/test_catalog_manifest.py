@@ -805,6 +805,41 @@ class CatalogManifestTests(unittest.TestCase):
                 self.assertTrue(feed["retention"]["store_artifact_bytes"])
                 self.assertEqual("declared", feed["lineage"]["validation_status"])
 
+    def test_mcp_tool_orchestration_gains_the_zapier_automationbench_board(self):
+        payload = manifest()
+        feeds = {row["feed_id"]: row for row in payload["feeds"]}
+        group = "rg-mcp-tool-orchestration-agent-system-agentic-agent-system-v1"
+        bound = {
+            row["benchmark_family_id"]
+            for row in payload["feeds"]
+            if row["state"] == "active" and "mcp-tool-orchestration" in row["candidate_cells"]
+        }
+        # MCP-Atlas, Toolathlon and tau3 banking_knowledge stopped scoring new releases in
+        # September 2026; Zapier keeps its first-party AutomationBench board current.
+        self.assertEqual(
+            {"mcp-atlas", "toolathlon", "tau3-banking-knowledge", "automationbench"}, bound
+        )
+        feed = feeds["automationbench-discovery"]
+        self.assertEqual("automationbench-zapier-board-module-v1", feed["adapter_id"])
+        self.assertEqual("higher", feed["metric_direction"])
+        self.assertIn(group, feed["ranking_group_ids"])
+        self.assertEqual(
+            ("agent_system", "agentic", "agent-system-v1"),
+            (feed["entity_kind"], feed["interaction_policy"], feed["configuration_passport_class"]),
+        )
+        self.assertEqual("approved", feed["rights"]["status"])
+        self.assertEqual(
+            ("validated", "periodic", 1209600, 7776000),
+            (
+                feed["cadence"]["status"],
+                feed["cadence"]["mode"],
+                feed["cadence"]["stale_after_seconds"],
+                feed["cadence"]["stop_recommending_after_seconds"],
+            ),
+        )
+        self.assertTrue(feed["retention"]["store_artifact_bytes"])
+        self.assertEqual("declared", feed["lineage"]["validation_status"])
+
     def test_code_review_ranks_only_the_medium_effort_macroscopebench_board(self):
         payload = manifest()
         families = {row["benchmark_family_id"]: row for row in payload["benchmark_families"]}
@@ -1207,6 +1242,9 @@ class CatalogManifestTests(unittest.TestCase):
                 "cwe-bench-aa",
                 # 2026-10-04: the code-review cell's one ranking family.
                 "macroscopebench-medium",
+                # 2026-10-18: Zapier's first-party AutomationBench board, the tool-orchestration
+                # family that still scores new releases after its three peers stopped.
+                "automationbench",
             },
             active,
         )
@@ -1361,15 +1399,19 @@ class CatalogManifestTests(unittest.TestCase):
             if row["benchmark_family_id"] in _RESEARCH_WAVE_FAMILIES
             and row["feed_id"].endswith("-discovery")
         }
+        mcp = ("mcp-tool-orchestration", "rg-mcp-tool-orchestration-agent-system-agentic-agent-system-v1")
+        crm = ("enterprise-crm-workflow", "rg-enterprise-crm-workflow-agent-system-agentic-agent-system-v1")
         expected = {
-            "mcp-atlas": ("mcp-tool-orchestration", "rg-mcp-tool-orchestration-agent-system-agentic-agent-system-v1"),
-            "browsecomp": ("web-browsing", "rg-web-browsing-agent-system-agentic-agent-system-v1"),
-            "toolathlon": ("mcp-tool-orchestration", "rg-mcp-tool-orchestration-agent-system-agentic-agent-system-v1"),
-            "agents-last-exam": ("professional-deliverable-creation", "rg-professional-deliverable-creation-system-configuration-system-system-configuration-v1"),
-            "automationbench": ("enterprise-crm-workflow", "rg-enterprise-crm-workflow-agent-system-agentic-agent-system-v1"),
-            "officeqa-pro": ("rag-retrieval", "rg-rag-retrieval-system-configuration-system-system-configuration-v1"),
-            "finance-agent-v2": ("finance", "rg-finance-agent-system-agentic-agent-system-v1"),
-            "deepswe": ("coding-general", "rg-coding-general-agent-system-agentic-agent-system-v1"),
+            "mcp-atlas": (mcp,),
+            "browsecomp": (("web-browsing", "rg-web-browsing-agent-system-agentic-agent-system-v1"),),
+            "toolathlon": (mcp,),
+            "agents-last-exam": (("professional-deliverable-creation", "rg-professional-deliverable-creation-system-configuration-system-system-configuration-v1"),),
+            # Multi-app business workflows are both enterprise workflow and MCP-style tool
+            # orchestration (2026-10-18), so AutomationBench is a candidate for both cells.
+            "automationbench": (crm, mcp),
+            "officeqa-pro": (("rag-retrieval", "rg-rag-retrieval-system-configuration-system-system-configuration-v1"),),
+            "finance-agent-v2": (("finance", "rg-finance-agent-system-agentic-agent-system-v1"),),
+            "deepswe": (("coding-general", "rg-coding-general-agent-system-agentic-agent-system-v1"),),
         }
 
         self.assertEqual(set(expected), set(feed_by_family))
@@ -1386,14 +1428,21 @@ class CatalogManifestTests(unittest.TestCase):
             browsecomp_search["ranking_group_ids"],
         )
 
-        for family_id, (cell_id, group_id) in expected.items():
+        for family_id, bindings in expected.items():
             with self.subTest(family_id=family_id):
                 family = family_by_id[family_id]
                 feed = feed_by_family[family_id]
-                self.assertEqual([cell_id], family["candidate_cells"])
-                self.assertEqual([cell_id], feed["candidate_cells"])
-                self.assertEqual([group_id], feed["ranking_group_ids"])
-                if family_id not in {"agents-last-exam", "deepswe", "mcp-atlas", "toolathlon"}:
+                cell_ids = [cell_id for cell_id, _ in bindings]
+                self.assertEqual(cell_ids, family["candidate_cells"])
+                self.assertEqual(cell_ids, feed["candidate_cells"])
+                self.assertEqual([group_id for _, group_id in bindings], feed["ranking_group_ids"])
+                if family_id not in {
+                    "agents-last-exam",
+                    "automationbench",
+                    "deepswe",
+                    "mcp-atlas",
+                    "toolathlon",
+                }:
                     self.assertEqual("discovered", family["state"])
                     self.assertEqual("discovered", feed["state"])
                     self.assertIsNone(feed["adapter_id"])
@@ -1752,6 +1801,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "deepsecbench-aa-refusal-discovery": "lower",
                 "macroscopebench-medium-discovery": "higher",
                 "macroscopebench-discovery": "higher",
+                "automationbench-discovery": "higher",
             },
             recovered_directions,
         )

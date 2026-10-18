@@ -7946,8 +7946,13 @@
     },
     {
       "benchmark_family_id": "automationbench",
-      "checked_on": "2026-07-23",
+      "checked_on": "2026-10-18",
       "sources": [
+        {
+          "source_id": "leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://zapier.com/benchmarks"
+        },
         {
           "source_id": "release",
           "kind": "official_site",
@@ -7957,9 +7962,43 @@
           "source_id": "paper",
           "kind": "primary_paper",
           "url": "https://arxiv.org/abs/2604.18934"
+        },
+        {
+          "source_id": "repository",
+          "kind": "official_repository",
+          "url": "https://github.com/zapier/AutomationBench"
         }
       ],
       "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "AutomationBench is Zapier's benchmark for AI agents executing end-to-end business workflows. Each task boots an isolated simulated company (CRM records, inbox threads, spreadsheets, support cases, calendars) across 47 simulated apps and about 500 API endpoints in six business functions (Sales, Marketing, Operations, Support, Finance and HR), hands the agent one trigger request, and gives it tools to search, read, update and send, with no clarifying questions and no human in the loop. Scoring is deterministic: fixed assertions check the final environment state, with no LLM judge, and the agent's reply is ignored. The leaderboard reports each configuration's share of 600+ held-out evaluation tasks completed fully, as a percentage where higher is better.",
+          "source_ids": [
+            "leaderboard",
+            "release",
+            "paper"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The leaderboard on https://zapier.com/benchmarks is versioned (1.0.6 on 2026-10-18) and lists every evaluated configuration with its rank, score and cost per task; each row is one model at one reasoning effort inside Zapier's harness, so each row resolves to an agent system. On 2026-10-18 it held 126 rows, from GPT-5.4 and Claude Sonnet 4.6 through Gemini 4 Argon, Claude Opus 5.5, Claude Sonnet 5.5, Claude Haiku 5.5, GPT-6 Sol, GPT-6 Astra and GPT-6 Luna. A row marked as a two-model combination (\"with <model> Fallback\", where a second model completes steps the first refuses) is not directly comparable by the board's own note and is not an observation of one model.",
+          "source_ids": [
+            "leaderboard"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "Choosing and calling the right tools across several applications to finish a multi-step task is both an enterprise workflow and MCP-style tool orchestration, so the family is a candidate for both cells. It shares 19 configurations with MCP-Atlas, Toolathlon and tau3 banking_knowledge, and among them it agrees with their consensus at a leave-one-out Spearman of 0.71 (2026-10-18).",
+          "source_ids": [
+            "leaderboard"
+          ]
+        },
         {
           "topic": "task_data_license",
           "research_flag": null,

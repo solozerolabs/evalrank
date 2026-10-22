@@ -1,0 +1,49 @@
+name: Content-safety board
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: content-safety-board
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+      - name: Require the OpenRouter key
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          if [ -z "$OPENROUTER_API_KEY" ]; then
+            echo "::error::OPENROUTER_API_KEY is not set; the board cannot refresh and will go stale"
+            exit 1
+          fi
+      - name: Score new candidates
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        working-directory: boards/content-safety-classification
+        run: python3 harness.py run --results results.json --workers 4 --concurrency 8
+      - name: Test the board
+        run: python3 -m unittest tests.test_content_safety_board
+      - name: Commit the board
+        run: |
+          if git diff --quiet -- boards/content-safety-classification/results.json; then
+            echo "no new candidates"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add boards/content-safety-classification/results.json
+          git commit -m "chore(boards): refresh the content-safety classification board"
+          git push

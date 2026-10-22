@@ -40,6 +40,7 @@ EXPECTED_CELL_IDS = (
     "security-code-review",
     "code-review",
     "instruction-following",
+    "content-safety-classification",
 )
 
 EXPECTED_FAMILY_IDS = (
@@ -155,6 +156,7 @@ EXPECTED_FAMILY_IDS = (
     "macroscopebench-medium",
     "macroscopebench",
     "aa-ifbench",
+    "evalrank-content-safety",
 )
 
 # MTEB families each expose an embedder + a reranker feed (both retrieval
@@ -207,6 +209,7 @@ EXPECTED_FEED_IDS = tuple(
         # Artificial Analysis data carried by the Benchmark Heaven API transport.
         "aa-omniscience": ("aa-omniscience-benchmarkheaven-discovery",),
         "aa-ifbench": ("aa-ifbench-benchmarkheaven-discovery",),
+        "evalrank-content-safety": ("evalrank-content-safety-board-discovery",),
         "core-bench-reproducibility": (
             "core-bench-v1-1-mainline-discovery",
             "core-bench-v1-1-ood-discovery",
@@ -961,6 +964,38 @@ class CatalogManifestTests(unittest.TestCase):
             feed["lineage"],
         )
 
+    def test_content_safety_classification_ranks_on_evalranks_own_board(self):
+        payload = manifest()
+        families = {row["benchmark_family_id"]: row for row in payload["benchmark_families"]}
+        feeds = {row["feed_id"]: row for row in payload["feeds"]}
+        groups = {row["ranking_group_id"]: row for row in payload["ranking_groups"]}
+        group_id = (
+            "rg-content-safety-classification-model-configuration-direct-prompt-"
+            "model-configuration-v1"
+        )
+        feed = feeds["evalrank-content-safety-board-discovery"]
+        self.assertEqual("active", families["evalrank-content-safety"]["state"])
+        self.assertEqual("content-safety-classification", groups[group_id]["cell_id"])
+        bound = {
+            row["benchmark_family_id"]
+            for row in payload["feeds"]
+            if row["state"] == "active"
+            and "content-safety-classification" in row["candidate_cells"]
+        }
+        self.assertEqual({"evalrank-content-safety"}, bound)
+        self.assertEqual("evalrank-content-safety-board-json-v1", feed["adapter_id"])
+        self.assertEqual("higher", feed["metric_direction"])
+        self.assertEqual([group_id], feed["ranking_group_ids"])
+        # EvalRank's own Apache-2.0 results over CC-BY-4.0 and MIT item sets.
+        self.assertEqual("approved", feed["rights"]["status"])
+        self.assertEqual("Apache-2.0", feed["rights"]["harness_code_license"])
+        self.assertEqual("CC-BY-4.0 AND MIT", feed["rights"]["task_data_license"])
+        omniscience = feeds["aa-omniscience-benchmarkheaven-discovery"]
+        for key in ("cadence", "retention"):
+            self.assertEqual(omniscience[key], feed[key])
+        self.assertEqual("declared", feed["lineage"]["validation_status"])
+        self.assertEqual("evalrank-content-safety-tasks", feed["lineage"]["task_lineage_id"])
+
     def test_manifest_is_the_exact_public_taxonomy(self):
         payload = manifest()
         cells = payload["cells"]
@@ -972,7 +1007,7 @@ class CatalogManifestTests(unittest.TestCase):
         self.assertTrue(all("rank_eligible_count" not in row for row in cells))
         self.assertTrue(all("eligibility" not in row for row in cells))
         self.assertNotIn("safety-robustness", EXPECTED_CELL_IDS)
-        new_cells = {row["cell_id"]: row for row in cells[-6:]}
+        new_cells = {row["cell_id"]: row for row in cells[-7:]}
         self.assertEqual(
             {
                 "professional-deliverable-creation": {
@@ -1024,6 +1059,14 @@ class CatalogManifestTests(unittest.TestCase):
                     ),
                     "entity_kinds": ["model"],
                 },
+                "content-safety-classification": {
+                    "name": "Content-safety classification",
+                    "definition": (
+                        "Classify text as safe or unsafe, flagging unsafe content with high "
+                        "recall while rarely flagging harmless text that only sounds unsafe"
+                    ),
+                    "entity_kinds": ["model"],
+                },
             },
             {
                 cell_id: {
@@ -1038,7 +1081,7 @@ class CatalogManifestTests(unittest.TestCase):
     def test_every_cell_has_explicit_ordered_ranking_group_eligibility(self):
         payload = manifest()
         cell_ids = {cell["cell_id"] for cell in payload["cells"]}
-        self.assertEqual(40, len(payload["ranking_groups"]))
+        self.assertEqual(41, len(payload["ranking_groups"]))
         group_keys = set()
         covered_cells = set()
 
@@ -1105,10 +1148,11 @@ class CatalogManifestTests(unittest.TestCase):
         new_groups = {
             group["cell_id"]: group
             for group in payload["ranking_groups"]
-            if group["cell_id"] in set(EXPECTED_CELL_IDS[-6:-1])
+            if group["cell_id"] in set(EXPECTED_CELL_IDS[-7:-2])
         }
-        # instruction-following (2026-10-21) has its own audit test.
-        self.assertEqual(set(EXPECTED_CELL_IDS[-6:-1]), set(new_groups))
+        # instruction-following and content-safety-classification (2026-10-21) have their own
+        # audit tests.
+        self.assertEqual(set(EXPECTED_CELL_IDS[-7:-2]), set(new_groups))
         self.assertEqual(
             {
                 "professional-deliverable-creation": (
@@ -1313,10 +1357,13 @@ class CatalogManifestTests(unittest.TestCase):
                 "automationbench",
                 # 2026-10-21: the instruction-following cell's one family (AA IFBench).
                 "aa-ifbench",
+                # 2026-10-21: the content-safety-classification cell's one family, EvalRank's
+                # own open board (no public board scored general LLMs as classifiers).
+                "evalrank-content-safety",
             },
             active,
         )
-        self.assertEqual(112, len(families))
+        self.assertEqual(113, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -1398,7 +1445,7 @@ class CatalogManifestTests(unittest.TestCase):
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(125, len(feeds))
+        self.assertEqual(126, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_itbench_is_not_executable_without_exact_configuration_identity(self):
@@ -1871,6 +1918,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "macroscopebench-discovery": "higher",
                 "automationbench-discovery": "higher",
                 "aa-ifbench-benchmarkheaven-discovery": "higher",
+                "evalrank-content-safety-board-discovery": "higher",
             },
             recovered_directions,
         )

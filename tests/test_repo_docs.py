@@ -55,6 +55,7 @@ class RepoDocsTests(unittest.TestCase):
         top_level_dirs = {path.parts[0] for path in repository_paths() if len(path.parts) > 1}
         expected_refs = {
             ".github": ".github/workflows/",
+            "boards": "boards/",
             "catalog": "catalog/",
             "docs": "docs/",
             "examples": "examples/",

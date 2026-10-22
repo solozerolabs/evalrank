@@ -10850,6 +10850,171 @@
           ]
         }
       ]
+    },
+    {
+      "benchmark_family_id": "evalrank-content-safety",
+      "checked_on": "2026-10-21",
+      "sources": [
+        {
+          "source_id": "board",
+          "kind": "official_repository",
+          "url": "https://github.com/solozerolabs/evalrank/tree/main/boards/content-safety-classification"
+        },
+        {
+          "source_id": "results",
+          "kind": "official_dataset",
+          "url": "https://github.com/solozerolabs/evalrank/blob/main/boards/content-safety-classification/results.json"
+        },
+        {
+          "source_id": "license",
+          "kind": "official_repository",
+          "url": "https://github.com/solozerolabs/evalrank/blob/main/LICENSE"
+        },
+        {
+          "source_id": "xstest",
+          "kind": "official_repository",
+          "url": "https://github.com/paul-rottger/xstest"
+        },
+        {
+          "source_id": "xstest_paper",
+          "kind": "primary_paper",
+          "url": "https://arxiv.org/abs/2308.01263"
+        },
+        {
+          "source_id": "xstest_license",
+          "kind": "official_repository",
+          "url": "https://github.com/paul-rottger/xstest/blob/main/LICENSE"
+        },
+        {
+          "source_id": "moderation",
+          "kind": "official_repository",
+          "url": "https://github.com/openai/moderation-api-release"
+        },
+        {
+          "source_id": "moderation_paper",
+          "kind": "primary_paper",
+          "url": "https://arxiv.org/abs/2208.03274"
+        },
+        {
+          "source_id": "moderation_license",
+          "kind": "official_repository",
+          "url": "https://github.com/openai/moderation-api-release/blob/main/LICENSE"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The board runs every OpenRouter text model with structured-output support, priced at or under $2/M input and $10/M output tokens and released in the last 365 days, as a SAFE/UNSAFE classifier on one fixed, digest-pinned item set with one neutral prompt at temperature 0. The items are the 450 XSTest v2 prompts (250 safe prompts that use unsafe-sounding words harmlessly, 200 unsafe) and a seeded, stratified 600-row slice of OpenAI's moderation-api-release (300 unsafe, 300 safe). A provider content refusal counts as UNSAFE, and a row with more than 5% unanswered items is published but excluded.",
+          "source_ids": [
+            "board",
+            "xstest",
+            "moderation"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The score is balanced accuracy (the mean of recall on unsafe items and specificity on safe items), computed per dataset and averaged with equal dataset weight: a unit interval, higher is better, where flagging everything scores 0.5. Each row also publishes per-dataset recall and false-positive rate, and results.json records the dataset sha256s, the item-set digest and the prompt digest.",
+          "source_ids": [
+            "board",
+            "results"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "Each row is one model under direct prompting with fixed decoding, so it resolves to a model configuration and ranks the content-safety-classification cell's model-configuration group. No public leaderboard surveyed on 2026-10-21 (CircleGuardBench, HELM Safety, Giskard Phare, GuardRate, RewardBench 2, GuardBench and others) scored current general LLMs as classifiers on a fresh, republishable surface, which is why EvalRank runs this board itself. No other catalog family shares its items, so its correlation stays unknown.",
+          "source_ids": [
+            "board",
+            "xstest_paper",
+            "moderation_paper"
+          ]
+        },
+        {
+          "topic": "harness_code_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The harness is boards/content-safety-classification/harness.py in this repository, Apache-2.0.",
+          "source_ids": [
+            "board",
+            "license"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "XSTest v2 is licensed CC-BY-4.0 and moderation-api-release MIT. The item sets are XSTest v2 (CC-BY-4.0, Rottger et al.) and OpenAI's moderation-api-release (MIT); every published result attributes both, and the raw items are never republished.",
+          "source_ids": [
+            "xstest_license",
+            "moderation_license"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license. Both item-set licenses (CC-BY-4.0, MIT) permit commercial use with attribution.",
+          "source_ids": [
+            "license",
+            "xstest_license",
+            "moderation_license"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license. The item sets are XSTest v2 (CC-BY-4.0, Rottger et al.) and OpenAI's moderation-api-release (MIT); every published result attributes both, and the raw items are never republished.",
+          "source_ids": [
+            "license",
+            "results"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license. Per-item verdicts are not published; a trajectory republished from a rerun carries the same attribution.",
+          "source_ids": [
+            "license"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The harness calls models through the public OpenRouter chat API with the operator's own key; no third-party environment terms restrict the published scores. The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license.",
+          "source_ids": [
+            "board",
+            "license"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license. Retaining the fetched results.json bytes is permitted by the license.",
+          "source_ids": [
+            "license",
+            "results"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license. The item sets are XSTest v2 (CC-BY-4.0, Rottger et al.) and OpenAI's moderation-api-release (MIT); every published result attributes both, and the raw items are never republished.",
+          "source_ids": [
+            "license",
+            "results"
+          ]
+        }
+      ]
     }
   ]
 }

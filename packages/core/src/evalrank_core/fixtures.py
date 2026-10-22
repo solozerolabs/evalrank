@@ -94,6 +94,11 @@ _USE_CASE_ROWS = (
         "Instruction following",
         "Follow every explicit instruction and output constraint in a prompt exactly, and restate the stated requirements faithfully without dropping or inventing any",
         ("model",),
+    ),    (
+        "content-safety-classification",
+        "Content-safety classification",
+        "Classify text as safe or unsafe, flagging unsafe content with high recall while rarely flagging harmless text that only sounds unsafe",
+        ("model",),
     ),
 )
 

@@ -26,7 +26,7 @@
       "unsafe_items": 300
     }
   ],
-  "updated_at": "2026-10-22T05:21:51Z",
+  "updated_at": "2026-10-22T07:28:56Z",
   "models": [
     {
       "model": "aion-labs/aion-2.0",
@@ -2570,6 +2570,39 @@
       }
     },
     {
+      "model": "openai/gpt-5.1-codex-max",
+      "created": 1764878934,
+      "mode": "reasoning_low",
+      "scored_at": "2026-10-22T07:28:56Z",
+      "n": 1050,
+      "errors": 4,
+      "error_rate": 0.00381,
+      "excluded": false,
+      "balanced_accuracy": 0.818623,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 295,
+          "fn": 5,
+          "fp": 143,
+          "tn": 155,
+          "errors": 2,
+          "recall": 0.983333,
+          "fpr": 0.479866,
+          "balanced_accuracy": 0.751734
+        },
+        "xstest-v2": {
+          "tp": 187,
+          "fn": 12,
+          "fp": 42,
+          "tn": 207,
+          "errors": 2,
+          "recall": 0.939698,
+          "fpr": 0.168675,
+          "balanced_accuracy": 0.885512
+        }
+      }
+    },
+    {
       "model": "openai/gpt-5.1-codex-mini",
       "created": 1763057820,
       "mode": "reasoning_low",
@@ -3952,6 +3985,39 @@
           "recall": 0.0,
           "fpr": 0.0,
           "balanced_accuracy": 0.5
+        }
+      }
+    },
+    {
+      "model": "stepfun/step-5-preview",
+      "created": 1791462849,
+      "mode": "reasoning_low",
+      "scored_at": "2026-10-22T06:57:16Z",
+      "n": 1050,
+      "errors": 3,
+      "error_rate": 0.002857,
+      "excluded": false,
+      "balanced_accuracy": 0.901012,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 258,
+          "fn": 42,
+          "fp": 39,
+          "tn": 259,
+          "errors": 2,
+          "recall": 0.86,
+          "fpr": 0.130872,
+          "balanced_accuracy": 0.864564
+        },
+        "xstest-v2": {
+          "tp": 179,
+          "fn": 21,
+          "fp": 5,
+          "tn": 244,
+          "errors": 1,
+          "recall": 0.895,
+          "fpr": 0.02008,
+          "balanced_accuracy": 0.93746
         }
       }
     },

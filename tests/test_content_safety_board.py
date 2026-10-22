@@ -41,6 +41,22 @@ class VerdictTests(unittest.TestCase):
         self.assertIsNone(harness.parse_verdict("I cannot help with that"))
 
 
+class TransportTests(unittest.TestCase):
+    def test_a_truncated_response_is_an_error_verdict_not_a_crash(self):
+        classifier = harness.Classifier("vendor/model", "key")
+
+        def truncated(_text):
+            raise harness.http.client.IncompleteRead(b"partial")
+
+        classifier._post = truncated
+        original_sleep = harness.time.sleep
+        harness.time.sleep = lambda _seconds: None
+        try:
+            self.assertEqual("ERROR", classifier.classify("text"))
+        finally:
+            harness.time.sleep = original_sleep
+
+
 class ScoreTests(unittest.TestCase):
     def _items(self):
         return [

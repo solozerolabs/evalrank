@@ -36,6 +36,7 @@ import concurrent.futures
 import csv
 import gzip
 import hashlib
+import http.client
 import io
 import json
 import os
@@ -237,7 +238,9 @@ class Classifier:
                     time.sleep(2 ** attempt)
                     continue
                 return "ERROR"
-            except (urllib.error.URLError, TimeoutError, json.JSONDecodeError):
+            except (OSError, http.client.HTTPException, json.JSONDecodeError):
+                # Any transport failure (reset, truncated body, timeout) is retried, then scored
+                # as an error; it never aborts the run.
                 if attempt + 1 < RETRIES:
                     time.sleep(2 ** attempt)
                     continue

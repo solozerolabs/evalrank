@@ -10697,6 +10697,159 @@
           ]
         }
       ]
+    },
+    {
+      "benchmark_family_id": "aa-ifbench",
+      "checked_on": "2026-10-21",
+      "sources": [
+        {
+          "source_id": "paper",
+          "kind": "primary_paper",
+          "url": "https://arxiv.org/abs/2507.02833"
+        },
+        {
+          "source_id": "repository",
+          "kind": "official_repository",
+          "url": "https://github.com/allenai/IFBench"
+        },
+        {
+          "source_id": "aa_methodology",
+          "kind": "official_site",
+          "url": "https://artificialanalysis.ai/methodology/intelligence-benchmarking"
+        },
+        {
+          "source_id": "aa_leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://artificialanalysis.ai/evaluations/ifbench"
+        },
+        {
+          "source_id": "benchmarkheaven_api",
+          "kind": "official_dataset",
+          "url": "https://benchmarkheaven.com/api/benchmark-scores?benchmark_id=aa-ifbench::snapshot-2026-09-10"
+        },
+        {
+          "source_id": "benchmarkheaven_repository",
+          "kind": "official_repository",
+          "url": "https://github.com/fstandhartinger/model-market-comparison"
+        },
+        {
+          "source_id": "benchmarkheaven_license",
+          "kind": "official_repository",
+          "url": "https://github.com/fstandhartinger/model-market-comparison/blob/main/LICENSE"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "IFBench (Ai2) tests precise instruction following on 58 new, diverse and verifiable out-of-domain output constraints (counting, formatting, sentence and word manipulation, copying) that a program checks, so a model cannot pass by matching the constraints of IFEval-style training data. Artificial Analysis runs the single-turn set under its fixed prompts and reports prompt-level loose accuracy averaged over five repeats, a 0 to 1 fraction where higher is better.",
+          "source_ids": [
+            "paper",
+            "repository",
+            "aa_methodology"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The Benchmark Heaven public API serves read-only, CORS-open JSON observations for the registry id aa-ifbench::snapshot-2026-09-10 (its versioned id for Artificial Analysis's single-turn IFBench). Every observation carries the Artificial Analysis source URL, a retrieved_at timestamp and a sha256 of the retrieved source. On 2026-10-21 the API held 450 measured observations for that snapshot, covering Grok 4.3 (0.833 at medium effort), MiniMax-M3 (0.829), Qwen3.7 Max (0.805), DeepSeek V4 Flash (0.792 at max effort), Gemini 3.1 Flash-Lite (0.772), Gemini 3.5 Flash (0.763 at high effort) and Claude Opus 4.8 (0.622 at max effort).",
+          "source_ids": [
+            "benchmarkheaven_api",
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "Each observation is one model at a named reasoning effort answering Artificial Analysis's fixed prompts, so it resolves to a model configuration under direct prompting and ranks the instruction-following cell's model-configuration group. Verifiable constraint satisfaction is the behaviour that cell names: follow every explicit requirement and restate it without dropping or inventing one. Grading is programmatic, with no LLM judge. No other catalog family shares its prompts, so its correlation stays unknown.",
+          "source_ids": [
+            "paper",
+            "benchmarkheaven_api"
+          ]
+        },
+        {
+          "topic": "harness_code_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The feed ingests the Benchmark Heaven API's JSON result data only; no harness code ships with it. Benchmark Heaven's own transport code is MIT-licensed and is not ingested, so the recorded value marks the field not applicable to the API data view.",
+          "source_ids": [
+            "benchmarkheaven_repository",
+            "benchmarkheaven_license"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The scores are Artificial Analysis's data, which Benchmark Heaven republishes under AA's attribution terms rather than an SPDX license. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for automated fetching and public republication of its evaluation results with attribution by a link to artificialanalysis.ai; the Benchmark Heaven transport already serves the catalog under the owner's 2026-09-28 Rights B ruling. The Artificial Analysis attribution terms apply: every published or redistributed IFBench result credits Artificial Analysis and links the AA source URL that each observation carries.",
+          "source_ids": [
+            "aa_leaderboard",
+            "benchmarkheaven_api"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes commercial use of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for automated fetching and public republication of its evaluation results with attribution by a link to artificialanalysis.ai; the Benchmark Heaven transport already serves the catalog under the owner's 2026-09-28 Rights B ruling.",
+          "source_ids": [
+            "aa_leaderboard",
+            "benchmarkheaven_api"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for automated fetching and public republication of its evaluation results with attribution by a link to artificialanalysis.ai; the Benchmark Heaven transport already serves the catalog under the owner's 2026-09-28 Rights B ruling. The Artificial Analysis attribution terms apply: every published or redistributed IFBench result credits Artificial Analysis and links the AA source URL that each observation carries.",
+          "source_ids": [
+            "aa_leaderboard",
+            "benchmarkheaven_api"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for automated fetching and public republication of its evaluation results with attribution by a link to artificialanalysis.ai; the Benchmark Heaven transport already serves the catalog under the owner's 2026-09-28 Rights B ruling.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The API data view involves no execution environment; direct source-owner permission authorizes use of the source for this feed. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for automated fetching and public republication of its evaluation results with attribution by a link to artificialanalysis.ai; the Benchmark Heaven transport already serves the catalog under the owner's 2026-09-28 Rights B ruling.",
+          "source_ids": [
+            "aa_leaderboard",
+            "benchmarkheaven_api"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes retention of the fetched API response bytes, each observation keeping its AA source URL, retrieved_at and sha256. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for automated fetching and public republication of its evaluation results with attribution by a link to artificialanalysis.ai; the Benchmark Heaven transport already serves the catalog under the owner's 2026-09-28 Rights B ruling.",
+          "source_ids": [
+            "aa_leaderboard",
+            "benchmarkheaven_api"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes publication of rankings derived from this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for automated fetching and public republication of its evaluation results with attribution by a link to artificialanalysis.ai; the Benchmark Heaven transport already serves the catalog under the owner's 2026-09-28 Rights B ruling. The Artificial Analysis attribution terms apply: every published or redistributed IFBench result credits Artificial Analysis and links the AA source URL that each observation carries.",
+          "source_ids": [
+            "aa_leaderboard",
+            "benchmarkheaven_api"
+          ]
+        }
+      ]
     }
   ]
 }

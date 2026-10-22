@@ -89,6 +89,12 @@ _USE_CASE_ROWS = (
         "Review a code change and catch the real bugs it introduces without burying them in invalid or low-value comments",
         ("agent",),
     ),
+    (
+        "instruction-following",
+        "Instruction following",
+        "Follow every explicit instruction and output constraint in a prompt exactly, and restate the stated requirements faithfully without dropping or inventing any",
+        ("model",),
+    ),
 )
 
 

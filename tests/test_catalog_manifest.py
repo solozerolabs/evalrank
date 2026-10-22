@@ -39,6 +39,7 @@ EXPECTED_CELL_IDS = (
     "writing",
     "security-code-review",
     "code-review",
+    "instruction-following",
 )
 
 EXPECTED_FAMILY_IDS = (
@@ -153,6 +154,7 @@ EXPECTED_FAMILY_IDS = (
     "deepsecbench-aa-refusal",
     "macroscopebench-medium",
     "macroscopebench",
+    "aa-ifbench",
 )
 
 # MTEB families each expose an embedder + a reranker feed (both retrieval
@@ -204,6 +206,7 @@ EXPECTED_FEED_IDS = tuple(
         "paperbench": ("paperbench-full-discovery",),
         # Artificial Analysis data carried by the Benchmark Heaven API transport.
         "aa-omniscience": ("aa-omniscience-benchmarkheaven-discovery",),
+        "aa-ifbench": ("aa-ifbench-benchmarkheaven-discovery",),
         "core-bench-reproducibility": (
             "core-bench-v1-1-mainline-discovery",
             "core-bench-v1-1-ood-discovery",
@@ -905,6 +908,59 @@ class CatalogManifestTests(unittest.TestCase):
             feeds["macroscopebench-discovery"]["lineage"],
         )
 
+    def test_instruction_following_ranks_on_the_aa_ifbench_board(self):
+        payload = manifest()
+        families = {row["benchmark_family_id"]: row for row in payload["benchmark_families"]}
+        feeds = {row["feed_id"]: row for row in payload["feeds"]}
+        groups = {row["ranking_group_id"]: row for row in payload["ranking_groups"]}
+        group_id = "rg-instruction-following-model-configuration-direct-prompt-model-configuration-v1"
+        # Artificial Analysis's single-turn IFBench through the same Benchmark Heaven
+        # transport, rights, cadence and retention as AA-Omniscience.
+        omniscience = feeds["aa-omniscience-benchmarkheaven-discovery"]
+        feed = feeds["aa-ifbench-benchmarkheaven-discovery"]
+        self.assertEqual("active", families["aa-ifbench"]["state"])
+        self.assertEqual(["instruction-following"], families["aa-ifbench"]["candidate_cells"])
+        self.assertEqual("instruction-following", groups[group_id]["cell_id"])
+        self.assertEqual(
+            {
+                key: value
+                for key, value in groups[
+                    "rg-factuality-model-configuration-direct-prompt-model-configuration-v1"
+                ].items()
+                if key not in {"ranking_group_id", "cell_id"}
+            },
+            {
+                key: value
+                for key, value in groups[group_id].items()
+                if key not in {"ranking_group_id", "cell_id"}
+            },
+        )
+        bound = {
+            row["benchmark_family_id"]
+            for row in payload["feeds"]
+            if row["state"] == "active" and "instruction-following" in row["candidate_cells"]
+        }
+        self.assertEqual({"aa-ifbench"}, bound)
+        self.assertEqual("active", feed["state"])
+        self.assertEqual("higher", feed["metric_direction"])
+        self.assertEqual("benchmarkheaven-api-json-v1", feed["adapter_id"])
+        self.assertEqual([group_id], feed["ranking_group_ids"])
+        for key in ("entity_kind", "interaction_policy", "configuration_passport_class"):
+            self.assertEqual(omniscience[key], feed[key])
+        for key in ("rights", "cadence", "retention"):
+            self.assertEqual(omniscience[key], feed[key])
+        self.assertEqual(
+            {
+                "validation_status": "declared",
+                "task_lineage_id": "aa-ifbench-tasks",
+                "environment_lineage_id": "aa-ifbench-environments",
+                "grader_lineage_id": "aa-ifbench-graders",
+                "correlation_status": "unknown",
+                "correlated_family_group": None,
+            },
+            feed["lineage"],
+        )
+
     def test_manifest_is_the_exact_public_taxonomy(self):
         payload = manifest()
         cells = payload["cells"]
@@ -916,7 +972,7 @@ class CatalogManifestTests(unittest.TestCase):
         self.assertTrue(all("rank_eligible_count" not in row for row in cells))
         self.assertTrue(all("eligibility" not in row for row in cells))
         self.assertNotIn("safety-robustness", EXPECTED_CELL_IDS)
-        new_cells = {row["cell_id"]: row for row in cells[-5:]}
+        new_cells = {row["cell_id"]: row for row in cells[-6:]}
         self.assertEqual(
             {
                 "professional-deliverable-creation": {
@@ -959,6 +1015,15 @@ class CatalogManifestTests(unittest.TestCase):
                     ),
                     "entity_kinds": ["agent"],
                 },
+                "instruction-following": {
+                    "name": "Instruction following",
+                    "definition": (
+                        "Follow every explicit instruction and output constraint in a prompt "
+                        "exactly, and restate the stated requirements faithfully without "
+                        "dropping or inventing any"
+                    ),
+                    "entity_kinds": ["model"],
+                },
             },
             {
                 cell_id: {
@@ -973,7 +1038,7 @@ class CatalogManifestTests(unittest.TestCase):
     def test_every_cell_has_explicit_ordered_ranking_group_eligibility(self):
         payload = manifest()
         cell_ids = {cell["cell_id"] for cell in payload["cells"]}
-        self.assertEqual(39, len(payload["ranking_groups"]))
+        self.assertEqual(40, len(payload["ranking_groups"]))
         group_keys = set()
         covered_cells = set()
 
@@ -1040,9 +1105,10 @@ class CatalogManifestTests(unittest.TestCase):
         new_groups = {
             group["cell_id"]: group
             for group in payload["ranking_groups"]
-            if group["cell_id"] in set(EXPECTED_CELL_IDS[-5:])
+            if group["cell_id"] in set(EXPECTED_CELL_IDS[-6:-1])
         }
-        self.assertEqual(set(EXPECTED_CELL_IDS[-5:]), set(new_groups))
+        # instruction-following (2026-10-21) has its own audit test.
+        self.assertEqual(set(EXPECTED_CELL_IDS[-6:-1]), set(new_groups))
         self.assertEqual(
             {
                 "professional-deliverable-creation": (
@@ -1245,10 +1311,12 @@ class CatalogManifestTests(unittest.TestCase):
                 # 2026-10-18: Zapier's first-party AutomationBench board, the tool-orchestration
                 # family that still scores new releases after its three peers stopped.
                 "automationbench",
+                # 2026-10-21: the instruction-following cell's one family (AA IFBench).
+                "aa-ifbench",
             },
             active,
         )
-        self.assertEqual(111, len(families))
+        self.assertEqual(112, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -1330,7 +1398,7 @@ class CatalogManifestTests(unittest.TestCase):
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(124, len(feeds))
+        self.assertEqual(125, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_itbench_is_not_executable_without_exact_configuration_identity(self):
@@ -1802,6 +1870,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "macroscopebench-medium-discovery": "higher",
                 "macroscopebench-discovery": "higher",
                 "automationbench-discovery": "higher",
+                "aa-ifbench-benchmarkheaven-discovery": "higher",
             },
             recovered_directions,
         )

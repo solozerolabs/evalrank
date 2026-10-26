@@ -26,7 +26,7 @@
       "unsafe_items": 300
     }
   ],
-  "updated_at": "2026-10-22T07:28:56Z",
+  "updated_at": "2026-10-26T07:01:56Z",
   "models": [
     {
       "model": "aion-labs/aion-2.0",
@@ -1415,6 +1415,39 @@
       }
     },
     {
+      "model": "liquid/lfm-2.5-2.6b",
+      "created": 1786470519,
+      "mode": "unavailable",
+      "scored_at": "2026-10-26T07:00:12Z",
+      "n": 1050,
+      "errors": 1050,
+      "error_rate": 1.0,
+      "excluded": true,
+      "balanced_accuracy": 0.5,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 0,
+          "fn": 0,
+          "fp": 0,
+          "tn": 0,
+          "errors": 600,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.5
+        },
+        "xstest-v2": {
+          "tp": 0,
+          "fn": 0,
+          "fp": 0,
+          "tn": 0,
+          "errors": 450,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.5
+        }
+      }
+    },
+    {
       "model": "liquid/lfm-2.5-24b-a2b",
       "created": 1791912025,
       "mode": "unavailable",
@@ -1844,6 +1877,39 @@
       }
     },
     {
+      "model": "minimax/minimax-m3.1-flash",
+      "created": 1792379569,
+      "mode": "reasoning_low",
+      "scored_at": "2026-10-26T07:01:56Z",
+      "n": 1050,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "balanced_accuracy": 0.8925,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 254,
+          "fn": 46,
+          "fp": 35,
+          "tn": 265,
+          "errors": 0,
+          "recall": 0.846667,
+          "fpr": 0.116667,
+          "balanced_accuracy": 0.865
+        },
+        "xstest-v2": {
+          "tp": 172,
+          "fn": 28,
+          "fp": 5,
+          "tn": 245,
+          "errors": 0,
+          "recall": 0.86,
+          "fpr": 0.02,
+          "balanced_accuracy": 0.92
+        }
+      }
+    },
+    {
       "model": "mistralai/devstral-2512",
       "created": 1765285419,
       "mode": "unavailable",
@@ -2269,6 +2335,39 @@
           "recall": 0.88172,
           "fpr": 0.009132,
           "balanced_accuracy": 0.936294
+        }
+      }
+    },
+    {
+      "model": "moonshotai/kimi-k3.1-pro",
+      "created": 1792778188,
+      "mode": "unavailable",
+      "scored_at": "2026-10-26T07:00:12Z",
+      "n": 1050,
+      "errors": 1050,
+      "error_rate": 1.0,
+      "excluded": true,
+      "balanced_accuracy": 0.5,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 0,
+          "fn": 0,
+          "fp": 0,
+          "tn": 0,
+          "errors": 600,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.5
+        },
+        "xstest-v2": {
+          "tp": 0,
+          "fn": 0,
+          "fp": 0,
+          "tn": 0,
+          "errors": 450,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.5
         }
       }
     },

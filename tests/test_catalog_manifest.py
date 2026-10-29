@@ -157,6 +157,9 @@ EXPECTED_FAMILY_IDS = (
     "macroscopebench",
     "aa-ifbench",
     "evalrank-content-safety",
+    "lmarena-non-english",
+    "lmarena-vision",
+    "lmarena-text-factuality",
 )
 
 # MTEB families each expose an embedder + a reranker feed (both retrieval
@@ -439,7 +442,7 @@ class CatalogManifestTests(unittest.TestCase):
 
         self.assertEqual("evalrank_manifest", payload["object"])
         self.assertEqual("1", payload["schema_version"])
-        self.assertEqual("2026-08-27.1", payload["manifest_version"])
+        self.assertEqual("2026-10-29.1", payload["manifest_version"])
         for key, id_key in (
             ("cells", "cell_id"),
             ("ranking_groups", "ranking_group_id"),
@@ -688,6 +691,76 @@ class CatalogManifestTests(unittest.TestCase):
                     "rg-factuality-model-configuration-direct-prompt-model-configuration-v1",
                     feeds[feed_id]["ranking_group_ids"],
                 )
+
+    def test_2026_10_29_lmarena_arena_feeds_mirror_instruction_following(self):
+        payload = manifest()
+        families = {row["benchmark_family_id"]: row for row in payload["benchmark_families"]}
+        feeds = {row["feed_id"]: row for row in payload["feeds"]}
+        groups = {row["ranking_group_id"]: row for row in payload["ranking_groups"]}
+        template_family = families["lmarena-instruction-following"]
+        template_feed = feeds["lmarena-instruction-following-discovery"]
+        template_group = groups["rg-writing-arena-system-crowd-pairwise-arena-system-v1"]
+        expected = {
+            # family: (cell, correlated-family group)
+            # non_english tags battles from the text arena's one vote pool; the
+            # vision and text-factuality leaderboards are separate battles.
+            "lmarena-non-english": ("multilingual", "lmarena-creative-writing"),
+            "lmarena-vision": ("vision-multimodal", "lmarena-vision"),
+            "lmarena-text-factuality": ("factuality", "lmarena-text-factuality"),
+        }
+        for family_id, (cell_id, correlated) in expected.items():
+            family = families[family_id]
+            feed = feeds[f"{family_id}-discovery"]
+            group_id = f"rg-{cell_id}-arena-system-crowd-pairwise-arena-system-v1"
+            group = groups[group_id]
+            with self.subTest(family_id=family_id):
+                self.assertEqual(f"{family_id}-hf-parquet-v1", feed["adapter_id"])
+                self.assertEqual([cell_id], family["candidate_cells"])
+                self.assertEqual([cell_id], feed["candidate_cells"])
+                self.assertEqual([group_id], feed["ranking_group_ids"])
+                self.assertEqual(correlated, family["correlated_family_group"])
+                self.assertEqual(correlated, feed["lineage"]["correlated_family_group"])
+                for key in ("entity_kinds", "state", "correlation_status", "research_flags"):
+                    self.assertEqual(template_family[key], family[key])
+                for key in (
+                    "metric_direction",
+                    "entity_kind",
+                    "interaction_policy",
+                    "configuration_passport_class",
+                    "state",
+                    "rights",
+                    "cadence",
+                    "retention",
+                ):
+                    self.assertEqual(template_feed[key], feed[key])
+                self.assertEqual(
+                    {
+                        "validation_status": "declared",
+                        "task_lineage_id": f"{family_id}-tasks",
+                        "environment_lineage_id": f"{family_id}-environments",
+                        "grader_lineage_id": f"{family_id}-graders",
+                        "correlation_status": "declared",
+                        "correlated_family_group": correlated,
+                    },
+                    feed["lineage"],
+                )
+                self.assertEqual(cell_id, group["cell_id"])
+                for key in (
+                    "entity_kind",
+                    "interaction_policy",
+                    "configuration_passport_class",
+                    "state",
+                    "claim_ceiling",
+                    "eligibility",
+                ):
+                    self.assertEqual(template_group[key], group[key])
+        # The per-language text-arena slices of the non_english pool stay out.
+        self.assertFalse(
+            any(
+                family_id.startswith("lmarena-") and family_id.endswith(("chinese", "japanese"))
+                for family_id in families
+            )
+        )
 
     def test_aa_omniscience_benchmarkheaven_feed_is_scheduler_refreshable(self):
         payload = manifest()
@@ -1081,7 +1154,7 @@ class CatalogManifestTests(unittest.TestCase):
     def test_every_cell_has_explicit_ordered_ranking_group_eligibility(self):
         payload = manifest()
         cell_ids = {cell["cell_id"] for cell in payload["cells"]}
-        self.assertEqual(41, len(payload["ranking_groups"]))
+        self.assertEqual(44, len(payload["ranking_groups"]))
         group_keys = set()
         covered_cells = set()
 
@@ -1360,10 +1433,14 @@ class CatalogManifestTests(unittest.TestCase):
                 # 2026-10-21: the content-safety-classification cell's one family, EvalRank's
                 # own open board (no public board scored general LLMs as classifiers).
                 "evalrank-content-safety",
+                # 2026-10-29: LMArena non-English, vision, and text-factuality arenas.
+                "lmarena-non-english",
+                "lmarena-vision",
+                "lmarena-text-factuality",
             },
             active,
         )
-        self.assertEqual(113, len(families))
+        self.assertEqual(116, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -1441,11 +1518,15 @@ class CatalogManifestTests(unittest.TestCase):
                 # every-effort table, so the two families are never independent evidence.
                 "macroscopebench-medium": "macroscopebench",
                 "macroscopebench": "macroscopebench",
+                # non_english tags battles from the text arena's one vote pool.
+                "lmarena-non-english": "lmarena-creative-writing",
+                "lmarena-vision": "lmarena-vision",
+                "lmarena-text-factuality": "lmarena-text-factuality",
             },
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(126, len(feeds))
+        self.assertEqual(129, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_itbench_is_not_executable_without_exact_configuration_identity(self):
@@ -1919,6 +2000,9 @@ class CatalogManifestTests(unittest.TestCase):
                 "automationbench-discovery": "higher",
                 "aa-ifbench-benchmarkheaven-discovery": "higher",
                 "evalrank-content-safety-board-discovery": "higher",
+                "lmarena-non-english-discovery": "higher",
+                "lmarena-vision-discovery": "higher",
+                "lmarena-text-factuality-discovery": "higher",
             },
             recovered_directions,
         )
@@ -1983,7 +2067,7 @@ class CatalogManifestTests(unittest.TestCase):
             "active cell without active group": lambda payload: next(
                 group
                 for group in payload["ranking_groups"]
-                if group["cell_id"] == "factuality"
+                if group["cell_id"] == "reasoning"
             ).update(state="quarantined"),
             "group-cell public entity mismatch": lambda payload: next(
                 cell

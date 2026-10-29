@@ -208,7 +208,7 @@ class ReferenceServerE2ETests(unittest.TestCase):
         health = json.loads(health_body)
         self.assertEqual("benchmark_health", health["object"])
         self.assertEqual("1", health["schema_version"])
-        self.assertEqual("2026-08-27.1", health["manifest_version"])
+        self.assertEqual("2026-10-29.1", health["manifest_version"])
         self.assertEqual("2026-08-04T00:00:00Z", health["generated_at"])
         self.assertEqual(28, len(health["cells"]))
         # v2: publication decoupled from validation. Every cell with a published

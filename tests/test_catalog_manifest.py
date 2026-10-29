@@ -160,6 +160,7 @@ EXPECTED_FAMILY_IDS = (
     "lmarena-non-english",
     "lmarena-vision",
     "lmarena-text-factuality",
+    "evalrank-site-translation",
 )
 
 # MTEB families each expose an embedder + a reranker feed (both retrieval
@@ -213,6 +214,7 @@ EXPECTED_FEED_IDS = tuple(
         "aa-omniscience": ("aa-omniscience-benchmarkheaven-discovery",),
         "aa-ifbench": ("aa-ifbench-benchmarkheaven-discovery",),
         "evalrank-content-safety": ("evalrank-content-safety-board-discovery",),
+        "evalrank-site-translation": ("evalrank-site-translation-board-discovery",),
         "core-bench-reproducibility": (
             "core-bench-v1-1-mainline-discovery",
             "core-bench-v1-1-ood-discovery",
@@ -1069,6 +1071,32 @@ class CatalogManifestTests(unittest.TestCase):
         self.assertEqual("declared", feed["lineage"]["validation_status"])
         self.assertEqual("evalrank-content-safety-tasks", feed["lineage"]["task_lineage_id"])
 
+    def test_multilingual_model_configurations_rank_on_evalranks_own_translation_board(self):
+        payload = manifest()
+        families = {row["benchmark_family_id"]: row for row in payload["benchmark_families"]}
+        feeds = {row["feed_id"]: row for row in payload["feeds"]}
+        groups = {row["ranking_group_id"]: row for row in payload["ranking_groups"]}
+        group_id = "rg-multilingual-model-configuration-direct-prompt-model-configuration-v1"
+        feed = feeds["evalrank-site-translation-board-discovery"]
+        self.assertEqual("active", families["evalrank-site-translation"]["state"])
+        self.assertEqual("multilingual", groups[group_id]["cell_id"])
+        bound = {
+            row["benchmark_family_id"]
+            for row in payload["feeds"]
+            if row["state"] == "active" and "multilingual" in row["candidate_cells"]
+        }
+        self.assertEqual({"evalrank-site-translation", "lmarena-non-english"}, bound)
+        self.assertEqual("evalrank-site-translation-board-json-v1", feed["adapter_id"])
+        self.assertEqual("higher", feed["metric_direction"])
+        self.assertEqual([group_id], feed["ranking_group_ids"])
+        # EvalRank's own Apache-2.0 results over its own strings and WMT24++ (both Apache-2.0).
+        self.assertEqual("approved", feed["rights"]["status"])
+        self.assertEqual("Apache-2.0", feed["rights"]["task_data_license"])
+        safety = feeds["evalrank-content-safety-board-discovery"]
+        for key in ("cadence", "retention"):
+            self.assertEqual(safety[key], feed[key])
+        self.assertEqual("evalrank-site-translation-tasks", feed["lineage"]["task_lineage_id"])
+
     def test_manifest_is_the_exact_public_taxonomy(self):
         payload = manifest()
         cells = payload["cells"]
@@ -1437,10 +1465,13 @@ class CatalogManifestTests(unittest.TestCase):
                 "lmarena-non-english",
                 "lmarena-vision",
                 "lmarena-text-factuality",
+                # 2026-10-29: the multilingual model-configuration group's family, EvalRank's
+                # own open site-translation board (covers ar/he/hi/th, reasoning off).
+                "evalrank-site-translation",
             },
             active,
         )
-        self.assertEqual(116, len(families))
+        self.assertEqual(117, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -1526,7 +1557,7 @@ class CatalogManifestTests(unittest.TestCase):
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(129, len(feeds))
+        self.assertEqual(130, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_itbench_is_not_executable_without_exact_configuration_identity(self):
@@ -2003,6 +2034,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "lmarena-non-english-discovery": "higher",
                 "lmarena-vision-discovery": "higher",
                 "lmarena-text-factuality-discovery": "higher",
+                "evalrank-site-translation-board-discovery": "higher",
             },
             recovered_directions,
         )

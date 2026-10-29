@@ -28,7 +28,7 @@ Package directories should keep their own `README.md`, `LICENSE`, `NOTICE`, and 
 - `catalog/` owns the canonical public cell, benchmark-family, feed, governance, cadence, lineage, and eligibility manifest.
 - `schemas/` owns public JSON Schema contracts and the public OpenAPI route/error contract.
 - `methods/` owns public methodology notes and exclusion boundaries.
-- `boards/` owns EvalRank's own open benchmark boards: a stdlib harness, its method README and the published `results.json` per board (today `boards/content-safety-classification/`).
+- `boards/` owns EvalRank's own open benchmark boards: a stdlib harness, its method README and the published `results.json` per board (today `boards/content-safety-classification/` and `boards/site-translation/`).
 - `examples/` owns public runnable examples.
 
 The catalog and schemas define portable interoperability policy, not private storage tables.

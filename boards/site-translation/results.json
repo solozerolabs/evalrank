@@ -1,0 +1,8369 @@
+{
+  "object": "evalrank_site_translation_board",
+  "schema_version": "1",
+  "harness_version": "1",
+  "metric": "translation_quality",
+  "metric_direction": "higher",
+  "prompt_sha256": "6b10970ca00a34c104570c2beebd0ba02b76b9c6fd9bbd8afc2f49047e875ce5",
+  "item_set_sha256": "eb9d751ae7ef9e8f73bd6762236f84da598ea3aec83369d839f3f853728c5254",
+  "languages": [
+    "es",
+    "fr",
+    "de",
+    "pt",
+    "pl",
+    "fi",
+    "tr",
+    "ru",
+    "ar",
+    "he",
+    "hi",
+    "th",
+    "ja",
+    "ko",
+    "zh"
+  ],
+  "judges": [
+    "anthropic/claude-sonnet-5.5",
+    "google/gemini-3.8-flash",
+    "openai/gpt-6.1-terra-pro"
+  ],
+  "judge_effort": "low",
+  "datasets": [
+    {
+      "dataset_id": "evalrank-site-copy",
+      "url": "boards/site-translation/items.json",
+      "sha256": "834a13498f0bed2d057581962b6c23fcbef099f1ee929eb7db0f3c827ee67f53",
+      "license": "Apache-2.0",
+      "attribution": "EvalRank site-translation board, own strings, https://github.com/solozerolabs/evalrank",
+      "items": 30
+    },
+    {
+      "dataset_id": "wmt24pp",
+      "url": "https://huggingface.co/datasets/google/wmt24pp/resolve/fd7405c06494bc66a57b25f55d217a72f96e60dc/en-de_DE.jsonl",
+      "sha256": "5f9e403833ccb3cbab90c9247cd9617ab6744060dc72cfcc7b470ea82d19bd05",
+      "license": "Apache-2.0",
+      "attribution": "Deutsch et al., WMT24++ (2025), https://huggingface.co/datasets/google/wmt24pp",
+      "items": 10,
+      "segment_ids": [
+        102,
+        103,
+        104,
+        195,
+        328,
+        375,
+        382,
+        389,
+        448,
+        481
+      ]
+    }
+  ],
+  "updated_at": "2026-10-29T20:28:12Z",
+  "models": [
+    {
+      "model": "anthropic/claude-haiku-5.5",
+      "created": 1791397883,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:03:16Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.898333,
+      "check_failures": 16,
+      "check_codes": {
+        "currency": 14,
+        "english": 2,
+        "money": 13
+      },
+      "sources": {
+        "own": 0.908889,
+        "wmt24pp": 0.866667
+      },
+      "languages": {
+        "ar": {
+          "score": 0.7875,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.8625,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.96875,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.86875,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.81875,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.79375,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.94375,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "anthropic/claude-sonnet-5",
+      "created": 1782843083,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:04:05Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.925833,
+      "check_failures": 3,
+      "check_codes": {
+        "currency": 1,
+        "english": 2,
+        "money": 1
+      },
+      "sources": {
+        "own": 0.924444,
+        "wmt24pp": 0.93
+      },
+      "languages": {
+        "ar": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.8625,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.8,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.86875,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.98125,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.96875,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.975,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "bytedance-seed/seed-1.6",
+      "created": 1766504997,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "bytedance-seed/seed-1.6-flash",
+      "created": 1766505011,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "bytedance-seed/seed-2-1-turbo",
+      "created": 1786552176,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "bytedance-seed/seed-2.0-code",
+      "created": 1786550701,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "bytedance-seed/seed-2.0-lite",
+      "created": 1773157231,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "bytedance-seed/seed-2.0-mini",
+      "created": 1772131107,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "cohere/command-a-plus",
+      "created": 1790102896,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "created": 1764594642,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:04:47Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.895417,
+      "check_failures": 14,
+      "check_codes": {
+        "currency": 14,
+        "money": 13
+      },
+      "sources": {
+        "own": 0.901667,
+        "wmt24pp": 0.876667
+      },
+      "languages": {
+        "ar": {
+          "score": 0.775,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.825,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.80625,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.9375,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.8875,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.78125,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.9875,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "deepseek/deepseek-v4-flash",
+      "created": 1777000666,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:04:48Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.907917,
+      "check_failures": 7,
+      "check_codes": {
+        "currency": 7,
+        "english": 1,
+        "money": 7
+      },
+      "sources": {
+        "own": 0.915,
+        "wmt24pp": 0.886667
+      },
+      "languages": {
+        "ar": {
+          "score": 0.8875,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.96875,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.81875,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.78125,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.98125,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "deepseek/deepseek-v4-flash-0731",
+      "created": 1785478908,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:04:21Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.906667,
+      "check_failures": 10,
+      "check_codes": {
+        "currency": 10,
+        "money": 10
+      },
+      "sources": {
+        "own": 0.911667,
+        "wmt24pp": 0.891667
+      },
+      "languages": {
+        "ar": {
+          "score": 0.775,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.84375,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.96875,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.96875,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.84375,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.825,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.99375,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "deepseek/deepseek-v4-flash-vision-exp",
+      "created": 1787311563,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:03:50Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.889167,
+      "check_failures": 17,
+      "check_codes": {
+        "currency": 17,
+        "money": 17
+      },
+      "sources": {
+        "own": 0.887222,
+        "wmt24pp": 0.895
+      },
+      "languages": {
+        "ar": {
+          "score": 0.775,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.86875,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.86875,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.9,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.81875,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.86875,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.86875,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.7875,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "deepseek/deepseek-v4-pro",
+      "created": 1777000679,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:04:38Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.910833,
+      "check_failures": 14,
+      "check_codes": {
+        "currency": 14,
+        "money": 14
+      },
+      "sources": {
+        "own": 0.905556,
+        "wmt24pp": 0.926667
+      },
+      "languages": {
+        "ar": {
+          "score": 0.76875,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.84375,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.98125,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.9375,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.7875,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.79375,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.96875,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.9875,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.9375,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.9625,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "deepseek/deepseek-v4-pro-0813",
+      "created": 1786549364,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:03:41Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.940417,
+      "check_failures": 7,
+      "check_codes": {
+        "currency": 7,
+        "money": 7
+      },
+      "sources": {
+        "own": 0.942222,
+        "wmt24pp": 0.935
+      },
+      "languages": {
+        "ar": {
+          "score": 0.81875,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.8625,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.9875,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.95,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "deepseek/deepseek-v4.1-flash",
+      "created": 1789021285,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:03:03Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.925833,
+      "check_failures": 3,
+      "check_codes": {
+        "currency": 2,
+        "english": 1,
+        "money": 2
+      },
+      "sources": {
+        "own": 0.942222,
+        "wmt24pp": 0.876667
+      },
+      "languages": {
+        "ar": {
+          "score": 0.98125,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.80625,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.96875,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.9,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.9375,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.9375,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "deepseek/deepseek-v4.1-flash-1017",
+      "created": 1792225624,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:03:32Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.925417,
+      "check_failures": 4,
+      "check_codes": {
+        "currency": 3,
+        "english": 1,
+        "money": 3
+      },
+      "sources": {
+        "own": 0.946667,
+        "wmt24pp": 0.861667
+      },
+      "languages": {
+        "ar": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.9375,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.8625,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.85625,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.99375,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "elorian/glimpse",
+      "created": 1792206629,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:04:21Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.869167,
+      "check_failures": 9,
+      "check_codes": {
+        "currency": 7,
+        "english": 2,
+        "money": 7
+      },
+      "sources": {
+        "own": 0.891111,
+        "wmt24pp": 0.803333
+      },
+      "languages": {
+        "ar": {
+          "score": 0.71875,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.85625,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.73125,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.7,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.80625,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.9,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.95,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "google/gemini-3-flash-preview",
+      "created": 1765987078,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:04:27Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.904167,
+      "check_failures": 1,
+      "check_codes": {
+        "english": 1
+      },
+      "sources": {
+        "own": 0.89,
+        "wmt24pp": 0.946667
+      },
+      "languages": {
+        "ar": {
+          "score": 0.8125,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.86875,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.8125,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.8375,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.99375,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.9375,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.84375,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.975,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "google/gemini-3.1-flash-lite",
+      "created": 1778168828,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:04:38Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.942083,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.944444,
+        "wmt24pp": 0.935
+      },
+      "languages": {
+        "ar": {
+          "score": 0.825,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.99375,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.9,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.9625,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "google/gemini-3.1-flash-lite-preview",
+      "created": 1772512673,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:04:40Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.946667,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.946111,
+        "wmt24pp": 0.948333
+      },
+      "languages": {
+        "ar": {
+          "score": 0.8875,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.84375,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.9,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.9375,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.9875,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.99375,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.98125,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "google/gemma-4-26b-a4b-it",
+      "created": 1775227989,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:05:42Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.700833,
+      "check_failures": 128,
+      "check_codes": {
+        "english": 8,
+        "id": 120
+      },
+      "sources": {
+        "own": 0.697222,
+        "wmt24pp": 0.711667
+      },
+      "languages": {
+        "ar": {
+          "score": 0.9,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.85,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.8875,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.83125,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.68125,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.9375,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.79375,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.93125,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "google/gemma-4-31b-it",
+      "created": 1775148486,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:10:43Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.900833,
+      "check_failures": 6,
+      "check_codes": {
+        "english": 6
+      },
+      "sources": {
+        "own": 0.9,
+        "wmt24pp": 0.903333
+      },
+      "languages": {
+        "ar": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.85,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.99375,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.85,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.825,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.94375,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "ibm-granite/granite-4.2-8b",
+      "created": 1788206780,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "inception/mercury-2",
+      "created": 1772636275,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "inception/mercury-2.5",
+      "created": 1788892137,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "inception/mercury-3",
+      "created": 1792158337,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "inclusionai/ling-3.0-flash-vl",
+      "created": 1789056114,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:20:56Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "inclusionai/ling-3.1-flash",
+      "created": 1790950024,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:10:14Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.850833,
+      "check_failures": 2,
+      "check_codes": {
+        "english": 2
+      },
+      "sources": {
+        "own": 0.86,
+        "wmt24pp": 0.823333
+      },
+      "languages": {
+        "ar": {
+          "score": 0.8625,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.8125,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.7375,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.75625,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.74375,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.73125,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.725,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.9875,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "inference-net/schematron-v2-small",
+      "created": 1789176933,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "inference-net/schematron-v2-turbo",
+      "created": 1789176949,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "minimax/minimax-m3",
+      "created": 1780245374,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:09:29Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.906667,
+      "check_failures": 3,
+      "check_codes": {
+        "english": 3
+      },
+      "sources": {
+        "own": 0.921111,
+        "wmt24pp": 0.863333
+      },
+      "languages": {
+        "ar": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.80625,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.96875,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.9,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.96875,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.86875,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.84375,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.95625,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "mistralai/devstral-2512",
+      "created": 1765285419,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "mistralai/ministral-14b-2512",
+      "created": 1764681735,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "mistralai/ministral-3b-2512",
+      "created": 1764681560,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "mistralai/ministral-8b-2512",
+      "created": 1764681654,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "mistralai/mistral-large-2512",
+      "created": 1764624472,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "mistralai/mistral-large-4-0",
+      "created": 1791294122,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "mistralai/mistral-medium-3-5",
+      "created": 1777570439,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "mistralai/mistral-small-2603",
+      "created": 1773695685,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "mistralai/voxtral-small-24b-2507",
+      "created": 1761835144,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "moonshotai/kimi-k2.5",
+      "created": 1769487076,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:10:23Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.908333,
+      "check_failures": 4,
+      "check_codes": {
+        "english": 4
+      },
+      "sources": {
+        "own": 0.910556,
+        "wmt24pp": 0.901667
+      },
+      "languages": {
+        "ar": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.85,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.9,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.85625,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.94375,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "moonshotai/kimi-k2.6",
+      "created": 1776699402,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:10:47Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.88625,
+      "check_failures": 2,
+      "check_codes": {
+        "english": 2
+      },
+      "sources": {
+        "own": 0.888333,
+        "wmt24pp": 0.88
+      },
+      "languages": {
+        "ar": {
+          "score": 0.8375,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.9375,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.7875,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.80625,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.79375,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.85625,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.9375,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.98125,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.83125,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.96875,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "moonshotai/kimi-k3.1-pro",
+      "created": 1792778188,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "nex-agi/nex-n2.5-mini",
+      "created": 1788890061,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "nex-agi/nex-n2.5-pro",
+      "created": 1788890050,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "nvidia/nemotron-3-nano-30b-a3b",
+      "created": 1765731275,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "nvidia/nemotron-3-super-120b-a12b",
+      "created": 1773245239,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b",
+      "created": 1780551208,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:09:31Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.864583,
+      "check_failures": 10,
+      "check_codes": {
+        "clock": 1,
+        "currency": 7,
+        "english": 4,
+        "money": 7
+      },
+      "sources": {
+        "own": 0.867778,
+        "wmt24pp": 0.855
+      },
+      "languages": {
+        "ar": {
+          "score": 0.75,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.9375,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.7125,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.75625,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.775,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.7375,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.9375,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "nvidia/nemotron-3.5-lightning",
+      "created": 1786452751,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:06:01Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.630417,
+      "check_failures": 86,
+      "check_codes": {
+        "clock": 4,
+        "currency": 32,
+        "english": 40,
+        "identical": 13,
+        "money": 26,
+        "number": 2,
+        "script": 7
+      },
+      "sources": {
+        "own": 0.662222,
+        "wmt24pp": 0.535
+      },
+      "languages": {
+        "ar": {
+          "score": 0.54375,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.75,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.85,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.575,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.8375,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.74375,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.0625,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.6,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.675,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.7125,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.7125,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.7125,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.58125,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.3875,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.7125,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "nvidia/nemotron-3.5-super-vl",
+      "created": 1792076662,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:05:47Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.8525,
+      "check_failures": 29,
+      "check_codes": {
+        "currency": 25,
+        "english": 3,
+        "money": 25,
+        "number": 1,
+        "script": 1
+      },
+      "sources": {
+        "own": 0.854444,
+        "wmt24pp": 0.846667
+      },
+      "languages": {
+        "ar": {
+          "score": 0.71875,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.85,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.8375,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.86875,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.73125,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.8875,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.6875,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.79375,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "openai/gpt-5.1",
+      "created": 1763060305,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:10:09Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.819583,
+      "check_failures": 48,
+      "check_codes": {
+        "clock": 33,
+        "english": 48
+      },
+      "sources": {
+        "own": 0.795,
+        "wmt24pp": 0.893333
+      },
+      "languages": {
+        "ar": {
+          "score": 0.66875,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.85625,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.80625,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.8,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.6875,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.8375,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.86875,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.66875,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.85,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.7125,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "openai/gpt-5.4-mini",
+      "created": 1773748178,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:10:05Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.869583,
+      "check_failures": 22,
+      "check_codes": {
+        "clock": 17,
+        "english": 17,
+        "identical": 5
+      },
+      "sources": {
+        "own": 0.880556,
+        "wmt24pp": 0.836667
+      },
+      "languages": {
+        "ar": {
+          "score": 0.8375,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.75,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.725,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.81875,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.8875,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.85625,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.76875,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.95625,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "openai/gpt-5.4-nano",
+      "created": 1773748187,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:10:15Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.649167,
+      "check_failures": 95,
+      "check_codes": {
+        "clock": 70,
+        "currency": 3,
+        "english": 74
+      },
+      "sources": {
+        "own": 0.624444,
+        "wmt24pp": 0.723333
+      },
+      "languages": {
+        "ar": {
+          "score": 0.58125,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.6375,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.56875,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.66875,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.70625,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.6375,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.61875,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.6125,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.54375,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.6,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.7625,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.68125,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.61875,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.78125,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.71875,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "openai/gpt-5.6-luna",
+      "created": 1783590864,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:10:46Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.95875,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.96,
+        "wmt24pp": 0.955
+      },
+      "languages": {
+        "ar": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.98125,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.9875,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.96875,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.98125,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.9375,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.98125,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "openai/gpt-5.6-luna-pro",
+      "created": 1783590867,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:11:11Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.947917,
+      "check_failures": 9,
+      "check_codes": {
+        "clock": 9,
+        "english": 9
+      },
+      "sources": {
+        "own": 0.940556,
+        "wmt24pp": 0.97
+      },
+      "languages": {
+        "ar": {
+          "score": 0.9375,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.99375,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.98125,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.99375,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.76875,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.9875,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.975,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "openai/gpt-6-luna",
+      "created": 1790100786,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:10:59Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.927083,
+      "check_failures": 9,
+      "check_codes": {
+        "clock": 9,
+        "english": 9
+      },
+      "sources": {
+        "own": 0.913889,
+        "wmt24pp": 0.966667
+      },
+      "languages": {
+        "ar": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.775,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.98125,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.98125,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.9,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.96875,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.73125,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.98125,
+          "errors": 0
+        },
+        "zh": {
+          "score": 1.0,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "openai/gpt-6-luna-pro",
+      "created": 1790100791,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:15:55Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.916667,
+      "check_failures": 9,
+      "check_codes": {
+        "clock": 9,
+        "english": 9
+      },
+      "sources": {
+        "own": 0.903889,
+        "wmt24pp": 0.955
+      },
+      "languages": {
+        "ar": {
+          "score": 0.83125,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.99375,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.79375,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "ko": {
+          "score": 1.0,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.84375,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.9,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.74375,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.98125,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.99375,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "openai/gpt-6-sol",
+      "created": 1790100775,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:11:30Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.966667,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.959444,
+        "wmt24pp": 0.988333
+      },
+      "languages": {
+        "ar": {
+          "score": 1.0,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.9875,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.86875,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.99375,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "ko": {
+          "score": 1.0,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.98125,
+          "errors": 0
+        },
+        "th": {
+          "score": 1.0,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.99375,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "openai/gpt-6-sol-pro",
+      "created": 1790100781,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:11:44Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.947917,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.938333,
+        "wmt24pp": 0.976667
+      },
+      "languages": {
+        "ar": {
+          "score": 1.0,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.8875,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.9875,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.8625,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.825,
+          "errors": 0
+        },
+        "he": {
+          "score": 1.0,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.7625,
+          "errors": 0
+        },
+        "ja": {
+          "score": 1.0,
+          "errors": 0
+        },
+        "ko": {
+          "score": 1.0,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.9875,
+          "errors": 0
+        },
+        "ru": {
+          "score": 1.0,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.99375,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.98125,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "openai/gpt-6.1-terra",
+      "created": 1793038409,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:11:55Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.974583,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.971111,
+        "wmt24pp": 0.985
+      },
+      "languages": {
+        "ar": {
+          "score": 0.99375,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.99375,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.99375,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.99375,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "ja": {
+          "score": 1.0,
+          "errors": 0
+        },
+        "ko": {
+          "score": 1.0,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "th": {
+          "score": 1.0,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.975,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "particle-ai/particle-1",
+      "created": 1793207893,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "perceptron/perceptron-mk1",
+      "created": 1778597029,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "perceptron/perceptron-mk1.5",
+      "created": 1790352661,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "prism-ml/ternary-bonsai-2-27b",
+      "created": 1789754046,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "prism-ml/ternary-bonsai-2-9b",
+      "created": 1792130995,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3-coder-next",
+      "created": 1770164101,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3.5-122b-a10b",
+      "created": 1772053789,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:18Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3.5-27b",
+      "created": 1772053810,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:12:12Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.822083,
+      "check_failures": 3,
+      "check_codes": {
+        "currency": 2,
+        "money": 1,
+        "script": 1
+      },
+      "sources": {
+        "own": 0.831667,
+        "wmt24pp": 0.793333
+      },
+      "languages": {
+        "ar": {
+          "score": 0.75,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.8625,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.7375,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.7625,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.79375,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.74375,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.7875,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.85625,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.83125,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.775,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.8625,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.825,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.975,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3.5-35b-a3b",
+      "created": 1772053822,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:12:17Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.775417,
+      "check_failures": 44,
+      "check_codes": {
+        "currency": 18,
+        "english": 5,
+        "id": 22,
+        "money": 18,
+        "script": 2
+      },
+      "sources": {
+        "own": 0.791667,
+        "wmt24pp": 0.726667
+      },
+      "languages": {
+        "ar": {
+          "score": 0.825,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.9,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.75,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.7625,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.3125,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.76875,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.85,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.81875,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.83125,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.84375,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.8625,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.725,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.7125,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.75625,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3.5-397b-a17b",
+      "created": 1771223018,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:12:56Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.890417,
+      "check_failures": 22,
+      "check_codes": {
+        "currency": 14,
+        "english": 4,
+        "id": 4,
+        "money": 14
+      },
+      "sources": {
+        "own": 0.895556,
+        "wmt24pp": 0.875
+      },
+      "languages": {
+        "ar": {
+          "score": 0.7125,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.825,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.9375,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.7125,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.9875,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.98125,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.85625,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.9375,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3.5-9b",
+      "created": 1773152396,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:28:12Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.665833,
+      "check_failures": 80,
+      "check_codes": {
+        "currency": 38,
+        "english": 4,
+        "id": 38,
+        "money": 36,
+        "script": 3
+      },
+      "sources": {
+        "own": 0.667778,
+        "wmt24pp": 0.66
+      },
+      "languages": {
+        "ar": {
+          "score": 0.53125,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.80625,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.86875,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.65,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.8125,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.00625,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.61875,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.6375,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.625,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.6875,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.80625,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.775,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.6625,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.7125,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.7875,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "created": 1772053776,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3.5-plus-02-15",
+      "created": 1771229416,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3.5-plus-20260420",
+      "created": 1777261368,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3.6-27b",
+      "created": 1777255064,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:13:47Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.85125,
+      "check_failures": 3,
+      "check_codes": {
+        "english": 1,
+        "script": 2
+      },
+      "sources": {
+        "own": 0.853889,
+        "wmt24pp": 0.843333
+      },
+      "languages": {
+        "ar": {
+          "score": 0.76875,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.7625,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.81875,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.84375,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.8875,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.85625,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.725,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.86875,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.84375,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.91875,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3.6-35b-a3b",
+      "created": 1777260255,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:19:02Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.8,
+      "check_failures": 33,
+      "check_codes": {
+        "currency": 7,
+        "english": 2,
+        "id": 22,
+        "money": 7,
+        "script": 3
+      },
+      "sources": {
+        "own": 0.83,
+        "wmt24pp": 0.71
+      },
+      "languages": {
+        "ar": {
+          "score": 0.75625,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.85,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.65625,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.8375,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.3,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.80625,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.8125,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.81875,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.85625,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.85625,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.9,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.8875,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.7625,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.95625,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3.6-flash",
+      "created": 1777261362,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3.6-plus",
+      "created": 1775133557,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3.7-max",
+      "created": 1779376861,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3.7-plus",
+      "created": 1780491783,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3.8-27b",
+      "created": 1786722910,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:16:51Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.846667,
+      "check_failures": 22,
+      "check_codes": {
+        "currency": 21,
+        "english": 1,
+        "money": 21
+      },
+      "sources": {
+        "own": 0.836111,
+        "wmt24pp": 0.878333
+      },
+      "languages": {
+        "ar": {
+          "score": 0.75,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.7875,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.75625,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.66875,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.75,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.7875,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.7875,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.925,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3.8-flash",
+      "created": 1787773060,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "qwen/qwen3.8-omni-flash",
+      "created": 1789959954,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "rekaai/reka-edge",
+      "created": 1774026965,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "sakana/sakana-namazu",
+      "created": 1786410129,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "tencent/hy-mt2-30b-a3b",
+      "created": 1787231561,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "tencent/hy-mt2-7b",
+      "created": 1787148797,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "tencent/hy3",
+      "created": 1783344048,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "tencent/hy4-preview",
+      "created": 1787897375,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:14:21Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.884583,
+      "check_failures": 17,
+      "check_codes": {
+        "clock": 9,
+        "currency": 7,
+        "english": 10,
+        "money": 7
+      },
+      "sources": {
+        "own": 0.877222,
+        "wmt24pp": 0.906667
+      },
+      "languages": {
+        "ar": {
+          "score": 0.75625,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.9,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.8,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.8125,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.96875,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.725,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.99375,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.84375,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.95625,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "upstage/solar-mini4",
+      "created": 1790160358,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "upstage/solar-pro4",
+      "created": 1786371636,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "x-ai/grok-4.20",
+      "created": 1774979019,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "x-ai/grok-4.3",
+      "created": 1777591821,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "xiaomi/mimo-v2.5",
+      "created": 1776874269,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:15:12Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.8225,
+      "check_failures": 31,
+      "check_codes": {
+        "clock": 9,
+        "english": 5,
+        "id": 17
+      },
+      "sources": {
+        "own": 0.830556,
+        "wmt24pp": 0.798333
+      },
+      "languages": {
+        "ar": {
+          "score": 0.86875,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.60625,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.65,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.825,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.85625,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.5125,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.79375,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.8375,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.81875,
+          "errors": 0
+        },
+        "zh": {
+          "score": 1.0,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "xiaomi/mimo-v2.5-pro",
+      "created": 1776874273,
+      "mode": "unavailable",
+      "scored_at": "2026-10-29T20:19:19Z",
+      "n": 600,
+      "errors": 600,
+      "error_rate": 1.0,
+      "excluded": true,
+      "score": 0.0,
+      "check_failures": 0,
+      "check_codes": {},
+      "sources": {
+        "own": 0.0,
+        "wmt24pp": 0.0
+      },
+      "languages": {
+        "ar": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "de": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "es": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "fr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "he": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "hi": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ja": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ko": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pl": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "pt": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "ru": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "th": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "tr": {
+          "score": 0.0,
+          "errors": 40
+        },
+        "zh": {
+          "score": 0.0,
+          "errors": 40
+        }
+      }
+    },
+    {
+      "model": "xiaomi/mimo-v2.6-flash",
+      "created": 1790021264,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:15:53Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.847083,
+      "check_failures": 18,
+      "check_codes": {
+        "clock": 9,
+        "english": 3,
+        "id": 6
+      },
+      "sources": {
+        "own": 0.843333,
+        "wmt24pp": 0.858333
+      },
+      "languages": {
+        "ar": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.66875,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.69375,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.8,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.78125,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.8875,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.8625,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.8375,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.8625,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.9875,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "xiaomi/mimo-v2.6-pro",
+      "created": 1790021259,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:14:48Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.867917,
+      "check_failures": 14,
+      "check_codes": {
+        "clock": 9,
+        "currency": 3,
+        "english": 11,
+        "money": 3
+      },
+      "sources": {
+        "own": 0.857222,
+        "wmt24pp": 0.9
+      },
+      "languages": {
+        "ar": {
+          "score": 0.8125,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.825,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.80625,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.8,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.8375,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.96875,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.8625,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.8375,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.85625,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.73125,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "z-ai/glm-4.7",
+      "created": 1766378014,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:17:50Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.856667,
+      "check_failures": 8,
+      "check_codes": {
+        "currency": 4,
+        "english": 3,
+        "id": 1,
+        "money": 4
+      },
+      "sources": {
+        "own": 0.852778,
+        "wmt24pp": 0.868333
+      },
+      "languages": {
+        "ar": {
+          "score": 0.83125,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.86875,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.7375,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.8375,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.8625,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.7375,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.8375,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.9,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.8,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.7625,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.975,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "z-ai/glm-4.7-flash",
+      "created": 1768833913,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:18:41Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.681667,
+      "check_failures": 52,
+      "check_codes": {
+        "clock": 5,
+        "currency": 15,
+        "english": 7,
+        "id": 29,
+        "money": 14,
+        "number": 1
+      },
+      "sources": {
+        "own": 0.715556,
+        "wmt24pp": 0.58
+      },
+      "languages": {
+        "ar": {
+          "score": 0.7,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.73125,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.575,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.26875,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.45625,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.80625,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.56875,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.69375,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.84375,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.85,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.53125,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.66875,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.76875,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "z-ai/glm-5",
+      "created": 1770829182,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:17:18Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.890417,
+      "check_failures": 3,
+      "check_codes": {
+        "clock": 3,
+        "english": 3
+      },
+      "sources": {
+        "own": 0.889444,
+        "wmt24pp": 0.893333
+      },
+      "languages": {
+        "ar": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.9375,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.75625,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.825,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.9375,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.79375,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.975,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.9375,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.75625,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.88125,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.9375,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "z-ai/glm-5.1",
+      "created": 1775578025,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:16:50Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.8825,
+      "check_failures": 17,
+      "check_codes": {
+        "currency": 14,
+        "english": 3,
+        "money": 14
+      },
+      "sources": {
+        "own": 0.894444,
+        "wmt24pp": 0.846667
+      },
+      "languages": {
+        "ar": {
+          "score": 0.75,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.95,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.81875,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.9,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.85,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.9,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.9625,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.86875,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.84375,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.8,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "z-ai/glm-5.2",
+      "created": 1781631930,
+      "mode": "reasoning_off",
+      "scored_at": "2026-10-29T20:17:53Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.885833,
+      "check_failures": 3,
+      "check_codes": {
+        "clock": 3,
+        "english": 3
+      },
+      "sources": {
+        "own": 0.891111,
+        "wmt24pp": 0.87
+      },
+      "languages": {
+        "ar": {
+          "score": 0.8875,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.93125,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.96875,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.8375,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.7875,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.8875,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.85625,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.8875,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.76875,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.9625,
+          "errors": 0
+        }
+      }
+    }
+  ]
+}

@@ -11315,6 +11315,154 @@
           ]
         }
       ]
+    },
+    {
+      "benchmark_family_id": "evalrank-site-translation",
+      "checked_on": "2026-10-29",
+      "sources": [
+        {
+          "source_id": "board",
+          "kind": "official_repository",
+          "url": "https://github.com/solozerolabs/evalrank/tree/main/boards/site-translation"
+        },
+        {
+          "source_id": "results",
+          "kind": "official_dataset",
+          "url": "https://github.com/solozerolabs/evalrank/blob/main/boards/site-translation/results.json"
+        },
+        {
+          "source_id": "items",
+          "kind": "official_dataset",
+          "url": "https://github.com/solozerolabs/evalrank/blob/main/boards/site-translation/items.json"
+        },
+        {
+          "source_id": "license",
+          "kind": "official_repository",
+          "url": "https://github.com/solozerolabs/evalrank/blob/main/LICENSE"
+        },
+        {
+          "source_id": "wmt24pp",
+          "kind": "official_dataset",
+          "url": "https://huggingface.co/datasets/google/wmt24pp"
+        },
+        {
+          "source_id": "wmt24pp_paper",
+          "kind": "primary_paper",
+          "url": "https://arxiv.org/abs/2502.12404"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The board runs every OpenRouter text model that takes a strict json_schema reply, can answer with reasoning off, is priced at or under $2/M input and $10/M output tokens and was released in the last 365 days. Each model translates one fixed, digest-pinned set of 40 short English small-business website segments (30 of EvalRank's own strings with clocks, prices, phone numbers, a URL, an email, a placeholder and protected terms, plus 10 WMT24++ English sources) into 15 languages including Arabic, Hebrew, Hindi and Thai, one strict-schema call per language, reasoning off (effort none), temperature 0 where supported, with provider.require_parameters.",
+          "source_ids": [
+            "board",
+            "items",
+            "wmt24pp"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Each segment scores a deterministic check (money, long numbers, English 12-hour clocks, currency symbols, URL, email, placeholder, protected terms, script, untranslated copy, English words left in a non-Latin script; a failure scores 0) times the median verdict of a three-vendor LLM judge panel (no_error 1, minor 0.75, major 0.25, critical 0). The board metric is the mean over all 600 segments: a unit interval, higher is better. A row with more than 5% unscored segments is published but excluded. results.json records the item-set, prompt and dataset digests and the judge panel.",
+          "source_ids": [
+            "board",
+            "results"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "Each row is one model under direct prompting with fixed decoding, so it resolves to a model configuration and ranks the multilingual cell's model-configuration group. Judges are models with mandatory reasoning, so none is ever a candidate. On a 68-line human-labelled sample (28 major errors, 40 clean lines, 15 languages) the panel median scored balanced accuracy 0.97 (27 of 28 errors caught, 1 clean line flagged), so no learned metric is added. No public board measures translating short business copy with reasoning off and strict JSON (WMT is annual, Artificial Analysis multilingual is paid, LMArena has no ar/he/hi/th categories), which is why EvalRank runs this board itself. No other catalog family shares its items, so its correlation stays unknown.",
+          "source_ids": [
+            "board",
+            "wmt24pp_paper"
+          ]
+        },
+        {
+          "topic": "harness_code_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The harness is boards/site-translation/harness.py in this repository, Apache-2.0.",
+          "source_ids": [
+            "board",
+            "license"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "EvalRank's own segments (items.json) are Apache-2.0 and WMT24++ is Apache-2.0. The item set is EvalRank's own site-copy strings (Apache-2.0) and ten English sources from WMT24++ (Apache-2.0, Google); every published result attributes both, and WMT24++ text is never republished.",
+          "source_ids": [
+            "items",
+            "wmt24pp"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license. Both item-set licenses (Apache-2.0) permit commercial use with attribution.",
+          "source_ids": [
+            "license",
+            "wmt24pp"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license. The item set is EvalRank's own site-copy strings (Apache-2.0) and ten English sources from WMT24++ (Apache-2.0, Google); every published result attributes both, and WMT24++ text is never republished.",
+          "source_ids": [
+            "license",
+            "results"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license. Per-segment translations and verdicts are not published; a trajectory republished from a rerun carries the same attribution.",
+          "source_ids": [
+            "license"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The harness calls models through the public OpenRouter chat API with the operator's own key; no third-party environment terms restrict the published scores. The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license.",
+          "source_ids": [
+            "board",
+            "license"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license. Retaining the fetched results.json bytes is permitted by the license.",
+          "source_ids": [
+            "license",
+            "results"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license. The item set is EvalRank's own site-copy strings (Apache-2.0) and ten English sources from WMT24++ (Apache-2.0, Google); every published result attributes both, and WMT24++ text is never republished.",
+          "source_ids": [
+            "license",
+            "results"
+          ]
+        }
+      ]
     }
   ]
 }

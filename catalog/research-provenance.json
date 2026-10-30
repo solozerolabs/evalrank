@@ -2,7 +2,7 @@
   "$schema": "../schemas/benchmark-research-provenance.schema.json",
   "object": "benchmark_research_provenance",
   "schema_version": "1",
-  "manifest_version": "2026-10-29.1",
+  "manifest_version": "2026-10-30.1",
   "families": [
     {
       "benchmark_family_id": "livecodebench",
@@ -11200,6 +11200,106 @@
           "research_flag": null,
           "basis": "evalrank_inference",
           "statement": "The feed ingests crowd pairwise vote aggregates for the vision arena's overall category from the leaderboard dataset's vision_style_control parquet (167 models, published 2026-10-19, checked 2026-10-29). Vision-arena battles pair image-bearing prompts with blind side-by-side votes, which matches the vision-multimodal cell. They are separate battles from the text arena's vote pool, so the family declares its own correlated_family_group lmarena-vision.",
+          "source_ids": [
+            "dataset",
+            "release"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source.",
+          "source_ids": [
+            "release"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "lmarena-text-to-image",
+      "checked_on": "2026-10-30",
+      "sources": [
+        {
+          "source_id": "release",
+          "kind": "official_site",
+          "url": "https://lmarena.ai/leaderboard/text-to-image"
+        },
+        {
+          "source_id": "dataset",
+          "kind": "official_dataset",
+          "url": "https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "harness_code_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The dataset distributes leaderboard rows only; no harness code ships with this feed, so the recorded value marks the field not applicable to the hub data view.",
+          "source_ids": [
+            "dataset"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The official lmarena-ai leaderboard-dataset card declares the CC-BY-4.0 license, covering the published LMArena text-to-image leaderboard rows.",
+          "source_ids": [
+            "dataset"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "CC-BY-4.0 grants use and distribution rights without a noncommercial restriction.",
+          "source_ids": [
+            "dataset"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "CC-BY-4.0 permits redistribution of the published leaderboard data with attribution, so ingested result records may be redistributed.",
+          "source_ids": [
+            "dataset"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Ingesting the published CC-BY-4.0 dataset involves no execution environment and imposes no additional environment terms.",
+          "source_ids": [
+            "dataset"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "CC-BY-4.0 grants reproduction rights for the published data, permitting retained copies with attribution.",
+          "source_ids": [
+            "dataset"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "CC-BY-4.0 grants public display and distribution rights for the data and derivative material, permitting publication of independently derived scores with attribution.",
+          "source_ids": [
+            "dataset"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The feed ingests crowd pairwise vote aggregates for the text-to-image arena's overall category from the leaderboard dataset's text_to_image parquet (82 models, published 2026-10-26, checked 2026-10-30). Text-to-image battles show two images generated from one prompt for a blind side-by-side vote, which matches the image-generation cell. They are separate battles from the text and vision arenas, so the family declares its own correlated_family_group lmarena-text-to-image. The image_edit leaderboard is a different task and is deliberately not added.",
           "source_ids": [
             "dataset",
             "release"

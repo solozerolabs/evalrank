@@ -2,7 +2,7 @@
   "$schema": "../schemas/evalrank-manifest.schema.json",
   "object": "evalrank_manifest",
   "schema_version": "1",
-  "manifest_version": "2026-10-29.1",
+  "manifest_version": "2026-10-30.1",
   "ranking_group_dimensions": [
     "cell_id",
     "entity_kind",
@@ -287,6 +287,15 @@
       "cell_id": "content-safety-classification",
       "name": "Content-safety classification",
       "definition": "Classify text as safe or unsafe, flagging unsafe content with high recall while rarely flagging harmless text that only sounds unsafe",
+      "entity_kinds": [
+        "model"
+      ],
+      "state": "active"
+    },
+    {
+      "cell_id": "image-generation",
+      "name": "Image generation",
+      "definition": "Generate images from a text prompt",
       "entity_kinds": [
         "model"
       ],
@@ -1953,6 +1962,48 @@
     {
       "ranking_group_id": "rg-vision-multimodal-arena-system-crowd-pairwise-arena-system-v1",
       "cell_id": "vision-multimodal",
+      "entity_kind": "arena_system",
+      "interaction_policy": "crowd_pairwise",
+      "configuration_passport_class": "arena-system-v1",
+      "state": "active",
+      "rank_eligible_count": null,
+      "claim_ceiling": "single_winner",
+      "eligibility": {
+        "calibration_status": "unvalidated",
+        "explorer": {
+          "minimum_families": 1,
+          "minimum_overlap": 1
+        },
+        "top_set": {
+          "minimum_families": 3,
+          "minimum_overlap": 2
+        },
+        "single_winner": {
+          "minimum_families": 4,
+          "minimum_overlap": 3
+        },
+        "native_effect_policy": "family-native-likelihoods-only",
+        "missing_configuration_policy": "exclude-from-ranking-group-and-disclose",
+        "block_bootstrap": {
+          "replicates": 10000,
+          "seed_derivation": "uint64be(sha256(restricted_jcs({aggregation_input_digest,methodology_version}))[0:8])&9007199254740991"
+        },
+        "bootstrap_coverage_target": 0.95,
+        "superiority_threshold": 0.95,
+        "practical_effect_floor": {
+          "mode": "native-metric-calibrated",
+          "status": "unvalidated"
+        },
+        "leave_one_family_out": {
+          "required_for_single_winner": true,
+          "stable_top_set_required": true
+        }
+      },
+      "quarantine_reason": null
+    },
+    {
+      "ranking_group_id": "rg-image-generation-arena-system-crowd-pairwise-arena-system-v1",
+      "cell_id": "image-generation",
       "entity_kind": "arena_system",
       "interaction_policy": "crowd_pairwise",
       "configuration_passport_class": "arena-system-v1",
@@ -3917,6 +3968,22 @@
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "lmarena-vision",
+      "research_flags": [],
+      "quarantine_reason": null
+    },
+    {
+      "benchmark_family_id": "lmarena-text-to-image",
+      "display_name": "LMArena Text-to-Image",
+      "candidate_cells": [
+        "image-generation"
+      ],
+      "entity_kinds": [
+        "arena_system"
+      ],
+      "state": "active",
+      "rank_eligible_count": null,
+      "correlation_status": "declared",
+      "correlated_family_group": "lmarena-text-to-image",
       "research_flags": [],
       "quarantine_reason": null
     },
@@ -10237,6 +10304,55 @@
       },
       "ranking_group_ids": [
         "rg-vision-multimodal-arena-system-crowd-pairwise-arena-system-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "lmarena-text-to-image-discovery",
+      "benchmark_family_id": "lmarena-text-to-image",
+      "adapter_id": "lmarena-text-to-image-hf-parquet-v1",
+      "metric_direction": "higher",
+      "candidate_cells": [
+        "image-generation"
+      ],
+      "entity_kind": "arena_system",
+      "interaction_policy": "crowd_pairwise",
+      "configuration_passport_class": "arena-system-v1",
+      "state": "active",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": "not-applicable-hub-data-view",
+        "task_data_license": "CC-BY-4.0",
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "validated",
+        "mode": "periodic",
+        "stale_after_seconds": 1209600,
+        "stop_recommending_after_seconds": 7776000,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": true,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "declared",
+        "task_lineage_id": "lmarena-text-to-image-tasks",
+        "environment_lineage_id": "lmarena-text-to-image-environments",
+        "grader_lineage_id": "lmarena-text-to-image-graders",
+        "correlation_status": "declared",
+        "correlated_family_group": "lmarena-text-to-image"
+      },
+      "ranking_group_ids": [
+        "rg-image-generation-arena-system-crowd-pairwise-arena-system-v1"
       ],
       "quarantine_reason": null
     },

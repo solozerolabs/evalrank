@@ -51,6 +51,7 @@ test("the public catalog manifest owns the exact 28-cell taxonomy", () => {
     "code-review",
     "instruction-following",
     "content-safety-classification",
+    "image-generation",
   ];
 
   assert.deepEqual(manifest.cells.map((cell) => cell.cell_id), expected);

@@ -100,6 +100,7 @@ _USE_CASE_ROWS = (
         "Classify text as safe or unsafe, flagging unsafe content with high recall while rarely flagging harmless text that only sounds unsafe",
         ("model",),
     ),
+    ("image-generation", "Image generation", "Generate images from a text prompt", ("model",)),
 )
 
 

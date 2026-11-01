@@ -64,7 +64,7 @@ class PublicExampleTests(unittest.TestCase):
         readme = (REPO_ROOT / "examples" / "README.md").read_text(encoding="utf-8")
         self.assertNotIn("recommendation", payload)
         self.assertNotIn("scoring_stages", payload)
-        for ref in ("decision-contract-v1.golden.json", "DecisionQueryV1", "DecisionReceiptV1"):
+        for ref in ("decision-contract-v2.golden.json", "DecisionQueryV2", "DecisionReceiptV2", "build_decision_golden.py"):
             with self.subTest(ref=ref):
                 self.assertIn(ref, readme)
 

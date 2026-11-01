@@ -22,13 +22,15 @@ Accuracy and honest uncertainty outrank breadth. Cost-aware advice follows only 
 
 An **evaluated configuration** is the indivisible subject of a result. Its configuration passport identifies the model or system, version, harness, tools, scaffold, prompting or interaction policy, environment, and other settings needed to reproduce the measurement. Results from different passports are not silently collapsed into a bare model or product name.
 
-Public decisions compare one exact **ranking group** at a time:
+Rankings never pool unlike evidence: each **ranking group** is one exact
 
 `(cell_id, entity_kind, interaction_policy, configuration_passport_class)`
 
+A decision asks for one cell. It ranks that cell's model configurations (a model at a named reasoning effort) from the lock-admitted families of its explorer evidence, compares them like-for-like at one comparison level (`medium` by default), and answers with a callable pick or an abstain. A cell whose admitted families are all agent systems abstains with `not_a_model_cell`; recommending model-plus-harness systems is a separate product.
+
 The public entity kinds exposed by the use-case catalog remain model, tool, and agent. Benchmark-family and feed records use more exact configuration kinds so model configurations, agent systems, retrieval components, end-to-end systems, and crowd-pairwise systems cannot be pooled accidentally.
 
-A **ServingOffer** is a separately dated, provider-specific purchasable or runnable offer. Provider, region, context, availability, and price advice is permitted only when an exact evaluated-configuration-to-offer link exists for the relevant date. Without that link, capability evidence may still be shown, but economic or availability advice abstains.
+A **ServingOffer** is a separately dated, provider-specific purchasable or runnable offer. A decision joins ranked configurations to live offers at read time, per call surface (`via`): the receipt returns the host-native `model_id`, the `reasoning_effort` to send, and the `api` shape, so a caller never re-maps names, re-prices offers, or guesses an effort. An effort the host cannot accept, or a host whose effort vocabulary was never probed, is excluded or refused (`422 via_not_supported`), never guessed.
 
 ## Catalog And Publication
 
@@ -44,9 +46,9 @@ Safety and robustness are a cross-cutting safety veto and disclosure layer, not 
 
 ## Receipt UX
 
-A decision receipt keeps the complete typed query, pinned publication and methodology versions, comparable candidates, top or tie set, exclusions, abstentions, source lineage, freshness, and sensitivity summary together. It should remain interpretable without private runtime context.
+A decision receipt keeps the complete typed query, the explorer snapshots it ranked, each family's lock status, weight, and staleness, the ordered selections (the pick first, then the priced band, each with its capability ratio, family coverage, price, effort multiplier, projected cost, latency, and caveats), exclusions with reasons, the priced usage profile and its basis, and any abstain reasons. It should remain interpretable without private runtime context.
 
-The default decision response is ephemeral. A public share receipt exists only after an explicit share action and contains no free-form private prompt. The interface must state that anyone with the link can view it. Advancing the active publication must not change an existing receipt.
+The default decision response is ephemeral. A public share receipt exists only after an explicit share action and contains no free-form private prompt. The interface must state that anyone with the link can view it. New evidence must not change an existing receipt.
 
 ## Demand Gates
 

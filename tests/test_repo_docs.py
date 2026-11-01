@@ -276,8 +276,10 @@ class RepoDocsTests(unittest.TestCase):
     def test_tests_map_uses_current_decision_receipt_contract(self):
         text = (REPO_ROOT / "TESTS.md").read_text(encoding="utf-8")
 
-        self.assertIn("DecisionQueryV1", text)
-        self.assertIn("DecisionReceiptV1", text)
+        self.assertIn("DecisionQueryV2", text)
+        self.assertIn("DecisionReceiptV2", text)
+        self.assertNotIn("DecisionQueryV1", text)
+        self.assertNotIn("offer-link", text)
         self.assertIn("tests/test_reference_server_e2e.py", text)
 
 

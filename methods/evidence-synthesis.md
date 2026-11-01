@@ -78,4 +78,13 @@ The published baseline remains active while a challenger is evaluated. A challen
 
 An immutable source artifact produces typed native observations, then a versioned synthesis candidate, then an immutable publication snapshot. Publication is a compare-and-swap of the active pointer only after every gate passes. Partial refresh failure retains the last-known-good snapshot and reports the failed family; it never silently republishes reduced coverage.
 
-Safety vetoes, rights restrictions, stale evidence, invalid identity, and missing offer links remain explicit exclusions or abstentions. They are not hidden as score penalties.
+Safety vetoes, rights restrictions, stale evidence, invalid identity, and missing serving offers remain explicit exclusions or abstentions. They are not hidden as score penalties.
+
+## Decision Rule
+
+A decision ranks a cell's model configurations, each a model at a named reasoning effort, from the cell's lock-admitted families. Family weights stay model-level; configurations are scored on the lock's ratio-to-best aggregate, the same ordering the leaderboard's `lock_weighted_ratio` consensus shows.
+
+- **Comparison level.** Candidates are compared at one effort, the query's `reasoning_effort` (default `medium`). A board that measured a model only at another effort stands in only when that model's measured effort curve moves at most 3% between the two levels; the selection then carries `effort_substituted` with the measured gap, and a larger gap excludes the row (`effort_gap_too_large`).
+- **Objectives.** `lowest_cost_within_top_set` keeps the band of priced configurations within 0.97 of the best priced one and picks the cheapest (ties: lower effort, then newer). Other efforts compete only with a measured cost multiplier. `capability_top_set` picks the highest-scoring configuration at any accepted effort, priced or not; an unpriced one carries `cost_unmeasured`. A pinned `reasoning_effort` admits only that level.
+- **Cost.** Every candidate at the comparison level is priced on one usage profile from its serving offer's list price. Another effort is priced as that base cost times the model's measured multiplier (cost per task at the effort divided by cost per task at the comparison level on the same cost board, a cost family that ranks no cell). There is no fixed per-effort table.
+- **Answers.** The receipt is a callable pick with its band, or an abstain: `no_ranked_candidate`, `no_eligible_offer`, `stale_evidence` (a family past `last_verified_at + stale_after_seconds`), or `not_a_model_cell`.

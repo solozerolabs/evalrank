@@ -26,19 +26,19 @@ EvalRank is a public, product-neutral truth and decision contract for comparing 
 - `POST /v1/decisions`
 - `GET /v1/decisions/{receipt_id}`
 
-`POST /v1/decisions` accepts only `DecisionQueryV1`. A supplied usage profile must describe non-zero work; zero-work cost comparisons are invalid rather than artificial free ties. The optional `?share=true` parameter is transport policy, not query semantics: it retains an append-only public-safe receipt that anyone with the ID can retrieve. A non-shared result is returned but is not retrievable. `DecisionReceiptV1` pins the semantic query, ranking-group publication, methodology, selected top set or abstention, structured reasons, sensitivities, evidence, and freshness; its ID hashes the full restricted-JCS body.
+`POST /v1/decisions` accepts only `DecisionQueryV2`; three fields are a complete query: `{"schema_version":"2","cell_id":"writing","objective":"lowest_cost_within_top_set","provider_ids":["openai"]}`. A supplied usage profile must describe non-zero work; without one the receipt states the default agent task mix it priced. The optional `?share=true` parameter is transport policy, not query semantics: it retains an append-only public-safe receipt that anyone with the ID can retrieve. A non-shared result is returned but is not retrievable. `DecisionReceiptV2` is a 200 in one of two shapes: a `pick` (ordered selections, the pick first and then the priced band, each callable as returned with `model_id`, `reasoning_effort`, and `api`) or an `abstain` with machine-readable reasons. A `via` without a probed effort vocabulary is a `422 via_not_supported`; `503` means an outage, never missing evidence. The receipt ID hashes the full restricted-JCS body.
 
 There are no recommendation or scoring-stage route aliases. Legacy paths return `404` in the reference server.
 
 ## Local Contract Exerciser
 
-The stdlib reference server validates the complete query, exposes schema-valid synthetic reads for all launch GET shapes, and returns the exact golden receipt only for its published synthetic query.
+The stdlib reference server validates the complete query, exposes schema-valid synthetic reads for all launch GET shapes, and returns the exact golden receipt only for its published synthetic queries.
 
 ```sh
 PYTHONPATH=packages/core/src python3 scripts/reference_server.py --port 8000
 ```
 
-Use `examples/decision-contract-v1.golden.json` as the request/receipt reference and run:
+Use `examples/decision-contract-v2.golden.json` as the request/receipt reference and run:
 
 ```sh
 python3 -m unittest tests.test_reference_server_e2e

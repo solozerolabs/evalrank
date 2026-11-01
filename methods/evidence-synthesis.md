@@ -32,6 +32,8 @@ A resolved identity may still be explorer-only when the available families do no
 
 Evaluator validation is a separate future calibration layer. JudgeBench, RewardBench 2, or similar judge-focused suites may test grader reliability, but they do not measure the capability being ranked and never enter capability-family counts.
 
+Cost families are not capability evidence either. A cost family, such as the Artificial Analysis cost per Intelligence Index task, records what one model configuration at a named reasoning effort spends to run a fixed suite. It binds no cell and no ranking group, carries a lower-is-better native metric, never ranks a configuration, and never enters capability-family counts. Its role is measured per-effort cost multipliers: cost per task at an effort divided by cost per task at medium for the same model on the same board.
+
 ## Top Sets And Tie Groups
 
 The default publishable result is a top set. Configurations whose supported native effects do not clear the calibrated practical difference form a **tie group**. The receipt explains the group and may let user constraints choose among tied configurations without rewriting capability evidence.

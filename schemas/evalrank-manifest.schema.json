@@ -640,11 +640,11 @@
         },
         "candidate_cells": {
           "type": "array",
-          "minItems": 1,
           "uniqueItems": true,
           "items": {
             "$ref": "#/$defs/Slug"
-          }
+          },
+          "description": "Cells this family may rank. Empty only for a cost family, whose every feed is a cost feed (see Feed)."
         },
         "entity_kinds": {
           "type": "array",
@@ -1187,15 +1187,14 @@
         },
         "candidate_cells": {
           "type": "array",
-          "minItems": 1,
           "uniqueItems": true,
           "items": {
             "$ref": "#/$defs/Slug"
-          }
+          },
+          "description": "Cells this feed may rank. Empty marks a cost feed."
         },
         "ranking_group_ids": {
           "type": "array",
-          "minItems": 1,
           "uniqueItems": true,
           "items": {
             "$ref": "#/$defs/Slug"
@@ -1376,6 +1375,39 @@
                     ]
                   }
                 }
+              }
+            }
+          }
+        },
+        {
+          "$comment": "A cost feed (the price of running a fixed suite per configuration, e.g. cost per AA Intelligence Index task) binds no cell: empty candidate_cells requires empty ranking_group_ids and metric_direction lower. Every other feed names at least one ranking group.",
+          "if": {
+            "required": [
+              "candidate_cells"
+            ],
+            "properties": {
+              "candidate_cells": {
+                "type": "array",
+                "maxItems": 0
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "ranking_group_ids": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "metric_direction": {
+                "const": "lower"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "ranking_group_ids": {
+                "type": "array",
+                "minItems": 1
               }
             }
           }

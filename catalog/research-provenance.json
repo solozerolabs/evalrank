@@ -2,7 +2,7 @@
   "$schema": "../schemas/benchmark-research-provenance.schema.json",
   "object": "benchmark_research_provenance",
   "schema_version": "1",
-  "manifest_version": "2026-10-30.1",
+  "manifest_version": "2026-10-31.1",
   "families": [
     {
       "benchmark_family_id": "livecodebench",
@@ -3765,7 +3765,7 @@
     },
     {
       "benchmark_family_id": "simpleqa-verified",
-      "checked_on": "2026-09-28",
+      "checked_on": "2026-10-31",
       "sources": [
         {
           "source_id": "paper",
@@ -3875,6 +3875,16 @@
           "basis": "evalrank_inference",
           "statement": "The 2026-09-28 EvalRank catalog audit removed the factuality cell from this family: SimpleQA Verified measures short-form recall from memory, not grounding in supplied context, and agreed with FACTS Grounding at only 0.34 on shared models. It stays in general-knowledge-qa.",
           "source_ids": [
+            "epoch_hub"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "On 2026-10-31 EvalRank returned this family to the factuality cell, superseding the 2026-09-28 audit removal above. The cell now covers both grounded factuality (claims faithful to supplied context, as FACTS Grounding v2 and Vectara HHEM measure) and parametric factuality (correct short-form claims recalled from memory, which SimpleQA Verified measures with a grader that separates correct, incorrect and not-attempted answers, so confident wrong answers cost a model). The 0.34 agreement with FACTS Grounding on shared models stands as context: it shows the two boards measure different halves of the cell, not that either is off-topic. The family keeps general-knowledge-qa and its declared simpleqa correlated-family group, so it never counts as independent evidence against another feed of the same task lineage.",
+          "source_ids": [
+            "paper",
             "epoch_hub"
           ]
         }
@@ -11560,6 +11570,154 @@
           "source_ids": [
             "license",
             "results"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "aa-intelligence-index-cost-per-task",
+      "checked_on": "2026-10-31",
+      "sources": [
+        {
+          "source_id": "aa_methodology",
+          "kind": "official_site",
+          "url": "https://artificialanalysis.ai/methodology/intelligence-benchmarking"
+        },
+        {
+          "source_id": "aa_leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://artificialanalysis.ai/models/claude-opus-5-5"
+        },
+        {
+          "source_id": "benchmarkheaven_api",
+          "kind": "official_dataset",
+          "url": "https://benchmarkheaven.com/api/benchmark-scores?benchmark_id=aa-intelligence-index-cost-per-task::4.3.2"
+        },
+        {
+          "source_id": "benchmarkheaven_registry",
+          "kind": "official_dataset",
+          "url": "https://benchmarkheaven.com/api/benchmarks"
+        },
+        {
+          "source_id": "benchmarkheaven_repository",
+          "kind": "official_repository",
+          "url": "https://github.com/fstandhartinger/model-market-comparison"
+        },
+        {
+          "source_id": "benchmarkheaven_license",
+          "kind": "official_repository",
+          "url": "https://github.com/fstandhartinger/model-market-comparison/blob/main/LICENSE"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Artificial Analysis publishes, per model at a named reasoning effort, the USD cost of running its Intelligence Index (version 4.3.2) divided by the number of index tasks, priced from the tokens each configuration spends at list rates. Benchmark Heaven registers it as aa-intelligence-index-cost-per-task::4.3.2 in its Efficiency category: unit USD/task, range 0 upward, higher_better false, and by its own policy not a capability score.",
+          "source_ids": [
+            "aa_methodology",
+            "aa_leaderboard",
+            "benchmarkheaven_registry"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The Benchmark Heaven public API serves read-only JSON observations for the registry id aa-intelligence-index-cost-per-task::4.3.2; its date-snapshot form (::snapshot-2026-09-10, used by the AA-Omniscience and IFBench feeds) is rejected as an unknown version. Every observation carries the Artificial Analysis source URL, a retrieved_at timestamp and a sha256 of the retrieved source. On 2026-10-31 the API held 22 measured observations, all retrieved 2026-09-22, for four models at every effort: Claude Opus 5.5 (low 0.551, medium 1.336, high 1.823, xhigh 3.459, max 5.982 USD/task), GPT-6 Astra (low 0.818, medium 1.541, high 1.725, xhigh 2.309, max 3.258), GPT-6 Sol (non-reasoning 0.331, medium 0.248, max 1.056) and GPT-6 Luna (non-reasoning 0.011, medium 0.017, max 0.068).",
+          "source_ids": [
+            "benchmarkheaven_api",
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "This is a cost family, not a capability family: it binds no cell and no ranking group, never ranks a model and never enters a capability-family count, and its native metric is lower-is-better. Each observation is one model at a named reasoning effort on Artificial Analysis's fixed prompts, so it resolves to a model configuration under direct prompting. EvalRank reads it as measured per-effort cost multipliers: cost per task at an effort divided by cost per task at medium for the same model on this board (for example Claude Opus 5.5 max is 4.48 times medium, GPT-6 Astra max 2.11 times). No other catalog family carries cost, so its correlation stays unknown.",
+          "source_ids": [
+            "benchmarkheaven_api",
+            "aa_methodology"
+          ]
+        },
+        {
+          "topic": "harness_code_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The feed ingests the Benchmark Heaven API's JSON result data only; no harness code ships with it. Benchmark Heaven's own transport code is MIT-licensed and is not ingested, so the recorded value marks the field not applicable to the API data view.",
+          "source_ids": [
+            "benchmarkheaven_repository",
+            "benchmarkheaven_license"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The cost values are Artificial Analysis's data, which Benchmark Heaven republishes under AA's attribution terms rather than an SPDX license. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for automated fetching and public republication of its evaluation results with attribution by a link to artificialanalysis.ai; the Benchmark Heaven transport already serves the catalog under the owner's 2026-09-28 Rights B ruling. The Artificial Analysis attribution terms apply: every published or redistributed cost-per-task value credits Artificial Analysis and links the AA source URL that each observation carries.",
+          "source_ids": [
+            "aa_leaderboard",
+            "benchmarkheaven_api"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes commercial use of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for automated fetching and public republication of its evaluation results with attribution by a link to artificialanalysis.ai; the Benchmark Heaven transport already serves the catalog under the owner's 2026-09-28 Rights B ruling.",
+          "source_ids": [
+            "aa_leaderboard",
+            "benchmarkheaven_api"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for automated fetching and public republication of its evaluation results with attribution by a link to artificialanalysis.ai; the Benchmark Heaven transport already serves the catalog under the owner's 2026-09-28 Rights B ruling. The Artificial Analysis attribution terms apply: every published or redistributed cost-per-task value credits Artificial Analysis and links the AA source URL that each observation carries.",
+          "source_ids": [
+            "aa_leaderboard",
+            "benchmarkheaven_api"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for automated fetching and public republication of its evaluation results with attribution by a link to artificialanalysis.ai; the Benchmark Heaven transport already serves the catalog under the owner's 2026-09-28 Rights B ruling.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The API data view involves no execution environment; direct source-owner permission authorizes use of the source for this feed. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for automated fetching and public republication of its evaluation results with attribution by a link to artificialanalysis.ai; the Benchmark Heaven transport already serves the catalog under the owner's 2026-09-28 Rights B ruling.",
+          "source_ids": [
+            "aa_leaderboard",
+            "benchmarkheaven_api"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes retention of the fetched API response bytes, each observation keeping its AA source URL, retrieved_at and sha256. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for automated fetching and public republication of its evaluation results with attribution by a link to artificialanalysis.ai; the Benchmark Heaven transport already serves the catalog under the owner's 2026-09-28 Rights B ruling.",
+          "source_ids": [
+            "aa_leaderboard",
+            "benchmarkheaven_api"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes publication of values derived from this source data, including per-effort cost multipliers. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for automated fetching and public republication of its evaluation results with attribution by a link to artificialanalysis.ai; the Benchmark Heaven transport already serves the catalog under the owner's 2026-09-28 Rights B ruling. The Artificial Analysis attribution terms apply: every published or redistributed cost-per-task value credits Artificial Analysis and links the AA source URL that each observation carries.",
+          "source_ids": [
+            "aa_leaderboard",
+            "benchmarkheaven_api"
           ]
         }
       ]

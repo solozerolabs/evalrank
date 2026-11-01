@@ -2,7 +2,7 @@
   "$schema": "../schemas/evalrank-manifest.schema.json",
   "object": "evalrank_manifest",
   "schema_version": "1",
-  "manifest_version": "2026-10-30.1",
+  "manifest_version": "2026-10-31.1",
   "ranking_group_dimensions": [
     "cell_id",
     "entity_kind",
@@ -2738,6 +2738,7 @@
       "benchmark_family_id": "simpleqa-verified",
       "display_name": "SimpleQA Verified",
       "candidate_cells": [
+        "factuality",
         "general-knowledge-qa"
       ],
       "entity_kinds": [
@@ -4009,6 +4010,20 @@
       "candidate_cells": [
         "multilingual"
       ],
+      "entity_kinds": [
+        "model_configuration"
+      ],
+      "state": "active",
+      "rank_eligible_count": null,
+      "correlation_status": "unknown",
+      "correlated_family_group": null,
+      "research_flags": [],
+      "quarantine_reason": null
+    },
+    {
+      "benchmark_family_id": "aa-intelligence-index-cost-per-task",
+      "display_name": "Cost per AA Intelligence Index task (Artificial Analysis)",
+      "candidate_cells": [],
       "entity_kinds": [
         "model_configuration"
       ],
@@ -6091,6 +6106,7 @@
       "adapter_id": "simpleqa-verified-epoch-hub-csv-v1",
       "metric_direction": "higher",
       "candidate_cells": [
+        "factuality",
         "general-knowledge-qa"
       ],
       "entity_kind": "model_configuration",
@@ -6130,6 +6146,7 @@
         "correlated_family_group": "simpleqa"
       },
       "ranking_group_ids": [
+        "rg-factuality-model-configuration-direct-prompt-model-configuration-v1",
         "rg-general-knowledge-qa-model-configuration-direct-prompt-model-configuration-v1"
       ],
       "quarantine_reason": null
@@ -10452,6 +10469,51 @@
       "ranking_group_ids": [
         "rg-multilingual-model-configuration-direct-prompt-model-configuration-v1"
       ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "aa-intelligence-index-cost-per-task-benchmarkheaven-discovery",
+      "benchmark_family_id": "aa-intelligence-index-cost-per-task",
+      "adapter_id": "benchmarkheaven-api-json-v1",
+      "metric_direction": "lower",
+      "candidate_cells": [],
+      "entity_kind": "model_configuration",
+      "interaction_policy": "direct_prompt",
+      "configuration_passport_class": "model-configuration-v1",
+      "state": "active",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": "not-applicable-api-data-view",
+        "task_data_license": null,
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "validated",
+        "mode": "periodic",
+        "stale_after_seconds": 1209600,
+        "stop_recommending_after_seconds": 7776000,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": true,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "declared",
+        "task_lineage_id": "aa-intelligence-index-cost-per-task-tasks",
+        "environment_lineage_id": "aa-intelligence-index-cost-per-task-environments",
+        "grader_lineage_id": "aa-intelligence-index-cost-per-task-graders",
+        "correlation_status": "unknown",
+        "correlated_family_group": null
+      },
+      "ranking_group_ids": [],
       "quarantine_reason": null
     }
   ]

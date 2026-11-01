@@ -163,6 +163,7 @@ EXPECTED_FAMILY_IDS = (
     "lmarena-text-to-image",
     "lmarena-text-factuality",
     "evalrank-site-translation",
+    "aa-intelligence-index-cost-per-task",
 )
 
 # MTEB families each expose an embedder + a reranker feed (both retrieval
@@ -215,6 +216,9 @@ EXPECTED_FEED_IDS = tuple(
         # Artificial Analysis data carried by the Benchmark Heaven API transport.
         "aa-omniscience": ("aa-omniscience-benchmarkheaven-discovery",),
         "aa-ifbench": ("aa-ifbench-benchmarkheaven-discovery",),
+        "aa-intelligence-index-cost-per-task": (
+            "aa-intelligence-index-cost-per-task-benchmarkheaven-discovery",
+        ),
         "evalrank-content-safety": ("evalrank-content-safety-board-discovery",),
         "evalrank-site-translation": ("evalrank-site-translation-board-discovery",),
         "core-bench-reproducibility": (
@@ -229,6 +233,10 @@ EXPECTED_FEED_IDS = tuple(
         **_REPLACED_SOURCE_FAMILY_FEEDS,
     }.get(family_id, (f"{family_id}-discovery",))
 )
+
+# Cost feeds price a fixed suite per configuration; they bind no cell and no
+# ranking group, never rank, and carry a lower-is-better metric.
+COST_FEED_IDS = frozenset({"aa-intelligence-index-cost-per-task-benchmarkheaven-discovery"})
 
 # Exact ranking identities project into the deliberately smaller public catalog
 # ontology. A system is public-facing as either a tool or agent depending on the
@@ -343,6 +351,14 @@ def manifest_semantic_errors(payload: dict) -> list[str]:
             errors.append(
                 f"non-active feed {feed['feed_id']} claims rank-eligible observations"
             )
+        if not feed["candidate_cells"] and (
+            feed["ranking_group_ids"] or feed["metric_direction"] != "lower"
+        ):
+            errors.append(
+                f"cost feed {feed['feed_id']} must bind no ranking group and be lower-is-better"
+            )
+        if feed["candidate_cells"] and not feed["ranking_group_ids"]:
+            errors.append(f"feed {feed['feed_id']} binds cells but no ranking group")
         if feed["candidate_cells"] != family["candidate_cells"]:
             errors.append(
                 f"feed {feed['feed_id']} candidate cells differ from family "
@@ -446,7 +462,7 @@ class CatalogManifestTests(unittest.TestCase):
 
         self.assertEqual("evalrank_manifest", payload["object"])
         self.assertEqual("1", payload["schema_version"])
-        self.assertEqual("2026-10-30.1", payload["manifest_version"])
+        self.assertEqual("2026-10-31.1", payload["manifest_version"])
         for key, id_key in (
             ("cells", "cell_id"),
             ("ranking_groups", "ranking_group_id"),
@@ -681,20 +697,41 @@ class CatalogManifestTests(unittest.TestCase):
             creative["quarantine_reason"],
             families["lmarena-creative-writing"]["quarantine_reason"],
         )
-        # Recall-from-memory families leave factuality but keep their other cells.
+        # HLE left factuality in the 2026-09-28 audit and stays out. SimpleQA Verified
+        # returned on 2026-10-31: factuality covers grounded and parametric factual recall.
+        factuality_group = "rg-factuality-model-configuration-direct-prompt-model-configuration-v1"
         self.assertEqual(
             ["general-knowledge-qa", "reasoning"], families["hle"]["candidate_cells"]
         )
+        self.assertNotIn("factuality", feeds["hle-discovery"]["candidate_cells"])
+        self.assertNotIn(factuality_group, feeds["hle-discovery"]["ranking_group_ids"])
+        simpleqa = feeds["simpleqa-verified-discovery"]
         self.assertEqual(
-            ["general-knowledge-qa"], families["simpleqa-verified"]["candidate_cells"]
+            ["factuality", "general-knowledge-qa"],
+            families["simpleqa-verified"]["candidate_cells"],
         )
-        for feed_id in ("hle-discovery", "simpleqa-verified-discovery"):
-            with self.subTest(feed_id=feed_id):
-                self.assertNotIn("factuality", feeds[feed_id]["candidate_cells"])
-                self.assertNotIn(
-                    "rg-factuality-model-configuration-direct-prompt-model-configuration-v1",
-                    feeds[feed_id]["ranking_group_ids"],
-                )
+        self.assertEqual(families["simpleqa-verified"]["candidate_cells"], simpleqa["candidate_cells"])
+        self.assertEqual(
+            [
+                factuality_group,
+                "rg-general-knowledge-qa-model-configuration-direct-prompt-model-configuration-v1",
+            ],
+            simpleqa["ranking_group_ids"],
+        )
+        bound = {
+            row["benchmark_family_id"]
+            for row in payload["feeds"]
+            if row["state"] == "active" and factuality_group in row["ranking_group_ids"]
+        }
+        self.assertEqual(
+            {
+                "facts-grounding-v2",
+                "vectara-hhem",
+                "aa-omniscience",
+                "simpleqa-verified",
+            },
+            bound,
+        )
 
     def test_2026_10_29_lmarena_arena_feeds_mirror_instruction_following(self):
         payload = manifest()
@@ -829,6 +866,72 @@ class CatalogManifestTests(unittest.TestCase):
                 "correlated_family_group": None,
             },
             feed["lineage"],
+        )
+
+    def test_aa_cost_per_task_is_a_cost_family_that_ranks_no_cell(self):
+        payload = manifest()
+        families = {row["benchmark_family_id"]: row for row in payload["benchmark_families"]}
+        feeds = {row["feed_id"]: row for row in payload["feeds"]}
+        family = families["aa-intelligence-index-cost-per-task"]
+        feed = feeds["aa-intelligence-index-cost-per-task-benchmarkheaven-discovery"]
+        omniscience = feeds["aa-omniscience-benchmarkheaven-discovery"]
+
+        # The only cost family: no cell, no ranking group, lower is better.
+        self.assertEqual(
+            [family["benchmark_family_id"]],
+            [row["benchmark_family_id"] for row in payload["benchmark_families"] if not row["candidate_cells"]],
+        )
+        self.assertEqual(COST_FEED_IDS, {row["feed_id"] for row in payload["feeds"] if not row["candidate_cells"]})
+        self.assertEqual("active", family["state"])
+        self.assertEqual([], family["candidate_cells"])
+        self.assertEqual(["model_configuration"], family["entity_kinds"])
+        self.assertEqual([], family["research_flags"])
+        self.assertEqual("unknown", family["correlation_status"])
+        self.assertEqual("active", feed["state"])
+        self.assertEqual("lower", feed["metric_direction"])
+        self.assertEqual("benchmarkheaven-api-json-v1", feed["adapter_id"])
+        self.assertEqual([], feed["candidate_cells"])
+        self.assertEqual([], feed["ranking_group_ids"])
+        # Same transport, identity, rights and refresh schedule as AA-Omniscience.
+        for key in (
+            "entity_kind",
+            "interaction_policy",
+            "configuration_passport_class",
+            "rights",
+            "cadence",
+            "retention",
+        ):
+            with self.subTest(key=key):
+                self.assertEqual(omniscience[key], feed[key])
+        self.assertEqual("validated", feed["cadence"]["status"])
+        self.assertEqual("periodic", feed["cadence"]["mode"])
+        self.assertEqual(
+            {
+                "validation_status": "declared",
+                "task_lineage_id": "aa-intelligence-index-cost-per-task-tasks",
+                "environment_lineage_id": "aa-intelligence-index-cost-per-task-environments",
+                "grader_lineage_id": "aa-intelligence-index-cost-per-task-graders",
+                "correlation_status": "unknown",
+                "correlated_family_group": None,
+            },
+            feed["lineage"],
+        )
+
+        # The schema states the same guard: empty cells require no groups and "lower".
+        schema = load_json(REPO_ROOT / "schemas" / "evalrank-manifest.schema.json")
+        guard = schema["$defs"]["Feed"]["allOf"][-1]
+        self.assertEqual(
+            {"type": "array", "maxItems": 0}, guard["if"]["properties"]["candidate_cells"]
+        )
+        self.assertEqual(
+            {
+                "ranking_group_ids": {"type": "array", "maxItems": 0},
+                "metric_direction": {"const": "lower"},
+            },
+            guard["then"]["properties"],
+        )
+        self.assertEqual(
+            {"ranking_group_ids": {"type": "array", "minItems": 1}}, guard["else"]["properties"]
         )
 
     def test_security_code_review_binds_only_the_review_shaped_aa_boards(self):
@@ -1478,10 +1581,13 @@ class CatalogManifestTests(unittest.TestCase):
                 # 2026-10-29: the multilingual model-configuration group's family, EvalRank's
                 # own open site-translation board (covers ar/he/hi/th, reasoning off).
                 "evalrank-site-translation",
+                # 2026-10-31: the Artificial Analysis cost-per-task board, a cost family that
+                # binds no cell and supplies measured per-effort cost multipliers.
+                "aa-intelligence-index-cost-per-task",
             },
             active,
         )
-        self.assertEqual(118, len(families))
+        self.assertEqual(119, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -1568,7 +1674,7 @@ class CatalogManifestTests(unittest.TestCase):
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(131, len(feeds))
+        self.assertEqual(132, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_itbench_is_not_executable_without_exact_configuration_identity(self):
@@ -1941,7 +2047,11 @@ class CatalogManifestTests(unittest.TestCase):
                 feed_family_ids.add(feed["benchmark_family_id"])
                 self.assertEqual(family["candidate_cells"], feed["candidate_cells"])
                 self.assertIsNone(feed["rank_eligible_count"])
-                self.assertTrue(feed["ranking_group_ids"])
+                # Only a cost feed binds no cell and no ranking group.
+                self.assertEqual(
+                    not feed["candidate_cells"], feed["feed_id"] in COST_FEED_IDS
+                )
+                self.assertEqual(bool(feed["candidate_cells"]), bool(feed["ranking_group_ids"]))
                 if feed["state"] == "discovered":
                     self.assertIsNone(feed["adapter_id"])
                     self.assertIsNone(feed["metric_direction"])
@@ -2035,7 +2145,8 @@ class CatalogManifestTests(unittest.TestCase):
                 "deepsecbench-aa-discovery": "higher",
                 "cwe-bench-aa-discovery": "higher",
                 "cybergym-e2e-aa-discovery": "higher",
-                # The one lower-is-better feed: a refusal rate, shadow and never ranked.
+                # Lower-is-better feeds: a refusal rate (shadow, never ranked) and the
+                # cost-per-task board (a cost feed that binds no cell).
                 "deepsecbench-aa-refusal-discovery": "lower",
                 "macroscopebench-medium-discovery": "higher",
                 "macroscopebench-discovery": "higher",
@@ -2047,6 +2158,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "lmarena-text-to-image-discovery": "higher",
                 "lmarena-text-factuality-discovery": "higher",
                 "evalrank-site-translation-board-discovery": "higher",
+                "aa-intelligence-index-cost-per-task-benchmarkheaven-discovery": "lower",
             },
             recovered_directions,
         )
@@ -2113,6 +2225,14 @@ class CatalogManifestTests(unittest.TestCase):
                 for group in payload["ranking_groups"]
                 if group["cell_id"] == "reasoning"
             ).update(state="quarantined"),
+            "cost feed with a ranking group": lambda payload: next(
+                feed for feed in payload["feeds"] if not feed["candidate_cells"]
+            ).update(
+                ranking_group_ids=[payload["ranking_groups"][0]["ranking_group_id"]]
+            ),
+            "cost feed that is higher-is-better": lambda payload: next(
+                feed for feed in payload["feeds"] if not feed["candidate_cells"]
+            ).update(metric_direction="higher"),
             "group-cell public entity mismatch": lambda payload: next(
                 cell
                 for cell in payload["cells"]

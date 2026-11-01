@@ -1876,6 +1876,48 @@
       "quarantine_reason": null
     },
     {
+      "ranking_group_id": "rg-instruction-following-arena-system-crowd-pairwise-arena-system-v1",
+      "cell_id": "instruction-following",
+      "entity_kind": "arena_system",
+      "interaction_policy": "crowd_pairwise",
+      "configuration_passport_class": "arena-system-v1",
+      "state": "active",
+      "rank_eligible_count": null,
+      "claim_ceiling": "single_winner",
+      "eligibility": {
+        "calibration_status": "unvalidated",
+        "explorer": {
+          "minimum_families": 1,
+          "minimum_overlap": 1
+        },
+        "top_set": {
+          "minimum_families": 3,
+          "minimum_overlap": 2
+        },
+        "single_winner": {
+          "minimum_families": 4,
+          "minimum_overlap": 3
+        },
+        "native_effect_policy": "family-native-likelihoods-only",
+        "missing_configuration_policy": "exclude-from-ranking-group-and-disclose",
+        "block_bootstrap": {
+          "replicates": 10000,
+          "seed_derivation": "uint64be(sha256(restricted_jcs({aggregation_input_digest,methodology_version}))[0:8])&9007199254740991"
+        },
+        "bootstrap_coverage_target": 0.95,
+        "superiority_threshold": 0.95,
+        "practical_effect_floor": {
+          "mode": "native-metric-calibrated",
+          "status": "unvalidated"
+        },
+        "leave_one_family_out": {
+          "required_for_single_winner": true,
+          "stable_top_set_required": true
+        }
+      },
+      "quarantine_reason": null
+    },
+    {
       "ranking_group_id": "rg-content-safety-classification-model-configuration-direct-prompt-model-configuration-v1",
       "cell_id": "content-safety-classification",
       "entity_kind": "model_configuration",
@@ -3782,6 +3824,7 @@
       "benchmark_family_id": "lmarena-instruction-following",
       "display_name": "LMArena Instruction Following",
       "candidate_cells": [
+        "instruction-following",
         "writing"
       ],
       "entity_kinds": [
@@ -9742,6 +9785,7 @@
       "adapter_id": "lmarena-instruction-following-hf-parquet-v1",
       "metric_direction": "higher",
       "candidate_cells": [
+        "instruction-following",
         "writing"
       ],
       "entity_kind": "arena_system",
@@ -9781,6 +9825,7 @@
         "correlated_family_group": "lmarena-creative-writing"
       },
       "ranking_group_ids": [
+        "rg-instruction-following-arena-system-crowd-pairwise-arena-system-v1",
         "rg-writing-arena-system-crowd-pairwise-arena-system-v1"
       ],
       "quarantine_reason": null

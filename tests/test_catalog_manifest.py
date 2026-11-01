@@ -1124,7 +1124,13 @@ class CatalogManifestTests(unittest.TestCase):
             for row in payload["feeds"]
             if row["state"] == "active" and "instruction-following" in row["candidate_cells"]
         }
-        self.assertEqual({"aa-ifbench"}, bound)
+        # LMArena's instruction-following arena (2026-11-01) keeps the cell live when
+        # IFBench's roster trails the frontier; it ranks in its own arena group.
+        self.assertEqual({"aa-ifbench", "lmarena-instruction-following"}, bound)
+        self.assertEqual(
+            ["instruction-following", "writing"],
+            families["lmarena-instruction-following"]["candidate_cells"],
+        )
         self.assertEqual("active", feed["state"])
         self.assertEqual("higher", feed["metric_direction"])
         self.assertEqual("benchmarkheaven-api-json-v1", feed["adapter_id"])
@@ -1293,7 +1299,7 @@ class CatalogManifestTests(unittest.TestCase):
     def test_every_cell_has_explicit_ordered_ranking_group_eligibility(self):
         payload = manifest()
         cell_ids = {cell["cell_id"] for cell in payload["cells"]}
-        self.assertEqual(45, len(payload["ranking_groups"]))
+        self.assertEqual(46, len(payload["ranking_groups"]))
         group_keys = set()
         covered_cells = set()
 

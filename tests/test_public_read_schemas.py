@@ -402,11 +402,11 @@ assertInvalid(validateLeaderboard, unknownGroupField, "unknown group field");
 const withConsensus = clone(payload);
 withConsensus.positional_consensus = {
   object: "positional_consensus",
-  algorithm: "size_aware_reciprocal_borda",
+  algorithm: "lock_weighted_ratio",
   entries: [{
     rank: 1,
-    model: "example-model-5",
-    score: 1.25,
+    model: "gpt6sol",
+    score: 0.98,
     benchmark_count: 2,
     contributions: [
       { benchmark_family_id: "livebench-reasoning", rank: 1 },
@@ -423,6 +423,18 @@ assertInvalid(validateLeaderboard, consensusUnknownField, "consensus entry with 
 const consensusBadAlgorithm = clone(withConsensus);
 consensusBadAlgorithm.positional_consensus.algorithm = "pagerank";
 assertInvalid(validateLeaderboard, consensusBadAlgorithm, "consensus with unrecognized algorithm");
+
+const consensusBorda = clone(withConsensus);
+consensusBorda.positional_consensus.algorithm = "size_aware_reciprocal_borda";
+assertInvalid(validateLeaderboard, consensusBorda, "consensus with the retired borda algorithm");
+
+const consensusDisplayName = clone(withConsensus);
+consensusDisplayName.positional_consensus.entries[0].model = "GPT-6 Sol";
+assertInvalid(validateLeaderboard, consensusDisplayName, "consensus keyed by a display name, not a resolved model key");
+
+const consensusScoreAboveOne = clone(withConsensus);
+consensusScoreAboveOne.positional_consensus.entries[0].score = 1.25;
+assertInvalid(validateLeaderboard, consensusScoreAboveOne, "consensus ratio score above 1");
 
 const ranking = clone(payload.ranking_groups[0].entries[0].ranking);
 const citations = clone(payload.ranking_groups[0].citations);

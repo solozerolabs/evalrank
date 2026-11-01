@@ -1,7 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://evalrank.ai/schemas/decision-receipt.schema.json",
-  "title": "EvalRank Decision Receipt V1",
+  "title": "EvalRank Decision Receipt V2",
+  "description": "outcome pick: selections[0] is the pick, the rest is the priced band in order. Ratios are parts per million (integers: receipt hashes exclude floats).",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -9,397 +10,418 @@
     "schema_version",
     "receipt_id",
     "query",
-    "publication_snapshot",
-    "methodology_version",
     "decided_at",
     "outcome",
+    "snapshot_ids",
+    "families",
     "selections",
     "exclusions",
-    "reasons",
-    "sensitivity",
-    "evidence",
-    "freshness",
-    "abstention_reason"
+    "usage_profile",
+    "abstain_reasons"
   ],
   "properties": {
-    "object": { "const": "decision_receipt" },
-    "schema_version": { "const": "1" },
-    "receipt_id": { "type": "string", "pattern": "^receipt_[0-9a-f]{64}$" },
-    "query": { "$ref": "decision-query.schema.json" },
-    "publication_snapshot": { "$ref": "#/$defs/PublicationSnapshot" },
-    "methodology_version": {
-      "type": "string",
-      "pattern": "^\\d{4}-\\d{2}-\\d{2}\\.[1-9]\\d*\\.([a-z0-9]+-)*[a-z0-9]+$"
+    "object": {
+      "const": "decision_receipt"
     },
-    "decided_at": { "$ref": "#/$defs/Timestamp" },
-    "outcome": { "enum": ["top_set", "abstain"] },
-    "selections": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/Selection" } },
-    "exclusions": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/Exclusion" } },
-    "reasons": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/Reason" } },
-    "sensitivity": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/Sensitivity" } },
-    "evidence": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/Evidence" } },
-    "freshness": { "$ref": "#/$defs/Freshness" },
-    "abstention_reason": {
-      "oneOf": [
-        {
+    "schema_version": {
+      "const": "2"
+    },
+    "receipt_id": {
+      "type": "string",
+      "pattern": "^receipt_[0-9a-f]{64}$"
+    },
+    "query": {
+      "$ref": "decision-query.schema.json"
+    },
+    "decided_at": {
+      "$ref": "#/$defs/Timestamp"
+    },
+    "outcome": {
+      "enum": [
+        "pick",
+        "abstain"
+      ]
+    },
+    "snapshot_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^explorer_.+$"
+      }
+    },
+    "families": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Family"
+      }
+    },
+    "selections": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Selection"
+      }
+    },
+    "exclusions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Exclusion"
+      }
+    },
+    "usage_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "basis",
+        "profile"
+      ],
+      "properties": {
+        "basis": {
           "enum": [
-            "insufficient_comparable_evidence",
-            "no_eligible_serving_offer",
-            "constraints_eliminate_all_candidates",
-            "evidence_stale",
-            "methodology_unavailable"
+            "caller",
+            "default_agent_task_mix"
           ]
         },
-        { "type": "null" }
-      ]
+        "profile": {
+          "$ref": "decision-query.schema.json#/$defs/UsageProfile"
+        }
+      }
+    },
+    "abstain_reasons": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "no_ranked_candidate",
+          "no_eligible_offer",
+          "stale_evidence",
+          "not_a_model_cell"
+        ]
+      }
     }
   },
   "allOf": [
     {
-      "if": { "required": ["outcome"], "properties": { "outcome": { "const": "top_set" } } },
-      "then": {
-        "properties": {
-          "selections": { "minItems": 1 },
-          "reasons": { "minItems": 1 },
-          "evidence": { "minItems": 1 },
-          "abstention_reason": { "type": "null" }
-        }
-      },
-      "else": {
-        "properties": {
-          "selections": { "maxItems": 0 },
-          "abstention_reason": { "type": "string" }
-        }
-      }
-    },
-    {
       "if": {
-        "required": ["query", "outcome"],
+        "required": [
+          "outcome"
+        ],
         "properties": {
-          "outcome": { "const": "top_set" },
-          "query": {
-            "type": "object",
-            "required": ["objective"],
-            "properties": { "objective": { "const": "lowest_cost_within_top_set" } }
+          "outcome": {
+            "const": "pick"
           }
         }
       },
       "then": {
         "properties": {
           "selections": {
-            "items": {
-              "allOf": [
-                { "$ref": "#/$defs/Selection" },
-                {
-                  "properties": {
-                    "serving_offer_id": { "type": "string" },
-                    "projected_monthly_cost_microusd": { "type": "integer" }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "required": ["outcome"],
-        "properties": {
-          "outcome": { "const": "top_set" }
-        }
-      },
-      "then": {
-        "properties": {
-          "sensitivity": {
-            "contains": {
-              "type": "object",
-              "required": ["scenario", "stable"],
-              "properties": {
-                "scenario": { "const": "leave_one_family_out" },
-                "stable": { "const": true }
-              }
-            },
-            "minContains": 1,
-            "maxContains": 1
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "required": ["query", "outcome"],
-        "properties": {
-          "outcome": { "const": "top_set" },
-          "query": {
-            "type": "object",
-            "required": ["objective"],
-            "properties": { "objective": { "const": "lowest_cost_within_top_set" } }
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "sensitivity": {
-            "allOf": [
-              { "contains": { "properties": { "scenario": { "const": "price_plus_20_percent" } }, "required": ["scenario"] }, "minContains": 1 },
-              { "contains": { "properties": { "scenario": { "const": "price_minus_20_percent" } }, "required": ["scenario"] }, "minContains": 1 },
-              { "contains": { "properties": { "scenario": { "const": "usage_double" } }, "required": ["scenario"] }, "minContains": 1 }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "required": ["query"],
-        "properties": {
-          "query": {
-            "type": "object",
-            "required": ["zero_cache_sensitivity_usage_profile"]
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "selections": {
-            "items": {
-              "properties": {
-                "zero_cache_sensitivity_projected_monthly_cost_microusd": { "type": "integer" }
-              }
-            }
+            "minItems": 1
+          },
+          "abstain_reasons": {
+            "maxItems": 0
           }
         }
       },
       "else": {
         "properties": {
           "selections": {
-            "items": {
-              "properties": {
-                "zero_cache_sensitivity_projected_monthly_cost_microusd": { "type": "null" }
-              }
-            }
+            "maxItems": 0
+          },
+          "abstain_reasons": {
+            "minItems": 1
           }
         }
       }
     }
   ],
-  "$comment": "Semantic validation recomputes receipt_id and every projected monthly cost; binds decided_at to exact evidence windows including pricing effective_at; requires unique selected configuration and evidence targets, exact subject-consistent citations, equal-cost ties, hard-budget fit across the baseline and declared zero-cache profile, cost-sensitive caveats when estimated projections differ, applied-constraint reasons, and sensitivity sets over known candidates.",
   "$defs": {
     "Timestamp": {
       "type": "string",
       "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
     },
-    "Decimal": {
-      "type": "string",
-      "maxLength": 128,
-      "pattern": "^(?:0|[1-9]\\d*)(?:\\.\\d*[1-9])?$|^-(?:0\\.\\d*[1-9]|[1-9]\\d*(?:\\.\\d*[1-9])?)$"
+    "Ppm": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
     },
-    "ConfigurationId": { "type": "string", "pattern": "^config_[0-9a-f]{64}$" },
-    "ArtifactId": { "type": "string", "pattern": "^artifact_[0-9a-f]{64}$" },
-    "StringSet": {
-      "type": "array",
-      "minItems": 1,
-      "uniqueItems": true,
-      "items": { "type": "string", "minLength": 1 }
-    },
-    "PublicationSnapshot": {
+    "Family": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["publication_snapshot_id", "ranking_group_id", "manifest_version", "published_at"],
+      "required": [
+        "family_id",
+        "lock_status",
+        "weight_ppm",
+        "stale_at"
+      ],
       "properties": {
-        "publication_snapshot_id": { "type": "string", "pattern": "^snapshot_[0-9a-f]{64}$" },
-        "ranking_group_id": { "type": "string", "minLength": 1 },
-        "manifest_version": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}\\.[1-9]\\d*$" },
-        "published_at": { "$ref": "#/$defs/Timestamp" }
+        "family_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lock_status": {
+          "enum": [
+            "admitted",
+            "held",
+            "rejected",
+            "unlocked"
+          ]
+        },
+        "weight_ppm": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "stale_at": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
       }
+    },
+    "Price": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "input_microusd_per_million",
+        "cached_input_microusd_per_million",
+        "output_microusd_per_million"
+      ],
+      "properties": {
+        "input_microusd_per_million": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "cached_input_microusd_per_million": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "output_microusd_per_million": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      }
+    },
+    "EffortMultiplier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "multiplier_ppm",
+        "source"
+      ],
+      "properties": {
+        "multiplier_ppm": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "description": "cost family id, or comparison_level for 1.0"
+        }
+      }
+    },
+    "Caveat": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "code",
+            "measured_effort",
+            "gap_ppm"
+          ],
+          "properties": {
+            "code": {
+              "const": "effort_substituted"
+            },
+            "measured_effort": {
+              "enum": [
+                "none",
+                "minimal",
+                "low",
+                "medium",
+                "high",
+                "xhigh",
+                "max"
+              ]
+            },
+            "gap_ppm": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "code"
+          ],
+          "properties": {
+            "code": {
+              "const": "cost_unmeasured"
+            }
+          }
+        }
+      ]
     },
     "Selection": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["evaluated_configuration_id", "serving_offer_id", "capability_rank", "projected_monthly_cost_microusd", "zero_cache_sensitivity_projected_monthly_cost_microusd"],
+      "required": [
+        "model_id",
+        "display_name",
+        "provider_id",
+        "serving_offer_id",
+        "reasoning_effort",
+        "api",
+        "capability_ratio_ppm",
+        "family_coverage",
+        "price",
+        "effort_multiplier",
+        "projected_cost_microusd",
+        "latency_p50_ms",
+        "caveats"
+      ],
       "properties": {
-        "evaluated_configuration_id": { "$ref": "#/$defs/ConfigurationId" },
-        "serving_offer_id": { "type": ["string", "null"], "pattern": "^offer_.+$" },
-        "capability_rank": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
-        "projected_monthly_cost_microusd": { "type": ["integer", "null"], "minimum": 0, "maximum": 9007199254740991 },
-        "zero_cache_sensitivity_projected_monthly_cost_microusd": { "type": ["integer", "null"], "minimum": 0, "maximum": 9007199254740991 }
-      },
-      "allOf": [
-        {
-          "if": { "required": ["projected_monthly_cost_microusd"], "properties": { "projected_monthly_cost_microusd": { "type": "integer" } } },
-          "then": { "properties": { "serving_offer_id": { "type": "string" } } }
+        "model_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Host-native id for the query's via: openai/gpt-6-sol on openrouter, gpt-6-sol on openai."
         },
-        {
-          "if": { "required": ["zero_cache_sensitivity_projected_monthly_cost_microusd"], "properties": { "zero_cache_sensitivity_projected_monthly_cost_microusd": { "type": "integer" } } },
-          "then": { "properties": { "serving_offer_id": { "type": "string" } } }
+        "display_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "provider_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "serving_offer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reasoning_effort": {
+          "enum": [
+            "none",
+            "minimal",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "description": "Always explicit: send it as returned."
+        },
+        "api": {
+          "enum": [
+            "chat_completions",
+            "responses"
+          ]
+        },
+        "capability_ratio_ppm": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "family_coverage": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "price": {
+          "$ref": "#/$defs/Price"
+        },
+        "effort_multiplier": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/EffortMultiplier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "projected_cost_microusd": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "latency_p50_ms": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "caveats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Caveat"
+          }
         }
-      ]
+      }
     },
     "Exclusion": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["evaluated_configuration_id", "code", "evidence_ids"],
+      "required": [
+        "model_key",
+        "code"
+      ],
       "properties": {
-        "evaluated_configuration_id": { "$ref": "#/$defs/ConfigurationId" },
-        "code": { "enum": ["constraints_not_met", "not_in_capability_top_set", "serving_offer_unverified", "evidence_stale", "incompatible_configuration"] },
-        "evidence_ids": { "$ref": "#/$defs/StringSet" }
-      }
-    },
-    "Freshness": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["observed_at", "expires_at"],
-      "properties": {
-        "observed_at": { "$ref": "#/$defs/Timestamp" },
-        "expires_at": { "$ref": "#/$defs/Timestamp" }
-      }
-    },
-    "Reason": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["reason_type", "code", "subject_id", "predicate", "axis", "observed_value", "unit", "threshold", "evidence_ids", "freshness", "caveat_codes"],
-      "properties": {
-        "reason_type": { "enum": ["best_when", "avoid_when"] },
-        "code": { "enum": ["strongest_capability_evidence", "within_capability_top_set", "lowest_cost_under_usage_profile", "budget_fit_under_declared_profiles", "provider_constraint_match", "region_constraint_match", "context_requirement_met", "insufficient_evidence", "serving_offer_unverified", "budget_exceeded", "stale_evidence"] },
-        "subject_id": { "type": "string", "minLength": 1 },
-        "predicate": { "enum": ["eq", "ne", "lt", "lte", "gt", "gte", "within_top_set", "unavailable"] },
-        "axis": { "enum": ["capability", "monthly_cost", "context", "availability", "freshness", "provider", "region"] },
-        "observed_value": { "type": "string", "minLength": 1 },
-        "unit": { "enum": ["probability", "score", "microusd_per_month", "tokens", "status", "timestamp", "provider_id", "region_id"] },
-        "threshold": { "type": ["string", "null"], "minLength": 1 },
-        "evidence_ids": { "$ref": "#/$defs/StringSet" },
-        "freshness": { "$ref": "#/$defs/Freshness" },
-        "caveat_codes": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": { "enum": ["provider_offer_link_required", "limited_availability", "evidence_near_expiry", "incomplete_family_coverage", "cost_sensitive_to_usage"] }
+        "model_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reasoning_effort": {
+          "enum": [
+            "none",
+            "minimal",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        "code": {
+          "enum": [
+            "ambiguous_identity",
+            "effort_not_accepted",
+            "api_not_supported",
+            "no_serving_offer",
+            "cost_unmeasured",
+            "effort_gap_too_large",
+            "constraints_not_met"
+          ]
+        },
+        "detail": {
+          "type": "string"
         }
-      },
-      "allOf": [
-        {
-          "if": { "required": ["predicate"], "properties": { "predicate": { "enum": ["eq", "ne", "lt", "lte", "gt", "gte"] } } },
-          "then": { "properties": { "threshold": { "type": "string" } } },
-          "else": { "properties": { "threshold": { "type": "null" } } }
-        },
-        {
-          "if": { "required": ["unit"], "properties": { "unit": { "enum": ["probability", "score", "microusd_per_month", "tokens"] } } },
-          "then": {
-            "properties": {
-              "observed_value": { "$ref": "#/$defs/Decimal" },
-              "threshold": { "oneOf": [{ "$ref": "#/$defs/Decimal" }, { "type": "null" }] }
-            }
-          }
-        },
-        {
-          "if": { "required": ["unit"], "properties": { "unit": { "const": "status" } } },
-          "then": {
-            "properties": {
-              "observed_value": { "enum": ["available", "limited", "unavailable", "sufficient", "insufficient", "fresh", "stale"] },
-              "threshold": { "oneOf": [{ "enum": ["available", "limited", "unavailable", "sufficient", "insufficient", "fresh", "stale"] }, { "type": "null" }] }
-            }
-          }
-        },
-        {
-          "if": { "required": ["unit"], "properties": { "unit": { "const": "timestamp" } } },
-          "then": {
-            "properties": {
-              "observed_value": { "$ref": "#/$defs/Timestamp" },
-              "threshold": { "oneOf": [{ "$ref": "#/$defs/Timestamp" }, { "type": "null" }] }
-            }
-          }
-        },
-        {
-          "if": { "required": ["code"], "properties": { "code": { "const": "strongest_capability_evidence" } } },
-          "then": { "properties": { "reason_type": { "const": "best_when" }, "axis": { "const": "capability" }, "unit": { "const": "score" }, "predicate": { "const": "gte" } } }
-        },
-        {
-          "if": { "required": ["code"], "properties": { "code": { "const": "within_capability_top_set" } } },
-          "then": { "properties": { "reason_type": { "const": "best_when" }, "axis": { "const": "capability" }, "unit": { "const": "score" }, "predicate": { "const": "within_top_set" }, "threshold": { "type": "null" } } }
-        },
-        {
-          "if": { "required": ["code"], "properties": { "code": { "const": "provider_constraint_match" } } },
-          "then": { "properties": { "reason_type": { "const": "best_when" }, "axis": { "const": "provider" }, "unit": { "const": "provider_id" }, "predicate": { "const": "eq" }, "threshold": { "type": "string" } } }
-        },
-        {
-          "if": { "required": ["code"], "properties": { "code": { "const": "region_constraint_match" } } },
-          "then": { "properties": { "reason_type": { "const": "best_when" }, "axis": { "const": "region" }, "unit": { "const": "region_id" }, "predicate": { "const": "eq" }, "threshold": { "type": "string" } } }
-        },
-        {
-          "if": { "required": ["code"], "properties": { "code": { "const": "lowest_cost_under_usage_profile" } } },
-          "then": { "properties": { "reason_type": { "const": "best_when" }, "axis": { "const": "monthly_cost" }, "unit": { "const": "microusd_per_month" }, "predicate": { "const": "eq" }, "threshold": { "type": "string" } } }
-        },
-        {
-          "if": { "required": ["code"], "properties": { "code": { "const": "budget_fit_under_declared_profiles" } } },
-          "then": { "properties": { "reason_type": { "const": "best_when" }, "axis": { "const": "monthly_cost" }, "unit": { "const": "microusd_per_month" }, "predicate": { "const": "lte" }, "threshold": { "type": "string" } } }
-        },
-        {
-          "if": { "required": ["code"], "properties": { "code": { "const": "budget_exceeded" } } },
-          "then": { "properties": { "reason_type": { "const": "avoid_when" }, "axis": { "const": "monthly_cost" }, "unit": { "const": "microusd_per_month" }, "predicate": { "const": "gt" }, "threshold": { "type": "string" } } }
-        },
-        {
-          "if": { "required": ["code"], "properties": { "code": { "const": "context_requirement_met" } } },
-          "then": { "properties": { "reason_type": { "const": "best_when" }, "axis": { "const": "context" }, "unit": { "const": "tokens" }, "predicate": { "const": "gte" }, "threshold": { "type": "string" } } }
-        },
-        {
-          "if": { "required": ["code"], "properties": { "code": { "const": "insufficient_evidence" } } },
-          "then": { "properties": { "reason_type": { "const": "avoid_when" }, "axis": { "const": "capability" }, "unit": { "const": "status" }, "predicate": { "const": "unavailable" }, "threshold": { "type": "null" } } }
-        },
-        {
-          "if": { "required": ["code"], "properties": { "code": { "const": "serving_offer_unverified" } } },
-          "then": { "properties": { "reason_type": { "const": "avoid_when" }, "axis": { "const": "availability" }, "unit": { "const": "status" }, "predicate": { "const": "unavailable" }, "threshold": { "type": "null" } } }
-        },
-        {
-          "if": { "required": ["code"], "properties": { "code": { "const": "stale_evidence" } } },
-          "then": { "properties": { "reason_type": { "const": "avoid_when" }, "axis": { "const": "freshness" }, "unit": { "const": "timestamp" }, "predicate": { "const": "lt" }, "threshold": { "type": "string" } } }
-        }
-      ]
-    },
-    "Sensitivity": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["scenario", "stable", "selected_configuration_ids"],
-      "properties": {
-        "scenario": { "enum": ["price_plus_20_percent", "price_minus_20_percent", "usage_double", "leave_one_family_out"] },
-        "stable": { "type": "boolean" },
-        "selected_configuration_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/ConfigurationId" } }
-      }
-    },
-    "Evidence": {
-      "oneOf": [
-        { "$ref": "#/$defs/ObservationEvidence" },
-        { "$ref": "#/$defs/ServingOfferEvidence" },
-        { "$ref": "#/$defs/OfferLinkEvidence" }
-      ]
-    },
-    "ObservationEvidence": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["kind", "evidence_id", "observation"],
-      "properties": {
-        "kind": { "const": "observation" },
-        "evidence_id": { "type": "string", "minLength": 1 },
-        "observation": { "$ref": "observation.schema.json" }
-      }
-    },
-    "ServingOfferEvidence": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["kind", "evidence_id", "serving_offer"],
-      "properties": {
-        "kind": { "const": "serving_offer" },
-        "evidence_id": { "type": "string", "minLength": 1 },
-        "serving_offer": { "$ref": "serving-offer.schema.json" }
-      }
-    },
-    "OfferLinkEvidence": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["kind", "evidence_id", "evaluation_to_offer_link"],
-      "properties": {
-        "kind": { "const": "evaluation_to_offer_link" },
-        "evidence_id": { "type": "string", "minLength": 1 },
-        "evaluation_to_offer_link": { "$ref": "evaluation-to-offer-link.schema.json" }
       }
     }
   }

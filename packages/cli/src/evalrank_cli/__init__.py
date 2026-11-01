@@ -105,7 +105,7 @@ def _parser() -> argparse.ArgumentParser:
     receipt.add_argument("--receipt-id", required=True)
     decide = subparsers.add_parser("decide", help="call the public decision API")
     decide.add_argument("--base-url", required=True)
-    decide.add_argument("--query", required=True, help="DecisionQueryV1 JSON file, or '-' for stdin")
+    decide.add_argument("--query", required=True, help="DecisionQueryV2 JSON file, or '-' for stdin")
     decide.add_argument(
         "--share",
         action="store_true",

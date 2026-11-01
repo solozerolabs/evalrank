@@ -25,13 +25,13 @@ from evalrank_mcp import call_tool, list_tools  # noqa: E402
 
 def _decision_vector() -> tuple[dict, dict]:
     corpus = json.loads(
-        (REPO_ROOT / "examples" / "decision-contract-v1.golden.json").read_text(
+        (REPO_ROOT / "examples" / "decision-contract-v2.golden.json").read_text(
             encoding="utf-8"
         )
     )
-    return corpus["receipt"]["body"]["query"], {
-        **corpus["receipt"]["body"],
-        "receipt_id": corpus["receipt"]["receipt_id"],
+    return corpus["receipts"][0]["body"]["query"], {
+        **corpus["receipts"][0]["body"],
+        "receipt_id": corpus["receipts"][0]["receipt_id"],
     }
 
 
@@ -73,7 +73,11 @@ class McpFixtureTests(unittest.TestCase):
         query = decide["properties"]["query"]
         self.assertFalse(query["additionalProperties"])
         self.assertEqual("decision_query", query["properties"]["object"]["const"])
-        self.assertIn("ranking_group_id", query["required"])
+        self.assertEqual(["schema_version", "cell_id", "objective"], query["required"])
+        self.assertEqual("2", query["properties"]["schema_version"]["const"])
+        self.assertEqual(["openai", "openrouter"], query["properties"]["via"]["enum"])
+        for retired in ("ranking_group_id", "entity_kind", "monthly_budget_microusd", "zero_cache_sensitivity_usage_profile"):
+            self.assertNotIn(retired, query["properties"])
         self.assertEqual("boolean", decide["properties"]["share"]["type"])
         receipt = tools[2]["inputSchema"]
         self.assertEqual(["receipt_id"], receipt["required"])

@@ -55,7 +55,7 @@ class OpenApiContractTests(unittest.TestCase):
             {
                 "400": "BadRequest",
                 "415": "UnsupportedMediaType",
-                "422": "ValidationError",
+                "422": "DecisionValidationError",
                 "429": "RateLimited",
                 "503": "ServiceUnavailable",
                 "504": "UpstreamTimeout",
@@ -157,6 +157,18 @@ class OpenApiContractTests(unittest.TestCase):
                 self.assertEqual(status, typed["properties"]["status"]["const"])
                 self.assertEqual(code, typed["properties"]["code"]["const"])
                 self.assertEqual(retriable, typed["properties"]["retriable"]["const"])
+
+    def test_decision_422_admits_validation_and_via_not_supported_only(self):
+        typed = _openapi()["components"]["responses"]["DecisionValidationError"]["content"][
+            "application/problem+json"
+        ]["schema"]["allOf"][1]
+        problem = json.loads((SCHEMAS / "problem.schema.json").read_text(encoding="utf-8"))
+
+        self.assertEqual(422, typed["properties"]["status"]["const"])
+        self.assertEqual(["validation", "via_not_supported"], typed["properties"]["code"]["enum"])
+        self.assertFalse(typed["properties"]["retriable"]["const"])
+        self.assertEqual("array", typed["properties"]["supported_via"]["type"])
+        self.assertIn("via_not_supported", problem["properties"]["code"]["enum"])
 
     def test_openapi_contract_stays_storage_free(self):
         spec = _openapi()

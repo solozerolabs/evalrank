@@ -8,7 +8,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CORE_SRC = REPO_ROOT / "packages" / "core" / "src"
-GOLDEN = REPO_ROOT / "examples" / "decision-contract-v1.golden.json"
+GOLDEN = REPO_ROOT / "examples" / "decision-contract-v2.golden.json"
 AGGREGATION_GOLDEN = REPO_ROOT / "catalog" / "aggregation-vectors.json"
 sys.path.insert(0, str(CORE_SRC))
 
@@ -85,7 +85,7 @@ class CanonicalJsonTests(unittest.TestCase):
         corpus = json.loads(GOLDEN.read_text(encoding="utf-8"))
 
         self.assertEqual(corpus["query"]["canonical"], canonical_json(corpus["query"]["input"]))
-        self.assertEqual(corpus["receipt"]["body_sha256"], sha256_hex(corpus["receipt"]["body"]))
+        self.assertEqual(corpus["receipts"][0]["body_sha256"], sha256_hex(corpus["receipts"][0]["body"]))
 
         for vector in corpus["rejection_vectors"][:2]:
             with self.subTest(vector=vector["name"]):

@@ -7,6 +7,17 @@ import urllib.request
 from typing import Any
 
 from evalrank_core import (
+    ABSTAIN_REASONS,
+    DEFAULT_AGENT_TASK_MIX,
+    DecisionCaveatV2,
+    DecisionExclusionV2,
+    DecisionFamilyV2,
+    DecisionPriceV2,
+    DecisionSelectionV2,
+    DecisionUsageV2,
+    EffortMultiplierV2,
+    REASONING_EFFORTS,
+    SUPPORTED_VIA,
     AdapterMetadataV1,
     AvailabilityFactV1,
     CacheWriteRateV1,
@@ -16,7 +27,6 @@ from evalrank_core import (
     ContextFactV1,
     ContinuousMetricV1,
     EvaluatedConfigurationV1,
-    EvaluationToOfferLinkV1,
     IntervalUncertaintyV1,
     MAX_SAFE_INTEGER,
     ObservationV1,
@@ -26,7 +36,6 @@ from evalrank_core import (
     PROBLEM_CODES,
     ProblemDetails,
     ProportionMetricV1,
-    PublicationSnapshotRefV1,
     RankOnlyMetricV1,
     RawEntry,
     RankingGroupSnapshotRefV1,
@@ -44,20 +53,14 @@ from evalrank_core import (
     UseCaseCatalog,
     UnknownUncertaintyV1,
     UsageProfileV1,
-    DecisionEvidenceV1,
-    DecisionExclusionV1,
-    DecisionFreshnessV1,
-    DecisionQueryV1,
-    DecisionReasonV1,
-    DecisionReceiptV1,
-    DecisionSelectionV1,
-    DecisionSensitivityV1,
+    DecisionQueryV2,
+    DecisionReceiptV2,
     aggregation_input_document,
     bootstrap_seed_document,
     canonical_json,
     derive_aggregation_input_digest,
     derive_bootstrap_seed,
-    monthly_cost_microusd,
+    projected_cost_microusd,
     restricted_jcs,
     sha256_hex,
     verify_leaderboard_snapshot_set,
@@ -96,14 +99,14 @@ class EvalRankClient:
 
     def decide(
         self,
-        query: DecisionQueryV1 | dict[str, Any],
+        query: DecisionQueryV2 | dict[str, Any],
         *,
         share: bool = False,
     ) -> dict[str, Any]:
         if not isinstance(share, bool):
             raise TypeError("share must be a boolean")
         parsed_query = (
-            query if isinstance(query, DecisionQueryV1) else DecisionQueryV1.from_dict(query)
+            query if isinstance(query, DecisionQueryV2) else DecisionQueryV2.from_dict(query)
         )
         body = restricted_jcs(parsed_query.to_dict())
         response = self._request_json(
@@ -112,7 +115,7 @@ class EvalRankClient:
             body=body,
             headers={"Content-Type": "application/json"},
         )
-        return DecisionReceiptV1.from_dict(response).to_dict()
+        return DecisionReceiptV2.from_dict(response).to_dict()
 
     def decision_receipt(self, receipt_id: str) -> dict[str, Any]:
         if not isinstance(receipt_id, str) or not re.fullmatch(
@@ -120,7 +123,7 @@ class EvalRankClient:
         ):
             raise ValueError("receipt_id must be receipt_<64 lowercase hex characters>")
         response = self._request_json(f"/v1/decisions/{receipt_id}")
-        return DecisionReceiptV1.from_dict(response).to_dict()
+        return DecisionReceiptV2.from_dict(response).to_dict()
 
     def use_cases(self) -> dict[str, Any]:
         return UseCaseCatalog.from_dict(self._request_json("/v1/use-cases")).to_dict()
@@ -274,6 +277,17 @@ def _require_entity_slug(value: Any) -> None:
         raise ValueError("slug must be a canonical public entity slug or configuration ID")
 
 __all__ = [
+    "ABSTAIN_REASONS",
+    "DEFAULT_AGENT_TASK_MIX",
+    "DecisionCaveatV2",
+    "DecisionExclusionV2",
+    "DecisionFamilyV2",
+    "DecisionPriceV2",
+    "DecisionSelectionV2",
+    "DecisionUsageV2",
+    "EffortMultiplierV2",
+    "REASONING_EFFORTS",
+    "SUPPORTED_VIA",
     "AdapterMetadataV1",
     "EvalRankApiError",
     "EvalRankClient",
@@ -285,7 +299,6 @@ __all__ = [
     "ContextFactV1",
     "ContinuousMetricV1",
     "EvaluatedConfigurationV1",
-    "EvaluationToOfferLinkV1",
     "IntervalUncertaintyV1",
     "MAX_SAFE_INTEGER",
     "ObservationV1",
@@ -295,7 +308,6 @@ __all__ = [
     "PROBLEM_CODES",
     "ProblemDetails",
     "ProportionMetricV1",
-    "PublicationSnapshotRefV1",
     "RankOnlyMetricV1",
     "RawEntry",
     "RankingGroupSnapshotRefV1",
@@ -313,20 +325,14 @@ __all__ = [
     "UseCaseCatalog",
     "UnknownUncertaintyV1",
     "UsageProfileV1",
-    "DecisionEvidenceV1",
-    "DecisionExclusionV1",
-    "DecisionFreshnessV1",
-    "DecisionQueryV1",
-    "DecisionReasonV1",
-    "DecisionReceiptV1",
-    "DecisionSelectionV1",
-    "DecisionSensitivityV1",
+    "DecisionQueryV2",
+    "DecisionReceiptV2",
     "aggregation_input_document",
     "bootstrap_seed_document",
     "canonical_json",
     "derive_aggregation_input_digest",
     "derive_bootstrap_seed",
-    "monthly_cost_microusd",
+    "projected_cost_microusd",
     "restricted_jcs",
     "sha256_hex",
     "verify_leaderboard_snapshot_set",

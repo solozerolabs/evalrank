@@ -24,9 +24,10 @@ sys.path.insert(0, str(CLI_SRC))
 sys.path.insert(0, str(MCP_SRC))
 
 from evalrank_core.canonical_json import restricted_jcs  # noqa: E402
+from evalrank_core.contracts import ProblemDetails  # noqa: E402
 from evalrank_core.decision_contracts import (  # noqa: E402
-    DecisionQueryV1,
-    DecisionReceiptV1,
+    DecisionQueryV2,
+    DecisionReceiptV2,
 )
 from evalrank_core.read_contracts import (  # noqa: E402
     verify_compare_result_semantics,
@@ -50,7 +51,7 @@ def _load_reference_server():
 
 def _golden() -> dict:
     return json.loads(
-        (REPO_ROOT / "examples" / "decision-contract-v1.golden.json").read_text(
+        (REPO_ROOT / "examples" / "decision-contract-v2.golden.json").read_text(
             encoding="utf-8"
         )
     )
@@ -72,10 +73,10 @@ class ReferenceServerE2ETests(unittest.TestCase):
 
     def test_non_shared_decision_returns_exact_golden_receipt_but_is_not_retrievable(self):
         corpus = _golden()
-        query = dict(reversed(list(corpus["receipt"]["body"]["query"].items())))
+        query = dict(reversed(list(corpus["receipts"][0]["body"]["query"].items())))
         expected_receipt = {
-            **corpus["receipt"]["body"],
-            "receipt_id": corpus["receipt"]["receipt_id"],
+            **corpus["receipts"][0]["body"],
+            "receipt_id": corpus["receipts"][0]["receipt_id"],
         }
 
         status, headers, body = self._request(
@@ -87,8 +88,8 @@ class ReferenceServerE2ETests(unittest.TestCase):
         self.assertEqual(200, status)
         self.assertEqual("application/json", headers.get_content_type())
         self.assertEqual(restricted_jcs(expected_receipt), body)
-        self.assertEqual(expected_receipt, DecisionReceiptV1.from_dict(json.loads(body)).to_dict())
-        self.assertEqual(query, DecisionQueryV1.from_dict(query).to_dict())
+        self.assertEqual(expected_receipt, DecisionReceiptV2.from_dict(json.loads(body)).to_dict())
+        self.assertEqual(query, DecisionQueryV2.from_dict(query).to_dict())
 
         status, _, problem = self._request(
             f"/v1/decisions/{expected_receipt['receipt_id']}"
@@ -96,10 +97,33 @@ class ReferenceServerE2ETests(unittest.TestCase):
         self.assertEqual(404, status)
         self.assertEqual("not_found", json.loads(problem)["code"])
 
+    def test_every_golden_query_returns_its_exact_golden_receipt(self):
+        for row in _golden()["receipts"]:
+            with self.subTest(name=row["name"]):
+                status, _, body = self._request(
+                    "/v1/decisions", method="POST", payload=row["body"]["query"]
+                )
+                self.assertEqual(200, status)
+                self.assertEqual(
+                    restricted_jcs({**row["body"], "receipt_id": row["receipt_id"]}), body
+                )
+
+    def test_unprobed_via_is_the_exact_golden_via_not_supported_problem(self):
+        problem = next(row for row in _golden()["problems"] if row["name"] == "via_not_supported")
+
+        status, headers, body = self._request(
+            "/v1/decisions", method="POST", payload=problem["query"]
+        )
+
+        self.assertEqual(422, status)
+        self.assertEqual("application/problem+json", headers.get_content_type())
+        self.assertEqual(restricted_jcs(problem["problem"]), body)
+        self.assertEqual(problem["problem"], ProblemDetails.from_dict(json.loads(body)).to_dict())
+
     def test_explicit_false_share_is_valid_and_does_not_retain_the_receipt(self):
         corpus = _golden()
-        query = corpus["receipt"]["body"]["query"]
-        receipt_id = corpus["receipt"]["receipt_id"]
+        query = corpus["receipts"][0]["body"]["query"]
+        receipt_id = corpus["receipts"][0]["receipt_id"]
 
         status, _, body = self._request(
             "/v1/decisions?share=false",
@@ -115,8 +139,8 @@ class ReferenceServerE2ETests(unittest.TestCase):
 
     def test_shared_decision_is_retrieved_byte_for_byte_and_repeated_shares_are_idempotent(self):
         corpus = _golden()
-        query = corpus["receipt"]["body"]["query"]
-        receipt_id = corpus["receipt"]["receipt_id"]
+        query = corpus["receipts"][0]["body"]["query"]
+        receipt_id = corpus["receipts"][0]["receipt_id"]
 
         first = self._request("/v1/decisions?share=true", method="POST", payload=query)
         second = self._request("/v1/decisions?share=true", method="POST", payload=query)
@@ -159,7 +183,7 @@ class ReferenceServerE2ETests(unittest.TestCase):
 
     def test_reference_server_validates_transport_and_query_contract(self):
         corpus = _golden()
-        query = corpus["receipt"]["body"]["query"]
+        query = corpus["receipts"][0]["body"]["query"]
 
         status, _, body = self._request(
             "/v1/decisions?share=yes",
@@ -378,11 +402,11 @@ class ReferenceServerE2ETests(unittest.TestCase):
 
     def test_python_sdk_cli_and_mcp_return_the_exact_same_golden_receipt(self):
         corpus = _golden()
-        query = corpus["receipt"]["body"]["query"]
+        query = corpus["receipts"][0]["body"]["query"]
         expected = restricted_jcs(
             {
-                **corpus["receipt"]["body"],
-                "receipt_id": corpus["receipt"]["receipt_id"],
+                **corpus["receipts"][0]["body"],
+                "receipt_id": corpus["receipts"][0]["receipt_id"],
             }
         )
         client = EvalRankClient(self.base_url)
@@ -418,7 +442,7 @@ class ReferenceServerE2ETests(unittest.TestCase):
         for receipt in (sdk_receipt, cli_receipt, mcp_receipt):
             self.assertEqual(expected, restricted_jcs(receipt))
 
-        receipt_id = corpus["receipt"]["receipt_id"]
+        receipt_id = corpus["receipts"][0]["receipt_id"]
         self.assertEqual(expected, restricted_jcs(client.decision_receipt(receipt_id)))
         receipt_tool = call_tool(
             "evalrank.decision_receipt",

@@ -32,6 +32,6 @@ evalrank decide --base-url https://evalrank.example --query - --share
 evalrank receipt --base-url https://evalrank.example --receipt-id receipt_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 ```
 
-`decide` validates `DecisionQueryV1` before posting. `--share` is explicit transport policy: it asks the server to retain an append-only public receipt that anyone with its ID can retrieve. Successful JSON goes to stdout, RFC 9457 Problem Details goes to stderr, contract/input errors exit `2`, and API errors exit `1`.
+`decide` validates `DecisionQueryV2` before posting. `--share` is explicit transport policy: it asks the server to retain an append-only public receipt that anyone with its ID can retrieve. Successful JSON goes to stdout, RFC 9457 Problem Details goes to stderr, contract/input errors exit `2`, and API errors exit `1`.
 
 There are no `recommend` or `scoring-stages` compatibility commands. The CLI adds no auth, retries, service discovery, environment defaults, private DTOs, or database work.

@@ -1,8 +1,10 @@
 """Portable EvalRank provenance and decision contracts.
 
 These objects are storage-free public contracts. They deliberately separate
-what was evaluated from where a configuration can be bought today, and they
-make every decision identity reproducible from restricted canonical JSON.
+what was evaluated from where a configuration can be bought today. A decision
+receipt answers a query with a callable pick and its priced band, or an
+abstain with reasons, and its identity is the hash of its restricted canonical
+JSON body.
 """
 
 from __future__ import annotations
@@ -28,7 +30,6 @@ _MEDIA_TYPE_RE = re.compile(r"^[A-Za-z0-9!#$&^_.+-]+/[A-Za-z0-9!#$&^_.+-]+$")
 _DECIMAL_RE = re.compile(
     r"^(?:0|[1-9]\d*)(?:\.\d*[1-9])?$|^-(?:0\.\d*[1-9]|[1-9]\d*(?:\.\d*[1-9])?)$"
 )
-_METHODOLOGY_RE = re.compile(r"^\d{4}-\d{2}-\d{2}\.[1-9]\d*\.([a-z0-9]+-)*[a-z0-9]+$")
 
 IDENTITY_TRIPLES = {
     ("model_configuration", "direct_prompt", "model-configuration-v1"),
@@ -45,58 +46,6 @@ INTERVAL_METHODS = {
     "wilson",
     "normal_approximation",
     "credible_interval",
-}
-ABSTENTION_REASONS = {
-    "insufficient_comparable_evidence",
-    "no_eligible_serving_offer",
-    "constraints_eliminate_all_candidates",
-    "evidence_stale",
-    "methodology_unavailable",
-}
-EXCLUSION_CODES = {
-    "constraints_not_met",
-    "not_in_capability_top_set",
-    "serving_offer_unverified",
-    "evidence_stale",
-    "incompatible_configuration",
-}
-REASON_CODES = {
-    "strongest_capability_evidence",
-    "within_capability_top_set",
-    "lowest_cost_under_usage_profile",
-    "budget_fit_under_declared_profiles",
-    "provider_constraint_match",
-    "region_constraint_match",
-    "context_requirement_met",
-    "insufficient_evidence",
-    "serving_offer_unverified",
-    "budget_exceeded",
-    "stale_evidence",
-}
-REASON_PREDICATES = {"eq", "ne", "lt", "lte", "gt", "gte", "within_top_set", "unavailable"}
-REASON_AXES = {"capability", "monthly_cost", "context", "availability", "freshness", "provider", "region"}
-REASON_UNITS = {
-    "probability",
-    "score",
-    "microusd_per_month",
-    "tokens",
-    "status",
-    "timestamp",
-    "provider_id",
-    "region_id",
-}
-CAVEAT_CODES = {
-    "provider_offer_link_required",
-    "limited_availability",
-    "evidence_near_expiry",
-    "incomplete_family_coverage",
-    "cost_sensitive_to_usage",
-}
-SENSITIVITY_SCENARIOS = {
-    "price_plus_20_percent",
-    "price_minus_20_percent",
-    "usage_double",
-    "leave_one_family_out",
 }
 
 
@@ -923,11 +872,11 @@ class PricingScheduleFactV1:
         return cls(**payload)
 
 
-def monthly_cost_microusd(
+def projected_cost_microusd(
     usage: UsageProfileV1,
     pricing: PricingScheduleFactV1,
 ) -> int | None:
-    """Return exact monthly cost, or ``None`` when pricing is incomplete."""
+    """Return the exact cost of ``usage`` under ``pricing`` (rounded up), or ``None`` when a needed rate is missing."""
 
     if not isinstance(usage, UsageProfileV1):
         raise TypeError("usage must be UsageProfileV1")
@@ -974,7 +923,7 @@ def monthly_cost_microusd(
     denominator = 3_600_000_000
     quotient, remainder = divmod(numerator, denominator)
     result = quotient + (1 if remainder else 0)
-    _require_safe_integer("computed monthly cost", result, minimum=0)
+    _require_safe_integer("computed projected cost", result, minimum=0)
     return result
 
 
@@ -1030,1110 +979,547 @@ class ServingOfferV1:
             pricing=PricingScheduleFactV1.from_dict(payload["pricing"]),
         )
 
-    def is_decision_eligible(self, link: "EvaluationToOfferLinkV1", *, as_of: str) -> bool:
-        instant = _parse_timestamp("as_of", as_of)
-        if not isinstance(link, EvaluationToOfferLinkV1) or link.serving_offer_id != self.serving_offer_id:
-            return False
-        if not link.is_eligible(as_of=as_of) or self.availability.status != "available":
-            return False
-        return (
-            all(
-                _parse_timestamp("observed_at", fact.observed_at)
-                <= instant
-                < _parse_timestamp("expires_at", fact.expires_at)
-                for fact in (self.context, self.availability)
-            )
-            and _parse_timestamp("pricing.observed_at", self.pricing.observed_at)
-            <= instant
-            and _parse_timestamp("pricing.effective_at", self.pricing.effective_at)
-            <= instant
-            < _parse_timestamp("pricing.expires_at", self.pricing.expires_at)
-        )
+
+REASONING_EFFORTS = ("none", "minimal", "low", "medium", "high", "xhigh", "max")
+DECISION_OBJECTIVES = {"lowest_cost_within_top_set", "capability_top_set"}
+DECISION_APIS = {"chat_completions", "responses"}
+ABSTAIN_REASONS = {"no_ranked_candidate", "no_eligible_offer", "stale_evidence", "not_a_model_cell"}
+EXCLUSION_CODES = {
+    "ambiguous_identity",
+    "effort_not_accepted",
+    "api_not_supported",
+    "no_serving_offer",
+    "cost_unmeasured",
+    "effort_gap_too_large",
+    "constraints_not_met",
+}
+LOCK_STATUSES = {"admitted", "held", "rejected", "unlocked"}
+USAGE_BASES = {"caller", "default_agent_task_mix"}
+SUPPORTED_VIA = ("openai", "openrouter")
+"""Call surfaces with a probed effort vocabulary; any other ``via`` is a 422 ``via_not_supported``."""
+COMPARISON_LEVEL_SOURCE = "comparison_level"
+PPM = 1_000_000
+_VIA_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+_SNAPSHOT_ID_RE = re.compile(r"^explorer_.+$")
+
+
+def _default_agent_task_mix() -> UsageProfileV1:
+    return UsageProfileV1(
+        basis="estimated",
+        uncached_input_tokens=1_000,
+        cached_read_tokens=8_000,
+        output_tokens=500,
+        cache_writes=(),
+        cache_storage_token_seconds=0,
+    )
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
-class EvaluationToOfferLinkV1:
-    object: ClassVar[str] = "evaluation_to_offer_link"
-    schema_version: ClassVar[str] = "1"
+class DecisionQueryV2:
+    """What the caller asks. Only sent fields serialize; defaults stay implicit."""
 
-    evaluation_to_offer_link_id: str
-    evaluated_configuration_id: str
-    serving_offer_id: str
-    compatibility: str
-    evidence_basis: str
-    evidence_source_artifact_id: str
-    observed_at: str
-    expires_at: str
-    review_state: str
-
-    def __post_init__(self) -> None:
-        _require_string("evaluation_to_offer_link_id", self.evaluation_to_offer_link_id)
-        if not self.evaluation_to_offer_link_id.startswith("link_"):
-            raise ValueError("evaluation_to_offer_link_id must start with link_")
-        _require_pattern("evaluated_configuration_id", self.evaluated_configuration_id, _CONFIGURATION_ID_RE)
-        _require_string("serving_offer_id", self.serving_offer_id)
-        if not self.serving_offer_id.startswith("offer_"):
-            raise ValueError("serving_offer_id must start with offer_")
-        _require_enum("compatibility", self.compatibility, {"exact", "incompatible", "unresolved"})
-        _require_enum(
-            "evidence_basis",
-            self.evidence_basis,
-            {"benchmark_exact", "provider_attested", "operator_reviewed", "inferred"},
-        )
-        _require_pattern("evidence_source_artifact_id", self.evidence_source_artifact_id, _ARTIFACT_ID_RE)
-        observed = _parse_timestamp("observed_at", self.observed_at)
-        expires = _parse_timestamp("expires_at", self.expires_at)
-        if expires <= observed:
-            raise ValueError("expires_at must be after observed_at")
-        _require_enum("review_state", self.review_state, {"pending", "approved", "rejected"})
-
-    def to_dict(self) -> dict[str, Any]:
-        return {
-            "object": self.object,
-            "schema_version": self.schema_version,
-            "evaluation_to_offer_link_id": self.evaluation_to_offer_link_id,
-            "evaluated_configuration_id": self.evaluated_configuration_id,
-            "serving_offer_id": self.serving_offer_id,
-            "compatibility": self.compatibility,
-            "evidence_basis": self.evidence_basis,
-            "evidence_source_artifact_id": self.evidence_source_artifact_id,
-            "observed_at": self.observed_at,
-            "expires_at": self.expires_at,
-            "review_state": self.review_state,
-        }
-
-    @classmethod
-    def from_dict(cls, value: Any) -> "EvaluationToOfferLinkV1":
-        payload = _closed(
-            value,
-            required=("object", "schema_version", "evaluation_to_offer_link_id", "evaluated_configuration_id", "serving_offer_id", "compatibility", "evidence_basis", "evidence_source_artifact_id", "observed_at", "expires_at", "review_state"),
-        )
-        _envelope(payload, cls.object)
-        return cls(**_without_envelope(payload))
-
-    def is_eligible(self, *, as_of: str) -> bool:
-        instant = _parse_timestamp("as_of", as_of)
-        return (
-            self.compatibility == "exact"
-            and self.review_state == "approved"
-            and self.evidence_basis != "inferred"
-            and _parse_timestamp("observed_at", self.observed_at) <= instant < _parse_timestamp("expires_at", self.expires_at)
-        )
-
-
-@dataclass(frozen=True, slots=True, kw_only=True)
-class DecisionQueryV1:
     object: ClassVar[str] = "decision_query"
-    schema_version: ClassVar[str] = "1"
+    schema_version: ClassVar[str] = "2"
 
     cell_id: str
-    ranking_group_id: str
-    entity_kind: str
-    interaction_policy: str
-    configuration_passport_class: str
     objective: str
+    via: str | None = None
     provider_ids: tuple[str, ...] | None = None
+    api: str | None = None
+    reasoning_effort: str | None = None
     regions: tuple[str, ...] | None = None
     minimum_context_tokens: int | None = None
     usage_profile: UsageProfileV1 | None = None
-    zero_cache_sensitivity_usage_profile: UsageProfileV1 | None = None
-    monthly_budget_microusd: int | None = None
 
     def __post_init__(self) -> None:
         _require_string("cell_id", self.cell_id)
-        _require_string("ranking_group_id", self.ranking_group_id)
-        _require_identity_triple(self.entity_kind, self.interaction_policy, self.configuration_passport_class)
-        _require_enum("objective", self.objective, {"capability_top_set", "lowest_cost_within_top_set"})
-        if self.provider_ids is not None:
-            object.__setattr__(self, "provider_ids", _normalize_string_set("provider_ids", self.provider_ids))
-        if self.regions is not None:
-            object.__setattr__(self, "regions", _normalize_string_set("regions", self.regions))
+        _require_enum("objective", self.objective, DECISION_OBJECTIVES)
+        if self.via is not None:
+            _require_pattern("via", self.via, _VIA_RE)
+        for name in ("provider_ids", "regions"):
+            if getattr(self, name) is not None:
+                object.__setattr__(self, name, _normalize_string_set(name, getattr(self, name)))
+        if self.api is not None:
+            _require_enum("api", self.api, DECISION_APIS)
+        if self.reasoning_effort is not None:
+            _require_enum("reasoning_effort", self.reasoning_effort, set(REASONING_EFFORTS))
         _require_nullable_safe_integer("minimum_context_tokens", self.minimum_context_tokens, minimum=1)
-        _require_nullable_safe_integer("monthly_budget_microusd", self.monthly_budget_microusd, minimum=0)
         if self.usage_profile is not None and not isinstance(self.usage_profile, UsageProfileV1):
             raise TypeError("usage_profile must be UsageProfileV1 or null")
-        if (
-            self.zero_cache_sensitivity_usage_profile is not None
-            and not isinstance(self.zero_cache_sensitivity_usage_profile, UsageProfileV1)
-        ):
-            raise TypeError(
-                "zero_cache_sensitivity_usage_profile must be UsageProfileV1 or null"
-            )
-        if self.objective == "lowest_cost_within_top_set" and self.usage_profile is None:
-            raise ValueError("lowest_cost_within_top_set requires usage_profile")
-        if self.monthly_budget_microusd is not None and self.usage_profile is None:
-            raise ValueError("monthly_budget_microusd requires usage_profile")
-        self._validate_zero_cache_sensitivity()
 
-    def _validate_zero_cache_sensitivity(self) -> None:
-        usage = self.usage_profile
-        sensitivity = self.zero_cache_sensitivity_usage_profile
-        requires_sensitivity = bool(
-            usage is not None and usage.basis == "estimated" and usage.has_cache_usage
-        )
-        if requires_sensitivity and sensitivity is None:
-            raise ValueError(
-                "estimated cached usage requires zero_cache_sensitivity_usage_profile"
-            )
-        if not requires_sensitivity and sensitivity is not None:
-            basis = "measured" if usage is not None and usage.basis == "measured" else "uncached"
-            raise ValueError(
-                f"zero_cache_sensitivity_usage_profile is not allowed for {basis} usage"
-            )
-        if sensitivity is None or usage is None:
-            return
-        if sensitivity.basis != "estimated":
-            raise ValueError("zero_cache_sensitivity_usage_profile must be estimated")
-        if (
-            sensitivity.cached_read_tokens != 0
-            or sensitivity.cache_writes
-            or sensitivity.cache_storage_token_seconds != 0
-        ):
-            raise ValueError("zero_cache_sensitivity_usage_profile must contain no cache usage")
-        if sensitivity.total_input_tokens != usage.total_input_tokens:
-            raise ValueError("zero_cache_sensitivity_usage_profile must preserve total input tokens")
-        if sensitivity.output_tokens != usage.output_tokens:
-            raise ValueError("zero_cache_sensitivity_usage_profile must preserve output tokens")
+    @property
+    def resolved_via(self) -> str:
+        """The call surface: the sent ``via``, else openai for ``provider_ids == ["openai"]``, else openrouter."""
+        if self.via is not None:
+            return self.via
+        return "openai" if self.provider_ids == ("openai",) else "openrouter"
 
     def to_dict(self) -> dict[str, Any]:
         payload: dict[str, Any] = {
             "object": self.object,
             "schema_version": self.schema_version,
             "cell_id": self.cell_id,
-            "ranking_group_id": self.ranking_group_id,
-            "entity_kind": self.entity_kind,
-            "interaction_policy": self.interaction_policy,
-            "configuration_passport_class": self.configuration_passport_class,
             "objective": self.objective,
         }
-        for name in (
-            "provider_ids",
-            "regions",
-            "minimum_context_tokens",
-            "usage_profile",
-            "zero_cache_sensitivity_usage_profile",
-            "monthly_budget_microusd",
-        ):
+        for name in _QUERY_OPTIONAL:
             value = getattr(self, name)
-            if value is not None:
-                if isinstance(value, tuple):
-                    payload[name] = list(value)
-                elif isinstance(value, UsageProfileV1):
-                    payload[name] = value.to_dict()
-                else:
-                    payload[name] = value
+            if value is None:
+                continue
+            if isinstance(value, tuple):
+                payload[name] = list(value)
+            elif isinstance(value, UsageProfileV1):
+                payload[name] = value.to_dict()
+            else:
+                payload[name] = value
         return payload
 
     def canonical_json(self) -> str:
         return canonical_json(self.to_dict())
 
     @classmethod
-    def from_dict(cls, value: Any) -> "DecisionQueryV1":
-        required = (
-            "object", "schema_version", "cell_id", "ranking_group_id", "entity_kind",
-            "interaction_policy", "configuration_passport_class", "objective",
-        )
-        optional = (
-            "provider_ids",
-            "regions",
-            "minimum_context_tokens",
-            "usage_profile",
-            "zero_cache_sensitivity_usage_profile",
-            "monthly_budget_microusd",
-        )
-        payload = _closed(value, required=required, optional=optional)
-        _envelope(payload, cls.object)
-        for name in optional:
+    def from_dict(cls, value: Any) -> "DecisionQueryV2":
+        payload = _closed(value, required=("schema_version", "cell_id", "objective"), optional=("object", *_QUERY_OPTIONAL))
+        _envelope({"object": cls.object, **payload}, cls.object, cls.schema_version)
+        for name in _QUERY_OPTIONAL:
             if name in payload and payload[name] is None:
                 raise ValueError(f"{name} must not be null; omit it instead")
         values = _without_envelope(payload)
         for name in ("provider_ids", "regions"):
             if name in values:
                 values[name] = _array_to_tuple(name, values[name])
-        for name in ("usage_profile", "zero_cache_sensitivity_usage_profile"):
-            if name in values:
-                values[name] = UsageProfileV1.from_dict(values[name])
+        if "usage_profile" in values:
+            values["usage_profile"] = UsageProfileV1.from_dict(values["usage_profile"])
         return cls(**values)
 
 
-@dataclass(frozen=True, slots=True, kw_only=True)
-class PublicationSnapshotRefV1:
-    publication_snapshot_id: str
-    ranking_group_id: str
-    manifest_version: str
-    published_at: str
-
-    def __post_init__(self) -> None:
-        _require_pattern("publication_snapshot_id", self.publication_snapshot_id, re.compile(r"^snapshot_[0-9a-f]{64}$"))
-        _require_string("ranking_group_id", self.ranking_group_id)
-        if not isinstance(self.manifest_version, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}\.[1-9]\d*", self.manifest_version):
-            raise ValueError("manifest_version must be YYYY-MM-DD.N")
-        _parse_timestamp("published_at", self.published_at)
-
-    def to_dict(self) -> dict[str, str]:
-        return {
-            "publication_snapshot_id": self.publication_snapshot_id,
-            "ranking_group_id": self.ranking_group_id,
-            "manifest_version": self.manifest_version,
-            "published_at": self.published_at,
-        }
-
-    @classmethod
-    def from_dict(cls, value: Any) -> "PublicationSnapshotRefV1":
-        return cls(**_closed(value, required=("publication_snapshot_id", "ranking_group_id", "manifest_version", "published_at")))
+_QUERY_OPTIONAL = (
+    "via",
+    "provider_ids",
+    "api",
+    "reasoning_effort",
+    "regions",
+    "minimum_context_tokens",
+    "usage_profile",
+)
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
-class DecisionSelectionV1:
-    evaluated_configuration_id: str
-    serving_offer_id: str | None
-    capability_rank: int
-    projected_monthly_cost_microusd: int | None
-    zero_cache_sensitivity_projected_monthly_cost_microusd: int | None
+class DecisionFamilyV2:
+    family_id: str
+    lock_status: str
+    weight_ppm: int
+    stale_at: str | None
 
     def __post_init__(self) -> None:
-        _require_pattern("evaluated_configuration_id", self.evaluated_configuration_id, _CONFIGURATION_ID_RE)
-        _require_nullable_string("serving_offer_id", self.serving_offer_id)
-        if self.serving_offer_id is not None and not self.serving_offer_id.startswith("offer_"):
-            raise ValueError("serving_offer_id must start with offer_")
-        _require_safe_integer("capability_rank", self.capability_rank, minimum=1)
-        _require_nullable_safe_integer("projected_monthly_cost_microusd", self.projected_monthly_cost_microusd, minimum=0)
-        _require_nullable_safe_integer(
-            "zero_cache_sensitivity_projected_monthly_cost_microusd",
-            self.zero_cache_sensitivity_projected_monthly_cost_microusd,
-            minimum=0,
-        )
-        if (
-            self.projected_monthly_cost_microusd is not None
-            or self.zero_cache_sensitivity_projected_monthly_cost_microusd is not None
-        ) and self.serving_offer_id is None:
-            raise ValueError("serving_offer_id is required when a monthly cost is present")
+        _require_string("family_id", self.family_id)
+        _require_enum("lock_status", self.lock_status, LOCK_STATUSES)
+        _require_safe_integer("weight_ppm", self.weight_ppm, minimum=0)
+        if self.stale_at is not None:
+            _parse_timestamp("stale_at", self.stale_at)
 
     def to_dict(self) -> dict[str, Any]:
         return {
-            "evaluated_configuration_id": self.evaluated_configuration_id,
+            "family_id": self.family_id,
+            "lock_status": self.lock_status,
+            "weight_ppm": self.weight_ppm,
+            "stale_at": self.stale_at,
+        }
+
+    @classmethod
+    def from_dict(cls, value: Any) -> "DecisionFamilyV2":
+        return cls(**_closed(value, required=("family_id", "lock_status", "weight_ppm", "stale_at")))
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class DecisionPriceV2:
+    """List price of the serving offer, micro-USD per million tokens; null when the host does not list it."""
+
+    input_microusd_per_million: int | None
+    cached_input_microusd_per_million: int | None
+    output_microusd_per_million: int | None
+
+    def __post_init__(self) -> None:
+        for name in _PRICE_FIELDS:
+            _require_nullable_safe_integer(name, getattr(self, name), minimum=0)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {name: getattr(self, name) for name in _PRICE_FIELDS}
+
+    @classmethod
+    def from_dict(cls, value: Any) -> "DecisionPriceV2":
+        return cls(**_closed(value, required=_PRICE_FIELDS))
+
+
+_PRICE_FIELDS = (
+    "input_microusd_per_million",
+    "cached_input_microusd_per_million",
+    "output_microusd_per_million",
+)
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class EffortMultiplierV2:
+    """Cost per task at the selection's effort / cost per task at the comparison level, on one cost board."""
+
+    multiplier_ppm: int
+    source: str
+
+    def __post_init__(self) -> None:
+        _require_safe_integer("multiplier_ppm", self.multiplier_ppm, minimum=0)
+        _require_string("source", self.source)
+        if self.source == COMPARISON_LEVEL_SOURCE and self.multiplier_ppm != PPM:
+            raise ValueError("a comparison_level multiplier must be exactly 1 (1000000 ppm)")
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"multiplier_ppm": self.multiplier_ppm, "source": self.source}
+
+    @classmethod
+    def from_dict(cls, value: Any) -> "EffortMultiplierV2":
+        return cls(**_closed(value, required=("multiplier_ppm", "source")))
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class DecisionCaveatV2:
+    """``effort_substituted`` (a board measured another level; ``gap_ppm`` is the curve's gap) or ``cost_unmeasured``."""
+
+    code: str
+    measured_effort: str | None = None
+    gap_ppm: int | None = None
+
+    def __post_init__(self) -> None:
+        _require_enum("code", self.code, {"effort_substituted", "cost_unmeasured"})
+        if self.code == "effort_substituted":
+            _require_enum("measured_effort", self.measured_effort, set(REASONING_EFFORTS))
+            _require_safe_integer("gap_ppm", self.gap_ppm, minimum=0)
+        elif self.measured_effort is not None or self.gap_ppm is not None:
+            raise ValueError("cost_unmeasured carries no measured_effort or gap_ppm")
+
+    def to_dict(self) -> dict[str, Any]:
+        if self.code == "cost_unmeasured":
+            return {"code": self.code}
+        return {"code": self.code, "measured_effort": self.measured_effort, "gap_ppm": self.gap_ppm}
+
+    @classmethod
+    def from_dict(cls, value: Any) -> "DecisionCaveatV2":
+        payload = _mapping(value)
+        if payload.get("code") == "effort_substituted":
+            return cls(**_closed(payload, required=("code", "measured_effort", "gap_ppm")))
+        return cls(**_closed(payload, required=("code",)))
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class DecisionSelectionV2:
+    """One configuration, callable as returned: send ``model_id`` with ``reasoning_effort`` on ``api``."""
+
+    model_id: str
+    display_name: str
+    provider_id: str
+    serving_offer_id: str
+    reasoning_effort: str
+    api: str
+    capability_ratio_ppm: int
+    family_coverage: int
+    price: DecisionPriceV2
+    effort_multiplier: EffortMultiplierV2 | None
+    projected_cost_microusd: int | None
+    latency_p50_ms: int | None
+    caveats: tuple[DecisionCaveatV2, ...]
+
+    def __post_init__(self) -> None:
+        for name in ("model_id", "display_name", "provider_id", "serving_offer_id"):
+            _require_string(name, getattr(self, name))
+        _require_enum("reasoning_effort", self.reasoning_effort, set(REASONING_EFFORTS))
+        _require_enum("api", self.api, DECISION_APIS)
+        _require_safe_integer("capability_ratio_ppm", self.capability_ratio_ppm, minimum=0)
+        if self.capability_ratio_ppm > PPM:
+            raise ValueError("capability_ratio_ppm must not exceed 1000000")
+        _require_safe_integer("family_coverage", self.family_coverage, minimum=1)
+        if not isinstance(self.price, DecisionPriceV2):
+            raise TypeError("price must be DecisionPriceV2")
+        if self.effort_multiplier is not None and not isinstance(self.effort_multiplier, EffortMultiplierV2):
+            raise TypeError("effort_multiplier must be EffortMultiplierV2 or null")
+        _require_nullable_safe_integer("projected_cost_microusd", self.projected_cost_microusd, minimum=0)
+        _require_nullable_safe_integer("latency_p50_ms", self.latency_p50_ms, minimum=0)
+        object.__setattr__(
+            self,
+            "caveats",
+            _normalize_typed_records("caveats", self.caveats, DecisionCaveatV2, lambda row: (row.code,)),
+        )
+        codes = {row.code for row in self.caveats}
+        if (self.projected_cost_microusd is None) != ("cost_unmeasured" in codes):
+            raise ValueError("cost_unmeasured caveat is required exactly when projected_cost_microusd is null")
+        if self.projected_cost_microusd is not None and self.effort_multiplier is None:
+            raise ValueError("a priced selection needs its effort_multiplier")
+        for caveat in self.caveats:
+            if caveat.code == "effort_substituted" and caveat.measured_effort == self.reasoning_effort:
+                raise ValueError("effort_substituted must name a measured effort other than the selection's")
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "model_id": self.model_id,
+            "display_name": self.display_name,
+            "provider_id": self.provider_id,
             "serving_offer_id": self.serving_offer_id,
-            "capability_rank": self.capability_rank,
-            "projected_monthly_cost_microusd": self.projected_monthly_cost_microusd,
-            "zero_cache_sensitivity_projected_monthly_cost_microusd": self.zero_cache_sensitivity_projected_monthly_cost_microusd,
+            "reasoning_effort": self.reasoning_effort,
+            "api": self.api,
+            "capability_ratio_ppm": self.capability_ratio_ppm,
+            "family_coverage": self.family_coverage,
+            "price": self.price.to_dict(),
+            "effort_multiplier": None if self.effort_multiplier is None else self.effort_multiplier.to_dict(),
+            "projected_cost_microusd": self.projected_cost_microusd,
+            "latency_p50_ms": self.latency_p50_ms,
+            "caveats": [row.to_dict() for row in self.caveats],
         }
 
     @classmethod
-    def from_dict(cls, value: Any) -> "DecisionSelectionV1":
-        return cls(
-            **_closed(
-                value,
-                required=(
-                    "evaluated_configuration_id",
-                    "serving_offer_id",
-                    "capability_rank",
-                    "projected_monthly_cost_microusd",
-                    "zero_cache_sensitivity_projected_monthly_cost_microusd",
-                ),
-            )
+    def from_dict(cls, value: Any) -> "DecisionSelectionV2":
+        payload = _closed(
+            value,
+            required=(
+                "model_id",
+                "display_name",
+                "provider_id",
+                "serving_offer_id",
+                "reasoning_effort",
+                "api",
+                "capability_ratio_ppm",
+                "family_coverage",
+                "price",
+                "effort_multiplier",
+                "projected_cost_microusd",
+                "latency_p50_ms",
+                "caveats",
+            ),
         )
+        payload["price"] = DecisionPriceV2.from_dict(payload["price"])
+        if payload["effort_multiplier"] is not None:
+            payload["effort_multiplier"] = EffortMultiplierV2.from_dict(payload["effort_multiplier"])
+        payload["caveats"] = tuple(DecisionCaveatV2.from_dict(row) for row in _array("caveats", payload["caveats"]))
+        return cls(**payload)
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
-class DecisionExclusionV1:
-    evaluated_configuration_id: str
+class DecisionExclusionV2:
+    model_key: str
     code: str
-    evidence_ids: tuple[str, ...]
+    reasoning_effort: str | None = None
+    detail: str | None = None
 
     def __post_init__(self) -> None:
-        _require_pattern("evaluated_configuration_id", self.evaluated_configuration_id, _CONFIGURATION_ID_RE)
+        _require_string("model_key", self.model_key)
         _require_enum("code", self.code, EXCLUSION_CODES)
-        object.__setattr__(self, "evidence_ids", _normalize_string_set("evidence_ids", self.evidence_ids))
+        if self.reasoning_effort is not None:
+            _require_enum("reasoning_effort", self.reasoning_effort, set(REASONING_EFFORTS))
+        if self.detail is not None and not isinstance(self.detail, str):
+            raise TypeError("detail must be a string")
+
+    @property
+    def sort_key(self) -> tuple[str, str, str]:
+        return (self.model_key, self.reasoning_effort or "", self.code)
 
     def to_dict(self) -> dict[str, Any]:
-        return {"evaluated_configuration_id": self.evaluated_configuration_id, "code": self.code, "evidence_ids": list(self.evidence_ids)}
+        payload: dict[str, Any] = {"model_key": self.model_key, "code": self.code}
+        if self.reasoning_effort is not None:
+            payload["reasoning_effort"] = self.reasoning_effort
+        if self.detail is not None:
+            payload["detail"] = self.detail
+        return payload
 
     @classmethod
-    def from_dict(cls, value: Any) -> "DecisionExclusionV1":
-        payload = _closed(value, required=("evaluated_configuration_id", "code", "evidence_ids"))
-        payload["evidence_ids"] = _array_to_tuple("evidence_ids", payload["evidence_ids"])
-        return cls(**payload)
+    def from_dict(cls, value: Any) -> "DecisionExclusionV2":
+        return cls(**_closed(value, required=("model_key", "code"), optional=("reasoning_effort", "detail")))
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
-class DecisionFreshnessV1:
-    observed_at: str
-    expires_at: str
+class DecisionUsageV2:
+    """The usage profile the receipt priced, and whether the caller sent it."""
+
+    basis: str
+    profile: UsageProfileV1
 
     def __post_init__(self) -> None:
-        observed = _parse_timestamp("observed_at", self.observed_at)
-        expires = _parse_timestamp("expires_at", self.expires_at)
-        if expires <= observed:
-            raise ValueError("expires_at must be after observed_at")
-
-    def to_dict(self) -> dict[str, str]:
-        return {"observed_at": self.observed_at, "expires_at": self.expires_at}
+        _require_enum("basis", self.basis, USAGE_BASES)
+        if not isinstance(self.profile, UsageProfileV1):
+            raise TypeError("profile must be UsageProfileV1")
 
     @classmethod
-    def from_dict(cls, value: Any) -> "DecisionFreshnessV1":
-        return cls(**_closed(value, required=("observed_at", "expires_at")))
-
-
-@dataclass(frozen=True, slots=True, kw_only=True)
-class DecisionReasonV1:
-    reason_type: str
-    code: str
-    subject_id: str
-    predicate: str
-    axis: str
-    observed_value: str
-    unit: str
-    threshold: str | None
-    evidence_ids: tuple[str, ...]
-    freshness: DecisionFreshnessV1
-    caveat_codes: tuple[str, ...]
-
-    def __post_init__(self) -> None:
-        _require_enum("reason_type", self.reason_type, {"best_when", "avoid_when"})
-        _require_enum("code", self.code, REASON_CODES)
-        _require_string("subject_id", self.subject_id)
-        _require_enum("predicate", self.predicate, REASON_PREDICATES)
-        _require_enum("axis", self.axis, REASON_AXES)
-        _require_string("observed_value", self.observed_value)
-        _require_enum("unit", self.unit, REASON_UNITS)
-        _require_nullable_string("threshold", self.threshold)
-        if self.unit not in {"status", "timestamp", "provider_id", "region_id"}:
-            _require_decimal("observed_value", self.observed_value)
-            if self.threshold is not None:
-                _require_decimal("threshold", self.threshold)
-        object.__setattr__(self, "evidence_ids", _normalize_string_set("evidence_ids", self.evidence_ids))
-        if not isinstance(self.freshness, DecisionFreshnessV1):
-            raise TypeError("freshness must be DecisionFreshnessV1")
-        object.__setattr__(self, "caveat_codes", _normalize_enum_set("caveat_codes", self.caveat_codes, CAVEAT_CODES, allow_empty=True))
-        expected_shape = {
-            "strongest_capability_evidence": ("capability", "score", "gte"),
-            "within_capability_top_set": ("capability", "score", "within_top_set"),
-            "provider_constraint_match": ("provider", "provider_id", "eq"),
-            "region_constraint_match": ("region", "region_id", "eq"),
-            "lowest_cost_under_usage_profile": ("monthly_cost", "microusd_per_month", "eq"),
-            "budget_fit_under_declared_profiles": ("monthly_cost", "microusd_per_month", "lte"),
-            "budget_exceeded": ("monthly_cost", "microusd_per_month", "gt"),
-            "context_requirement_met": ("context", "tokens", "gte"),
-            "insufficient_evidence": ("capability", "status", "unavailable"),
-            "serving_offer_unverified": ("availability", "status", "unavailable"),
-            "stale_evidence": ("freshness", "timestamp", "lt"),
-        }.get(self.code)
-        if expected_shape is not None and (self.axis, self.unit, self.predicate) != expected_shape:
-            raise ValueError(
-                f"{self.code} requires axis={expected_shape[0]}, unit={expected_shape[1]}, predicate={expected_shape[2]}"
-            )
-        comparison_predicates = {"eq", "ne", "lt", "lte", "gt", "gte"}
-        if self.predicate in comparison_predicates and self.threshold is None:
-            raise ValueError(f"{self.predicate} predicate requires threshold")
-        if self.predicate in {"within_top_set", "unavailable"} and self.threshold is not None:
-            raise ValueError(f"{self.predicate} predicate requires a null threshold")
-        positive = {
-            "strongest_capability_evidence", "within_capability_top_set", "lowest_cost_under_usage_profile",
-            "budget_fit_under_declared_profiles", "provider_constraint_match", "region_constraint_match",
-            "context_requirement_met",
-        }
-        if (self.code in positive) != (self.reason_type == "best_when"):
-            expected_type = "best_when" if self.code in positive else "avoid_when"
-            raise ValueError(f"{self.code} requires reason_type={expected_type}")
-        if self.unit == "timestamp":
-            _parse_timestamp("observed_value", self.observed_value)
-            if self.threshold is not None:
-                _parse_timestamp("threshold", self.threshold)
-        if self.unit == "status":
-            _require_enum(
-                "observed_value",
-                self.observed_value,
-                {"available", "limited", "unavailable", "sufficient", "insufficient", "fresh", "stale"},
-            )
-            if self.threshold is not None:
-                _require_enum(
-                    "threshold",
-                    self.threshold,
-                    {"available", "limited", "unavailable", "sufficient", "insufficient", "fresh", "stale"},
-                )
+    def for_query(cls, query: DecisionQueryV2) -> "DecisionUsageV2":
+        if query.usage_profile is None:
+            return cls(basis="default_agent_task_mix", profile=DEFAULT_AGENT_TASK_MIX)
+        return cls(basis="caller", profile=query.usage_profile)
 
     def to_dict(self) -> dict[str, Any]:
-        return {
-            "reason_type": self.reason_type,
-            "code": self.code,
-            "subject_id": self.subject_id,
-            "predicate": self.predicate,
-            "axis": self.axis,
-            "observed_value": self.observed_value,
-            "unit": self.unit,
-            "threshold": self.threshold,
-            "evidence_ids": list(self.evidence_ids),
-            "freshness": self.freshness.to_dict(),
-            "caveat_codes": list(self.caveat_codes),
-        }
+        return {"basis": self.basis, "profile": self.profile.to_dict()}
 
     @classmethod
-    def from_dict(cls, value: Any) -> "DecisionReasonV1":
-        payload = _closed(value, required=("reason_type", "code", "subject_id", "predicate", "axis", "observed_value", "unit", "threshold", "evidence_ids", "freshness", "caveat_codes"))
-        payload["evidence_ids"] = _array_to_tuple("evidence_ids", payload["evidence_ids"])
-        payload["caveat_codes"] = _array_to_tuple("caveat_codes", payload["caveat_codes"])
-        payload["freshness"] = DecisionFreshnessV1.from_dict(payload["freshness"])
-        return cls(**payload)
+    def from_dict(cls, value: Any) -> "DecisionUsageV2":
+        payload = _closed(value, required=("basis", "profile"))
+        return cls(basis=payload["basis"], profile=UsageProfileV1.from_dict(payload["profile"]))
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
-class DecisionSensitivityV1:
-    scenario: str
-    stable: bool
-    selected_configuration_ids: tuple[str, ...]
+class DecisionReceiptV2:
+    """``pick``: ``selections[0]`` is the pick and the rest is the band in order. ``abstain``: no selection, one or more reasons."""
 
-    def __post_init__(self) -> None:
-        _require_enum("scenario", self.scenario, SENSITIVITY_SCENARIOS)
-        if not isinstance(self.stable, bool):
-            raise TypeError("stable must be a boolean")
-        identifiers = _normalize_string_set("selected_configuration_ids", self.selected_configuration_ids, allow_empty=True)
-        for identifier in identifiers:
-            _require_pattern("selected_configuration_ids item", identifier, _CONFIGURATION_ID_RE)
-        object.__setattr__(self, "selected_configuration_ids", identifiers)
-
-    def to_dict(self) -> dict[str, Any]:
-        return {"scenario": self.scenario, "stable": self.stable, "selected_configuration_ids": list(self.selected_configuration_ids)}
-
-    @classmethod
-    def from_dict(cls, value: Any) -> "DecisionSensitivityV1":
-        payload = _closed(value, required=("scenario", "stable", "selected_configuration_ids"))
-        payload["selected_configuration_ids"] = _array_to_tuple("selected_configuration_ids", payload["selected_configuration_ids"])
-        return cls(**payload)
-
-
-@dataclass(frozen=True, slots=True, kw_only=True)
-class ObservationEvidenceV1:
-    kind: ClassVar[str] = "observation"
-    evidence_id: str
-    observation: ObservationV1
-
-    def __post_init__(self) -> None:
-        _require_string("evidence_id", self.evidence_id)
-        if not isinstance(self.observation, ObservationV1):
-            raise TypeError("observation must be ObservationV1")
-
-    def to_dict(self) -> dict[str, Any]:
-        return {"kind": self.kind, "evidence_id": self.evidence_id, "observation": self.observation.to_dict()}
-
-    @classmethod
-    def from_dict(cls, value: Any) -> "ObservationEvidenceV1":
-        payload = _closed(value, required=("kind", "evidence_id", "observation"))
-        _kind(payload, cls.kind)
-        return cls(evidence_id=payload["evidence_id"], observation=ObservationV1.from_dict(payload["observation"]))
-
-
-@dataclass(frozen=True, slots=True, kw_only=True)
-class ServingOfferEvidenceV1:
-    kind: ClassVar[str] = "serving_offer"
-    evidence_id: str
-    serving_offer: ServingOfferV1
-
-    def __post_init__(self) -> None:
-        _require_string("evidence_id", self.evidence_id)
-        if not isinstance(self.serving_offer, ServingOfferV1):
-            raise TypeError("serving_offer must be ServingOfferV1")
-
-    def to_dict(self) -> dict[str, Any]:
-        return {"kind": self.kind, "evidence_id": self.evidence_id, "serving_offer": self.serving_offer.to_dict()}
-
-    @classmethod
-    def from_dict(cls, value: Any) -> "ServingOfferEvidenceV1":
-        payload = _closed(value, required=("kind", "evidence_id", "serving_offer"))
-        _kind(payload, cls.kind)
-        return cls(evidence_id=payload["evidence_id"], serving_offer=ServingOfferV1.from_dict(payload["serving_offer"]))
-
-
-@dataclass(frozen=True, slots=True, kw_only=True)
-class EvaluationToOfferLinkEvidenceV1:
-    kind: ClassVar[str] = "evaluation_to_offer_link"
-    evidence_id: str
-    evaluation_to_offer_link: EvaluationToOfferLinkV1
-
-    def __post_init__(self) -> None:
-        _require_string("evidence_id", self.evidence_id)
-        if not isinstance(self.evaluation_to_offer_link, EvaluationToOfferLinkV1):
-            raise TypeError("evaluation_to_offer_link must be EvaluationToOfferLinkV1")
-
-    def to_dict(self) -> dict[str, Any]:
-        return {
-            "kind": self.kind,
-            "evidence_id": self.evidence_id,
-            "evaluation_to_offer_link": self.evaluation_to_offer_link.to_dict(),
-        }
-
-    @classmethod
-    def from_dict(cls, value: Any) -> "EvaluationToOfferLinkEvidenceV1":
-        payload = _closed(value, required=("kind", "evidence_id", "evaluation_to_offer_link"))
-        _kind(payload, cls.kind)
-        return cls(
-            evidence_id=payload["evidence_id"],
-            evaluation_to_offer_link=EvaluationToOfferLinkV1.from_dict(payload["evaluation_to_offer_link"]),
-        )
-
-
-DecisionEvidenceV1 = ObservationEvidenceV1 | ServingOfferEvidenceV1 | EvaluationToOfferLinkEvidenceV1
-
-
-@dataclass(frozen=True, slots=True, kw_only=True)
-class DecisionReceiptV1:
     object: ClassVar[str] = "decision_receipt"
-    schema_version: ClassVar[str] = "1"
+    schema_version: ClassVar[str] = "2"
 
     receipt_id: str
-    query: DecisionQueryV1
-    publication_snapshot: PublicationSnapshotRefV1
-    methodology_version: str
+    query: DecisionQueryV2
     decided_at: str
     outcome: str
-    selections: tuple[DecisionSelectionV1, ...]
-    exclusions: tuple[DecisionExclusionV1, ...]
-    reasons: tuple[DecisionReasonV1, ...]
-    sensitivity: tuple[DecisionSensitivityV1, ...]
-    evidence: tuple[DecisionEvidenceV1, ...]
-    freshness: DecisionFreshnessV1
-    abstention_reason: str | None
+    snapshot_ids: tuple[str, ...]
+    families: tuple[DecisionFamilyV2, ...]
+    selections: tuple[DecisionSelectionV2, ...]
+    exclusions: tuple[DecisionExclusionV2, ...]
+    usage_profile: DecisionUsageV2
+    abstain_reasons: tuple[str, ...]
 
     def __post_init__(self) -> None:
-        if not isinstance(self.query, DecisionQueryV1):
-            raise TypeError("query must be DecisionQueryV1")
-        if not isinstance(self.publication_snapshot, PublicationSnapshotRefV1):
-            raise TypeError("publication_snapshot must be PublicationSnapshotRefV1")
-        if self.publication_snapshot.ranking_group_id != self.query.ranking_group_id:
-            raise ValueError("publication_snapshot ranking_group_id must match query")
-        if not isinstance(self.methodology_version, str) or not _METHODOLOGY_RE.fullmatch(self.methodology_version):
-            raise ValueError("methodology_version has an invalid public format")
-        decided_at = _parse_timestamp("decided_at", self.decided_at)
-        if decided_at < _parse_timestamp("published_at", self.publication_snapshot.published_at):
-            raise ValueError("decided_at must be on or after publication_snapshot.published_at")
-        _require_enum("outcome", self.outcome, {"top_set", "abstain"})
-        object.__setattr__(self, "selections", _normalize_typed_records("selections", self.selections, DecisionSelectionV1, lambda row: (row.evaluated_configuration_id,)))
-        object.__setattr__(self, "exclusions", _normalize_typed_records("exclusions", self.exclusions, DecisionExclusionV1, lambda row: (row.evaluated_configuration_id, row.code)))
-        object.__setattr__(self, "reasons", _normalize_typed_records("reasons", self.reasons, DecisionReasonV1, lambda row: (row.reason_type, row.code, row.subject_id, row.axis)))
-        object.__setattr__(self, "sensitivity", _normalize_typed_records("sensitivity", self.sensitivity, DecisionSensitivityV1, lambda row: row.scenario))
-        evidence_types = (ObservationEvidenceV1, ServingOfferEvidenceV1, EvaluationToOfferLinkEvidenceV1)
-        object.__setattr__(self, "evidence", _normalize_typed_records("evidence", self.evidence, evidence_types, lambda row: row.evidence_id))
-        evidence_targets = [_evidence_target(row) for row in self.evidence]
-        if len(set(evidence_targets)) != len(evidence_targets):
-            raise ValueError("evidence targets must be unique")
-        if not isinstance(self.freshness, DecisionFreshnessV1):
-            raise TypeError("freshness must be DecisionFreshnessV1")
-        if not (
-            _parse_timestamp("freshness.observed_at", self.freshness.observed_at)
-            <= decided_at
-            < _parse_timestamp("freshness.expires_at", self.freshness.expires_at)
+        if not isinstance(self.query, DecisionQueryV2):
+            raise TypeError("query must be DecisionQueryV2")
+        _parse_timestamp("decided_at", self.decided_at)
+        _require_enum("outcome", self.outcome, {"pick", "abstain"})
+        snapshot_ids = _normalize_string_set("snapshot_ids", self.snapshot_ids, allow_empty=True)
+        for snapshot_id in snapshot_ids:
+            _require_pattern("snapshot_ids item", snapshot_id, _SNAPSHOT_ID_RE)
+        object.__setattr__(self, "snapshot_ids", snapshot_ids)
+        object.__setattr__(
+            self,
+            "families",
+            _normalize_typed_records("families", self.families, DecisionFamilyV2, lambda row: (row.family_id,)),
+        )
+        if not isinstance(self.selections, tuple) or any(
+            not isinstance(row, DecisionSelectionV2) for row in self.selections
         ):
-            raise ValueError("receipt freshness must contain decided_at")
-        if self.outcome == "top_set":
-            if not self.selections:
-                raise ValueError("top_set outcome requires at least one selection")
-            if self.abstention_reason is not None:
-                raise ValueError("abstention_reason must be null for top_set")
-            if not self.reasons:
-                raise ValueError("top_set outcome requires reasons")
-            if not self.evidence:
-                raise ValueError("top_set outcome requires evidence")
-        else:
-            if self.selections:
-                raise ValueError("abstain outcome must not contain selections")
-            _require_enum("abstention_reason", self.abstention_reason, ABSTENTION_REASONS)
-        if self.outcome == "top_set" and self.query.objective == "lowest_cost_within_top_set":
-            for selection in self.selections:
-                if selection.serving_offer_id is None:
-                    raise ValueError("lowest_cost_within_top_set requires serving_offer_id for every selection")
-                if selection.projected_monthly_cost_microusd is None:
-                    raise ValueError(
-                        "lowest_cost_within_top_set requires projected_monthly_cost_microusd for every selection"
-                    )
-                if (
-                    self.query.monthly_budget_microusd is not None
-                    and selection.projected_monthly_cost_microusd > self.query.monthly_budget_microusd
-                ):
-                    raise ValueError("selection cost must not exceed monthly_budget_microusd")
-                if (
-                    self.query.monthly_budget_microusd is not None
-                    and self.query.zero_cache_sensitivity_usage_profile is not None
-                    and (
-                        selection.zero_cache_sensitivity_projected_monthly_cost_microusd
-                        is None
-                        or selection.zero_cache_sensitivity_projected_monthly_cost_microusd
-                        > self.query.monthly_budget_microusd
-                    )
-                ):
-                    raise ValueError(
-                        "zero-cache sensitivity projected monthly cost must not exceed "
-                        "monthly_budget_microusd"
-                    )
-            selected_costs = {
-                selection.projected_monthly_cost_microusd
-                for selection in self.selections
-            }
-            if len(selected_costs) != 1:
-                raise ValueError(
-                    "lowest_cost_within_top_set selections must share one equal minimum cost"
-                )
-        selected_ids = {row.evaluated_configuration_id for row in self.selections}
-        excluded_ids = {row.evaluated_configuration_id for row in self.exclusions}
-        if selected_ids & excluded_ids:
-            raise ValueError("a configuration cannot be both selected and excluded")
-        if self.outcome == "top_set":
-            leave_one_out = next(
-                (row for row in self.sensitivity if row.scenario == "leave_one_family_out"),
-                None,
-            )
-            if (
-                leave_one_out is None
-                or not leave_one_out.stable
-                or set(leave_one_out.selected_configuration_ids) != selected_ids
-            ):
-                raise ValueError(
-                    "every top_set requires stable leave_one_family_out sensitivity for the exact selected set"
-                )
-            if self.query.objective == "lowest_cost_within_top_set":
-                for scenario in {"price_plus_20_percent", "price_minus_20_percent", "usage_double"}:
-                    if not any(row.scenario == scenario for row in self.sensitivity):
-                        raise ValueError(f"lowest_cost_within_top_set requires {scenario} sensitivity")
-            for sensitivity in self.sensitivity:
-                sensitivity_ids = set(sensitivity.selected_configuration_ids)
-                if sensitivity.stable and sensitivity_ids != selected_ids:
-                    raise ValueError("stable sensitivity must preserve the exact selected configuration set")
-                if not sensitivity.stable and sensitivity_ids == selected_ids:
-                    raise ValueError("unstable sensitivity must change the selected configuration set")
-                known_ids = selected_ids | excluded_ids
-                if not sensitivity_ids <= known_ids:
-                    raise ValueError("sensitivity selected_configuration_ids must be known decision candidates")
-            uncovered = {
-                selection.evaluated_configuration_id
-                for selection in self.selections
-                if not any(
-                    reason.subject_id
-                    in {selection.evaluated_configuration_id, selection.serving_offer_id}
-                    for reason in self.reasons
-                )
-            }
-            if uncovered:
-                raise ValueError("reasons must cover every selected configuration or serving offer")
-            _validate_selected_decision_evidence(self, decided_at=decided_at)
-        evidence_ids = {row.evidence_id for row in self.evidence}
-        cited_ids = {
-            evidence_id
-            for row in (*self.exclusions, *self.reasons)
-            for evidence_id in row.evidence_ids
-        }
-        if not cited_ids <= evidence_ids:
-            raise ValueError("every cited evidence_id must be present in evidence")
-        evidence_by_id = {row.evidence_id: row for row in self.evidence}
-        for exclusion in self.exclusions:
-            if not exclusion.evidence_ids or not all(
-                _evidence_configuration_id(evidence_by_id[evidence_id])
-                == exclusion.evaluated_configuration_id
-                for evidence_id in exclusion.evidence_ids
-                if evidence_id in evidence_by_id
-            ):
-                raise ValueError("exclusion evidence must concern its excluded configuration")
+            raise TypeError("selections must be a tuple of DecisionSelectionV2")
+        configurations = [(row.serving_offer_id, row.reasoning_effort) for row in self.selections]
+        if len(set(configurations)) != len(configurations):
+            raise ValueError("selections must not repeat a (serving_offer_id, reasoning_effort) configuration")
+        object.__setattr__(
+            self,
+            "exclusions",
+            _normalize_typed_records("exclusions", self.exclusions, DecisionExclusionV2, lambda row: row.sort_key),
+        )
+        if not isinstance(self.usage_profile, DecisionUsageV2):
+            raise TypeError("usage_profile must be DecisionUsageV2")
+        if self.usage_profile != DecisionUsageV2.for_query(self.query):
+            raise ValueError("usage_profile must echo the query's profile (caller) or the default agent task mix")
+        reasons = _normalize_string_set("abstain_reasons", self.abstain_reasons, allow_empty=True)
+        for reason in reasons:
+            _require_enum("abstain_reasons item", reason, ABSTAIN_REASONS)
+        object.__setattr__(self, "abstain_reasons", reasons)
+        if self.outcome == "pick":
+            self._validate_pick()
+        elif self.selections or not self.abstain_reasons:
+            raise ValueError("abstain carries no selection and at least one abstain reason")
         expected = f"receipt_{sha256_hex(self.to_body_dict())}"
         if self.receipt_id != expected:
             raise ValueError("receipt_id must hash the full receipt body except receipt_id")
+
+    def _validate_pick(self) -> None:
+        if not self.selections or self.abstain_reasons:
+            raise ValueError("pick carries at least one selection and no abstain reason")
+        if not self.snapshot_ids:
+            raise ValueError("pick must cite the explorer snapshots it ranked")
+        pinned = self.query.reasoning_effort
+        if pinned is not None and any(row.reasoning_effort != pinned for row in self.selections):
+            raise ValueError("a pinned reasoning_effort admits only configurations at that level")
+        if self.query.api is not None and any(row.api != self.query.api for row in self.selections):
+            raise ValueError("every selection must use the query's api")
+        if self.query.provider_ids is not None and any(
+            row.provider_id not in self.query.provider_ids for row in self.selections
+        ):
+            raise ValueError("every selection must come from the query's provider_ids")
+        pick = self.selections[0]
+        if self.query.objective == "lowest_cost_within_top_set":
+            costs = [row.projected_cost_microusd for row in self.selections]
+            if any(cost is None for cost in costs):
+                raise ValueError("lowest_cost_within_top_set selects priced configurations only")
+            if pick.projected_cost_microusd != min(costs):
+                raise ValueError("lowest_cost_within_top_set picks the cheapest configuration of the band")
+        elif pick.capability_ratio_ppm != max(row.capability_ratio_ppm for row in self.selections):
+            raise ValueError("capability_top_set picks the highest-scoring configuration")
 
     @classmethod
     def create(
         cls,
         *,
-        query: DecisionQueryV1,
-        publication_snapshot: PublicationSnapshotRefV1,
-        methodology_version: str,
+        query: DecisionQueryV2,
         decided_at: str,
         outcome: str,
-        selections: tuple[DecisionSelectionV1, ...],
-        exclusions: tuple[DecisionExclusionV1, ...],
-        reasons: tuple[DecisionReasonV1, ...],
-        sensitivity: tuple[DecisionSensitivityV1, ...],
-        evidence: tuple[DecisionEvidenceV1, ...],
-        freshness: DecisionFreshnessV1,
-        abstention_reason: str | None,
-    ) -> "DecisionReceiptV1":
+        snapshot_ids: tuple[str, ...],
+        families: tuple[DecisionFamilyV2, ...],
+        selections: tuple[DecisionSelectionV2, ...],
+        exclusions: tuple[DecisionExclusionV2, ...],
+        abstain_reasons: tuple[str, ...],
+    ) -> "DecisionReceiptV2":
+        """Build a receipt; ``usage_profile`` is derived from the query and ``receipt_id`` from the body."""
         values = {
             "query": query,
-            "publication_snapshot": publication_snapshot,
-            "methodology_version": methodology_version,
             "decided_at": decided_at,
             "outcome": outcome,
+            "snapshot_ids": snapshot_ids,
+            "families": families,
             "selections": selections,
             "exclusions": exclusions,
-            "reasons": reasons,
-            "sensitivity": sensitivity,
-            "evidence": evidence,
-            "freshness": freshness,
-            "abstention_reason": abstention_reason,
+            "usage_profile": DecisionUsageV2.for_query(query),
+            "abstain_reasons": abstain_reasons,
         }
-        body = _receipt_body_from_values(values)
-        return cls(receipt_id=f"receipt_{sha256_hex(body)}", **values)
+        unchecked = object.__new__(cls)
+        for name, value in values.items():
+            object.__setattr__(unchecked, name, value)
+        return cls(receipt_id=f"receipt_{sha256_hex(unchecked.to_body_dict())}", **values)
 
     def to_body_dict(self) -> dict[str, Any]:
-        return _receipt_body_from_values({
-            "query": self.query,
-            "publication_snapshot": self.publication_snapshot,
-            "methodology_version": self.methodology_version,
+        return {
+            "object": self.object,
+            "schema_version": self.schema_version,
+            "query": self.query.to_dict(),
             "decided_at": self.decided_at,
             "outcome": self.outcome,
-            "selections": self.selections,
-            "exclusions": self.exclusions,
-            "reasons": self.reasons,
-            "sensitivity": self.sensitivity,
-            "evidence": self.evidence,
-            "freshness": self.freshness,
-            "abstention_reason": self.abstention_reason,
-        })
+            "snapshot_ids": sorted(self.snapshot_ids, key=lambda value: value.encode("utf-16-be")),
+            "families": [row.to_dict() for row in sorted(self.families, key=lambda row: _portable_sort_key((row.family_id,)))],
+            "selections": [row.to_dict() for row in self.selections],
+            "exclusions": [row.to_dict() for row in sorted(self.exclusions, key=lambda row: _portable_sort_key(row.sort_key))],
+            "usage_profile": self.usage_profile.to_dict(),
+            "abstain_reasons": sorted(self.abstain_reasons),
+        }
 
     def to_dict(self) -> dict[str, Any]:
         return {**self.to_body_dict(), "receipt_id": self.receipt_id}
 
     @classmethod
-    def from_dict(cls, value: Any) -> "DecisionReceiptV1":
+    def from_dict(cls, value: Any) -> "DecisionReceiptV2":
         payload = _closed(
             value,
             required=(
-                "object", "schema_version", "receipt_id", "query", "publication_snapshot",
-                "methodology_version", "decided_at", "outcome", "selections", "exclusions", "reasons",
-                "sensitivity", "evidence", "freshness", "abstention_reason",
+                "object",
+                "schema_version",
+                "receipt_id",
+                "query",
+                "decided_at",
+                "outcome",
+                "snapshot_ids",
+                "families",
+                "selections",
+                "exclusions",
+                "usage_profile",
+                "abstain_reasons",
             ),
         )
-        _envelope(payload, cls.object)
+        _envelope(payload, cls.object, cls.schema_version)
         return cls(
             receipt_id=payload["receipt_id"],
-            query=DecisionQueryV1.from_dict(payload["query"]),
-            publication_snapshot=PublicationSnapshotRefV1.from_dict(payload["publication_snapshot"]),
-            methodology_version=payload["methodology_version"],
+            query=DecisionQueryV2.from_dict(payload["query"]),
             decided_at=payload["decided_at"],
             outcome=payload["outcome"],
-            selections=tuple(DecisionSelectionV1.from_dict(row) for row in _array("selections", payload["selections"])),
-            exclusions=tuple(DecisionExclusionV1.from_dict(row) for row in _array("exclusions", payload["exclusions"])),
-            reasons=tuple(DecisionReasonV1.from_dict(row) for row in _array("reasons", payload["reasons"])),
-            sensitivity=tuple(DecisionSensitivityV1.from_dict(row) for row in _array("sensitivity", payload["sensitivity"])),
-            evidence=tuple(_decision_evidence_from_dict(row) for row in _array("evidence", payload["evidence"])),
-            freshness=DecisionFreshnessV1.from_dict(payload["freshness"]),
-            abstention_reason=payload["abstention_reason"],
-        )
-
-
-def _receipt_body_from_values(values: Mapping[str, Any]) -> dict[str, Any]:
-    selections = sorted(values["selections"], key=lambda row: _portable_sort_key((row.evaluated_configuration_id,)))
-    exclusions = sorted(values["exclusions"], key=lambda row: _portable_sort_key((row.evaluated_configuration_id, row.code)))
-    reasons = sorted(values["reasons"], key=lambda row: _portable_sort_key((row.reason_type, row.code, row.subject_id, row.axis)))
-    sensitivity = sorted(values["sensitivity"], key=lambda row: _portable_sort_key((row.scenario,)))
-    evidence = sorted(values["evidence"], key=lambda row: _portable_sort_key((row.evidence_id,)))
-    return {
-        "object": DecisionReceiptV1.object,
-        "schema_version": DecisionReceiptV1.schema_version,
-        "query": values["query"].to_dict(),
-        "publication_snapshot": values["publication_snapshot"].to_dict(),
-        "methodology_version": values["methodology_version"],
-        "decided_at": values["decided_at"],
-        "outcome": values["outcome"],
-        "selections": [row.to_dict() for row in selections],
-        "exclusions": [row.to_dict() for row in exclusions],
-        "reasons": [row.to_dict() for row in reasons],
-        "sensitivity": [row.to_dict() for row in sensitivity],
-        "evidence": [row.to_dict() for row in evidence],
-        "freshness": values["freshness"].to_dict(),
-        "abstention_reason": values["abstention_reason"],
-    }
-
-
-def _decision_evidence_from_dict(value: Any) -> DecisionEvidenceV1:
-    payload = _mapping(value)
-    parser = {
-        "observation": ObservationEvidenceV1.from_dict,
-        "serving_offer": ServingOfferEvidenceV1.from_dict,
-        "evaluation_to_offer_link": EvaluationToOfferLinkEvidenceV1.from_dict,
-    }.get(payload.get("kind"))
-    if parser is None:
-        raise ValueError("evidence.kind must be observation, serving_offer, or evaluation_to_offer_link")
-    return parser(payload)
-
-
-def _evidence_target(evidence: DecisionEvidenceV1) -> tuple[str, ...]:
-    if isinstance(evidence, ObservationEvidenceV1):
-        return evidence.kind, evidence.observation.observation_id
-    if isinstance(evidence, ServingOfferEvidenceV1):
-        return evidence.kind, evidence.serving_offer.serving_offer_id
-    link = evidence.evaluation_to_offer_link
-    return evidence.kind, link.evaluated_configuration_id, link.serving_offer_id
-
-
-def _evidence_configuration_id(evidence: DecisionEvidenceV1) -> str | None:
-    if isinstance(evidence, ObservationEvidenceV1):
-        return evidence.observation.evaluated_configuration_id
-    if isinstance(evidence, EvaluationToOfferLinkEvidenceV1):
-        return evidence.evaluation_to_offer_link.evaluated_configuration_id
-    return None
-
-
-def _validate_selected_decision_evidence(
-    receipt: DecisionReceiptV1,
-    *,
-    decided_at: datetime,
-) -> None:
-    evidence_by_id = {row.evidence_id: row for row in receipt.evidence}
-    for reason in receipt.reasons:
-        if reason.reason_type == "best_when" and not (
-            _parse_timestamp("reason.freshness.observed_at", reason.freshness.observed_at)
-            <= decided_at
-            < _parse_timestamp("reason.freshness.expires_at", reason.freshness.expires_at)
-        ):
-            raise ValueError("positive reason freshness must contain decided_at")
-
-    for selection in receipt.selections:
-        capability_reasons = [
-            reason
-            for reason in receipt.reasons
-            if reason.subject_id == selection.evaluated_configuration_id
-            and reason.code in {"strongest_capability_evidence", "within_capability_top_set"}
-        ]
-        if not capability_reasons or not all(
-            reason.evidence_ids
-            and all(
-                isinstance(evidence_by_id.get(evidence_id), ObservationEvidenceV1)
-                and evidence_by_id[evidence_id].observation.evaluated_configuration_id
-                == selection.evaluated_configuration_id
-                for evidence_id in reason.evidence_ids
-            )
-            for reason in capability_reasons
-        ):
-            raise ValueError("every selected configuration requires matching capability observation evidence")
-
-        query = receipt.query
-        offer_required = any(
-            (
-                selection.serving_offer_id is not None,
-                query.objective == "lowest_cost_within_top_set",
-                query.provider_ids is not None,
-                query.regions is not None,
-                query.minimum_context_tokens is not None,
-                query.usage_profile is not None,
-                query.monthly_budget_microusd is not None,
-            )
-        )
-        if not offer_required:
-            continue
-        if selection.serving_offer_id is None:
-            raise ValueError("selected configuration requires serving_offer_id for applied offer constraints")
-        offer_evidence = next(
-            (
-                row
-                for row in receipt.evidence
-                if isinstance(row, ServingOfferEvidenceV1)
-                and row.serving_offer.serving_offer_id == selection.serving_offer_id
-            ),
-            None,
-        )
-        link_evidence = next(
-            (
-                row
-                for row in receipt.evidence
-                if isinstance(row, EvaluationToOfferLinkEvidenceV1)
-                and row.evaluation_to_offer_link.evaluated_configuration_id
-                == selection.evaluated_configuration_id
-                and row.evaluation_to_offer_link.serving_offer_id == selection.serving_offer_id
-            ),
-            None,
-        )
-        if offer_evidence is None:
-            raise ValueError("selected serving offer requires full typed serving-offer evidence")
-        if link_evidence is None:
-            raise ValueError("selected serving offer requires full typed offer-link evidence")
-        offer = offer_evidence.serving_offer
-        link = link_evidence.evaluation_to_offer_link
-        if not offer.is_decision_eligible(link, as_of=receipt.decided_at):
-            raise ValueError(
-                "selected offer and link must be exact, approved, non-inferred, available, and current at decided_at"
-            )
-        if query.provider_ids is not None and offer.provider_id not in query.provider_ids:
-            raise ValueError("selected offer provider must satisfy provider_ids")
-        if query.regions is not None and offer.region not in query.regions:
-            raise ValueError("selected offer region must satisfy regions")
-        if (
-            query.minimum_context_tokens is not None
-            and offer.context.context_window_tokens < query.minimum_context_tokens
-        ):
-            raise ValueError("selected offer must satisfy minimum_context_tokens")
-
-        computed_cost: int | None = None
-        if query.usage_profile is not None:
-            computed_cost = monthly_cost_microusd(query.usage_profile, offer.pricing)
-            if computed_cost is None:
-                raise ValueError("pricing schedule lacks a rate for nonzero usage; decision must abstain")
-            if selection.projected_monthly_cost_microusd != computed_cost:
-                raise ValueError("projected_monthly_cost_microusd must equal the computed monthly cost")
-            if query.monthly_budget_microusd is not None and computed_cost > query.monthly_budget_microusd:
-                raise ValueError("computed monthly cost must not exceed monthly_budget_microusd")
-        elif selection.projected_monthly_cost_microusd is not None:
-            raise ValueError("projected_monthly_cost_microusd must be null when query usage is omitted")
-        sensitivity = query.zero_cache_sensitivity_usage_profile
-        sensitivity_cost: int | None = None
-        if sensitivity is not None:
-            sensitivity_cost = monthly_cost_microusd(sensitivity, offer.pricing)
-            if sensitivity_cost is None:
-                raise ValueError(
-                    "pricing schedule lacks a rate for zero-cache sensitivity usage; decision must abstain"
-                )
-            if (
-                selection.zero_cache_sensitivity_projected_monthly_cost_microusd
-                != sensitivity_cost
-            ):
-                raise ValueError(
-                    "zero_cache_sensitivity_projected_monthly_cost_microusd must equal the computed sensitivity cost"
-                )
-            if (
-                query.monthly_budget_microusd is not None
-                and sensitivity_cost > query.monthly_budget_microusd
-            ):
-                raise ValueError(
-                    "zero-cache sensitivity projected monthly cost must not exceed "
-                    "monthly_budget_microusd"
-                )
-        elif selection.zero_cache_sensitivity_projected_monthly_cost_microusd is not None:
-            raise ValueError(
-                "zero_cache_sensitivity_projected_monthly_cost_microusd must be null when query sensitivity is omitted"
-            )
-
-        required_evidence_ids = {offer_evidence.evidence_id, link_evidence.evidence_id}
-        offer_observed_at = max(
-            offer.context.observed_at,
-            offer.availability.observed_at,
-            offer.pricing.observed_at,
-            offer.pricing.effective_at,
-            link.observed_at,
-        )
-        offer_expires_at = min(
-            offer.context.expires_at,
-            offer.availability.expires_at,
-            offer.pricing.expires_at,
-            link.expires_at,
-        )
-        cost_sensitive_to_usage = bool(
-            query.usage_profile is not None
-            and query.usage_profile.basis == "estimated"
-            and sensitivity_cost is not None
-            and computed_cost != sensitivity_cost
-        )
-        if cost_sensitive_to_usage and not any(
-            "cost_sensitive_to_usage" in reason.caveat_codes
-            and reason.subject_id
-            in {selection.evaluated_configuration_id, selection.serving_offer_id}
-            for reason in receipt.reasons
-        ):
-            raise ValueError(
-                "differing estimated profile costs require cost_sensitive_to_usage "
-                "on a matching selected configuration or offer reason"
-            )
-        if query.objective == "lowest_cost_within_top_set":
-            _require_offer_reason(
-                receipt,
-                selection,
-                code="lowest_cost_under_usage_profile",
-                observed_value=str(computed_cost),
-                threshold=str(computed_cost),
-                evidence_ids=required_evidence_ids,
-                observed_at=offer_observed_at,
-                expires_at=offer_expires_at,
-                require_cost_sensitive_caveat=cost_sensitive_to_usage,
-            )
-        if query.monthly_budget_microusd is not None:
-            declared_profile_cost = max(
-                cost
-                for cost in (computed_cost, sensitivity_cost)
-                if cost is not None
-            )
-            _require_offer_reason(
-                receipt,
-                selection,
-                code="budget_fit_under_declared_profiles",
-                observed_value=str(declared_profile_cost),
-                threshold=str(query.monthly_budget_microusd),
-                evidence_ids=required_evidence_ids,
-                observed_at=offer_observed_at,
-                expires_at=offer_expires_at,
-                require_cost_sensitive_caveat=cost_sensitive_to_usage,
-            )
-        if query.provider_ids is not None:
-            _require_offer_reason(
-                receipt,
-                selection,
-                code="provider_constraint_match",
-                observed_value=offer.provider_id,
-                threshold=offer.provider_id,
-                evidence_ids=required_evidence_ids,
-                observed_at=offer_observed_at,
-                expires_at=offer_expires_at,
-            )
-        if query.regions is not None:
-            _require_offer_reason(
-                receipt,
-                selection,
-                code="region_constraint_match",
-                observed_value=offer.region,
-                threshold=offer.region,
-                evidence_ids=required_evidence_ids,
-                observed_at=offer_observed_at,
-                expires_at=offer_expires_at,
-            )
-        if query.minimum_context_tokens is not None:
-            _require_offer_reason(
-                receipt,
-                selection,
-                code="context_requirement_met",
-                observed_value=str(offer.context.context_window_tokens),
-                threshold=str(query.minimum_context_tokens),
-                evidence_ids=required_evidence_ids,
-                observed_at=offer_observed_at,
-                expires_at=offer_expires_at,
-            )
-
-    positive_reasons = [row for row in receipt.reasons if row.reason_type == "best_when"]
-    if positive_reasons:
-        expected_observed_at = max(row.freshness.observed_at for row in positive_reasons)
-        expected_expires_at = min(row.freshness.expires_at for row in positive_reasons)
-        if (
-            receipt.freshness.observed_at != expected_observed_at
-            or receipt.freshness.expires_at != expected_expires_at
-        ):
-            raise ValueError("receipt freshness must equal the intersection of positive reason freshness")
-
-
-def _require_offer_reason(
-    receipt: DecisionReceiptV1,
-    selection: DecisionSelectionV1,
-    *,
-    code: str,
-    observed_value: str,
-    threshold: str,
-    evidence_ids: set[str],
-    observed_at: str,
-    expires_at: str,
-    require_cost_sensitive_caveat: bool = False,
-) -> None:
-    reason = next(
-        (
-            row
-            for row in receipt.reasons
-            if row.code == code and row.subject_id == selection.serving_offer_id
-        ),
-        None,
-    )
-    if reason is None:
-        raise ValueError(f"applied query constraint requires {code} reason")
-    if reason.observed_value != observed_value or reason.threshold != threshold:
-        raise ValueError(f"{code} observed_value/threshold must match the selected offer and query")
-    if set(reason.evidence_ids) != evidence_ids:
-        raise ValueError(f"{code} must cite exactly the matching serving-offer and offer-link evidence")
-    if reason.freshness.observed_at != observed_at or reason.freshness.expires_at != expires_at:
-        raise ValueError(f"{code} freshness must equal the selected offer/link validity intersection")
-    if (
-        require_cost_sensitive_caveat
-        and "cost_sensitive_to_usage" not in reason.caveat_codes
-    ):
-        raise ValueError(
-            f"{code} requires cost_sensitive_to_usage when estimated profile costs differ"
+            snapshot_ids=_array_to_tuple("snapshot_ids", payload["snapshot_ids"]),
+            families=tuple(DecisionFamilyV2.from_dict(row) for row in _array("families", payload["families"])),
+            selections=tuple(DecisionSelectionV2.from_dict(row) for row in _array("selections", payload["selections"])),
+            exclusions=tuple(DecisionExclusionV2.from_dict(row) for row in _array("exclusions", payload["exclusions"])),
+            usage_profile=DecisionUsageV2.from_dict(payload["usage_profile"]),
+            abstain_reasons=_array_to_tuple("abstain_reasons", payload["abstain_reasons"]),
         )
 
 
@@ -2184,11 +1570,11 @@ def _mapping(value: Any) -> Mapping[str, Any]:
     return value
 
 
-def _envelope(payload: Mapping[str, Any], object_name: str) -> None:
+def _envelope(payload: Mapping[str, Any], object_name: str, schema_version: str = "1") -> None:
     if payload["object"] != object_name:
         raise ValueError(f"object must be {object_name}")
-    if payload["schema_version"] != "1":
-        raise ValueError("schema_version must be 1")
+    if payload["schema_version"] != schema_version:
+        raise ValueError(f"schema_version must be {schema_version}")
 
 
 def _without_envelope(payload: Mapping[str, Any]) -> dict[str, Any]:
@@ -2299,13 +1685,6 @@ def _normalize_string_set(name: str, values: Any, *, allow_empty: bool = False) 
     return tuple(sorted(values, key=lambda value: value.encode("utf-16-be")))
 
 
-def _normalize_enum_set(name: str, values: Any, allowed: set[str], *, allow_empty: bool = False) -> tuple[str, ...]:
-    normalized = _normalize_string_set(name, values, allow_empty=allow_empty)
-    for value in normalized:
-        _require_enum(f"{name} item", value, allowed)
-    return normalized
-
-
 def _array(name: str, value: Any) -> list[Any]:
     if not isinstance(value, list):
         raise TypeError(f"{name} must be an array")
@@ -2387,3 +1766,8 @@ def _thaw_json(value: Any) -> Any:
     if isinstance(value, tuple):
         return [_thaw_json(item) for item in value]
     return value
+
+
+# Built last: UsageProfileV1 validation needs the module helpers above.
+DEFAULT_AGENT_TASK_MIX = _default_agent_task_mix()
+"""The usage profile a query without ``usage_profile`` is priced at: cache-heavy agent traffic."""

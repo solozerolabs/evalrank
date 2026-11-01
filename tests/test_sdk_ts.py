@@ -49,8 +49,8 @@ class TypeScriptSdkTests(unittest.TestCase):
     def test_sdk_readme_lists_current_decision_and_read_surface(self):
         text = (SDK_TS / "README.md").read_text(encoding="utf-8")
         for name in (
-            "DecisionQueryV1",
-            "DecisionReceiptV1",
+            "DecisionQueryV2",
+            "DecisionReceiptV2",
             "BenchmarkHealth",
             "Leaderboard",
             "EntityDetail",
@@ -102,7 +102,7 @@ class TypeScriptSdkTests(unittest.TestCase):
             "UseCaseCatalog",
         ):
             self.assertIn(f"export interface {name}", source)
-        for name in ("DecisionQueryV1", "DecisionReceiptV1"):
+        for name in ("DecisionQueryV2", "DecisionReceiptV2"):
             self.assertIn(f"export interface {name}", decision_source)
 
         for method in (
@@ -112,7 +112,7 @@ class TypeScriptSdkTests(unittest.TestCase):
             "async entity(",
             "async compare(useCase: string, entities: string[], explorerView?: ExplorerViewIdentity): Promise<CompareResult>",
             "async decide(",
-            "async decisionReceipt(receiptId: string): Promise<DecisionReceiptV1>",
+            "async decisionReceipt(receiptId: string): Promise<DecisionReceiptV2>",
         ):
             self.assertIn(method, source)
         for path in (
@@ -125,8 +125,8 @@ class TypeScriptSdkTests(unittest.TestCase):
         ):
             self.assertIn(path, source)
 
-        self.assertIn("parseDecisionQueryV1(query)", source)
-        self.assertIn("parseDecisionReceiptV1(response)", source)
+        self.assertIn("parseDecisionQueryV2(query)", source)
+        self.assertIn("parseDecisionReceiptV2(response)", source)
         self.assertIn("verifyLeaderboardSemantics(response)", source)
         self.assertIn("verifyEntityDetailSemantics(response)", source)
         self.assertIn("verifyCompareResultSemantics(response)", source)

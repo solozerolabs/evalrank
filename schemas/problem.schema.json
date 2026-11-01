@@ -44,7 +44,8 @@
         "methodology_stale",
         "internal",
         "unauthorized",
-        "forbidden"
+        "forbidden",
+        "via_not_supported"
       ]
     },
     "retriable": {

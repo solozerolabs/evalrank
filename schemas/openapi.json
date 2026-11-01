@@ -8,7 +8,7 @@
   "tags": [
     {
       "name": "decisions",
-      "description": "Evaluate a closed DecisionQueryV1 and return a reproducible DecisionReceiptV1."
+      "description": "Evaluate a DecisionQueryV2 and return a reproducible DecisionReceiptV2: a callable pick with its priced band, or an abstain with reasons."
     },
     {
       "name": "metadata",
@@ -283,7 +283,7 @@
         ],
         "operationId": "createDecision",
         "summary": "Create a deterministic decision receipt",
-        "description": "Validate one closed semantic query and decide against one pinned ranking-group publication. The optional share transport parameter retains the immutable public-safe receipt for later retrieval.",
+        "description": "Validate one semantic query and rank the cell's configurations from its explorer snapshots and live serving offers. A 200 is either a pick (selections[0], then the priced band, each callable as returned) or an abstain with reasons; 503 means an outage, never missing evidence. A via without a probed effort vocabulary is a 422 via_not_supported. The optional share transport parameter retains the immutable public-safe receipt for later retrieval.",
         "parameters": [
           {
             "name": "share",
@@ -324,7 +324,7 @@
             "$ref": "#/components/responses/UnsupportedMediaType"
           },
           "422": {
-            "$ref": "#/components/responses/ValidationError"
+            "$ref": "#/components/responses/DecisionValidationError"
           },
           "429": {
             "$ref": "#/components/responses/RateLimited"
@@ -557,6 +557,40 @@
                     "status": {"const": 422},
                     "code": {"const": "validation"},
                     "retriable": {"const": false}
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "DecisionValidationError": {
+        "description": "The decision query failed contract validation, or its via names a call surface without a probed effort vocabulary (via_not_supported, with supported_via listing the working surfaces).",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/RequestId"
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                {
+                  "type": "object",
+                  "required": ["status", "code", "retriable"],
+                  "properties": {
+                    "status": {"const": 422},
+                    "code": {"enum": ["validation", "via_not_supported"]},
+                    "retriable": {"const": false},
+                    "supported_via": {
+                      "type": "array",
+                      "minItems": 1,
+                      "uniqueItems": true,
+                      "items": {"type": "string", "minLength": 1}
+                    }
                   }
                 }
               ]

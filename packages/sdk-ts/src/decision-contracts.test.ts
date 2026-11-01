@@ -13,12 +13,13 @@ import {
 import {
   canonicalJson,
   evaluatedConfigurationId,
-  isEvaluationToOfferLinkEligible,
-  isServingOfferDecisionEligible,
+  DEFAULT_AGENT_TASK_MIX,
   parseServingOfferV1,
   parseConfigurationPassportV1,
-  parseDecisionQueryV1,
-  parseDecisionReceiptV1,
+  parseDecisionQueryV2,
+  parseDecisionReceiptV2,
+  resolvedVia,
+  SUPPORTED_VIA,
   parseObservationV1,
   parseRunProvenanceV1,
   parseSnapshotSetDescriptorV1,
@@ -35,11 +36,12 @@ import {
 
 
 const golden = JSON.parse(
-  readFileSync(new URL("../../../examples/decision-contract-v1.golden.json", import.meta.url), "utf8"),
+  readFileSync(new URL("../../../examples/decision-contract-v2.golden.json", import.meta.url), "utf8"),
 ) as {
   utf16_set_order: { input: string[]; canonical: string[] };
   query: { input: Record<string, unknown>; canonical: string };
-  receipt: { body: Record<string, unknown>; body_sha256: string; receipt_id: string };
+  receipts: Array<{ name: string; body: Record<string, unknown>; body_sha256: string; receipt_id: string }>;
+  problems: Array<{ name: string; query: Record<string, unknown>; problem: Record<string, unknown> }>;
   rejection_vectors: Array<{ name: string; value: unknown }>;
 };
 const aggregationGolden = JSON.parse(
@@ -67,13 +69,15 @@ const manifest = JSON.parse(
 
 test("restricted JCS matches the cross-language golden bytes", async () => {
   assert.equal(canonicalJson(golden.query.input), golden.query.canonical);
-  assert.equal(await sha256Hex(golden.receipt.body), golden.receipt.body_sha256);
-  assert.equal(await receiptId(golden.receipt.body), golden.receipt.receipt_id);
+  for (const row of golden.receipts) {
+    assert.equal(await sha256Hex(row.body), row.body_sha256, row.name);
+    assert.equal(await receiptId(row.body), row.receipt_id, row.name);
+  }
   for (const vector of golden.rejection_vectors.slice(0, 2)) {
     assert.throws(() => canonicalJson(vector.value), /float|safe integer/);
   }
   const nullFilter = golden.rejection_vectors.find((row) => row.name === "null_provider_filter")!;
-  assert.throws(() => parseDecisionQueryV1(nullFilter.value), /must not be null/);
+  assert.throws(() => parseDecisionQueryV2(nullFilter.value), /must not be null/);
 });
 
 test("restricted JCS orders by UTF-16 and rejects unsafe hash material", () => {
@@ -84,7 +88,7 @@ test("restricted JCS orders by UTF-16 and rejects unsafe hash material", () => {
   assert.throws(() => canonicalJson({ value: "\ud800" }), /surrogate/);
   assert.throws(() => canonicalJson(Array(1)), /sparse array hole/);
   assert.deepEqual(
-    parseDecisionQueryV1({ ...golden.query.input, provider_ids: golden.utf16_set_order.input }).provider_ids,
+    parseDecisionQueryV2({ ...golden.query.input, provider_ids: golden.utf16_set_order.input }).provider_ids,
     golden.utf16_set_order.canonical,
   );
 });
@@ -274,42 +278,42 @@ test("identity triples and example identifiers resolve from the canonical manife
   )].sort();
   assert.deepEqual(RESOLVED_IDENTITY_TRIPLES.map((row) => row.join("|")).sort(), manifestTriples);
   assert.ok(manifest.cells.some((row) => row.cell_id === golden.query.input.cell_id));
-  assert.ok(manifest.ranking_groups.some((row) => row.ranking_group_id === golden.query.input.ranking_group_id));
+  for (const row of golden.receipts) {
+    const body = row.body as { query: { cell_id: string }; families: Array<{ family_id: string }> };
+    assert.ok(manifest.cells.some((cell) => cell.cell_id === body.query.cell_id), row.name);
+    for (const family of body.families) {
+      assert.ok(manifest.benchmark_families.some((item) => item.benchmark_family_id === family.family_id), family.family_id);
+    }
+  }
   assert.ok(manifest.benchmark_families.some((row) => row.benchmark_family_id === "livecodebench"));
   assert.ok(manifest.feeds.some((row) => row.feed_id === "livecodebench-discovery" && row.benchmark_family_id === "livecodebench"));
 });
 
-test("query decoding canonicalizes unordered sets and rejects transport metadata and null filters", () => {
+test("query decoding canonicalizes unordered sets and rejects v1 fields, transport metadata and null filters", () => {
   const input = {
     ...golden.query.input,
     provider_ids: ["provider-b", "provider-a"],
     regions: ["us-west", "eu-west"],
   };
-  const parsed = parseDecisionQueryV1(input);
+  const parsed = parseDecisionQueryV2(input);
   assert.deepEqual(parsed.provider_ids, ["provider-a", "provider-b"]);
   assert.deepEqual(parsed.regions, ["eu-west", "us-west"]);
-  assert.throws(() => parseDecisionQueryV1({ ...input, request_id: "transport" }), /unknown fields/);
-  assert.throws(() => parseDecisionQueryV1({ ...input, provider_ids: null }), /must not be null/);
-  assert.throws(
-    () => parseDecisionQueryV1({ ...input, provider_ids: ["provider-a", "provider-a"] }),
-    /unique/,
-  );
-  const withoutUsage = structuredClone(input);
-  withoutUsage.objective = "capability_top_set";
-  delete withoutUsage.usage_profile;
-  delete withoutUsage.zero_cache_sensitivity_usage_profile;
-  assert.throws(() => parseDecisionQueryV1(withoutUsage), /monthly_budget_microusd/);
-
-  const missingZeroCache = structuredClone(input);
-  delete missingZeroCache.zero_cache_sensitivity_usage_profile;
-  assert.throws(() => parseDecisionQueryV1(missingZeroCache), /zero_cache_sensitivity/);
-  const wrongZeroCache = structuredClone(input);
-  (wrongZeroCache.zero_cache_sensitivity_usage_profile as Record<string, unknown>).uncached_input_tokens = 19_999_999;
-  assert.throws(() => parseDecisionQueryV1(wrongZeroCache), /total input/);
-  const measured = structuredClone(input);
-  (measured.usage_profile as Record<string, unknown>).basis = "measured";
-  delete measured.zero_cache_sensitivity_usage_profile;
-  assert.equal(parseDecisionQueryV1(measured).usage_profile?.basis, "measured");
+  assert.throws(() => parseDecisionQueryV2({ ...input, request_id: "transport" }), /unknown fields/);
+  assert.throws(() => parseDecisionQueryV2({ ...input, provider_ids: null }), /must not be null/);
+  assert.throws(() => parseDecisionQueryV2({ ...input, provider_ids: ["a", "a"] }), /unique/);
+  for (const field of ["ranking_group_id", "entity_kind", "monthly_budget_microusd", "zero_cache_sensitivity_usage_profile"]) {
+    assert.throws(() => parseDecisionQueryV2({ ...input, [field]: "x" }), /unknown fields/, field);
+  }
+  assert.throws(() => parseDecisionQueryV2({ ...input, schema_version: "1" }), /schema_version must be 2/);
+  assert.throws(() => parseDecisionQueryV2({ ...input, reasoning_effort: "ultra" }), /reasoning_effort/);
+  const minimal = parseDecisionQueryV2({ schema_version: "2", cell_id: "writing", objective: "lowest_cost_within_top_set" });
+  assert.deepEqual(minimal, { object: "decision_query", schema_version: "2", cell_id: "writing", objective: "lowest_cost_within_top_set" });
+  assert.equal(resolvedVia(minimal), "openrouter");
+  assert.equal(resolvedVia({ ...minimal, provider_ids: ["openai"] }), "openai");
+  assert.equal(resolvedVia({ ...minimal, via: "anthropic" }), "anthropic");
+  for (const row of golden.rejection_vectors.slice(2)) {
+    assert.throws(() => parseDecisionQueryV2(row.value), undefined, row.name);
+  }
 });
 
 test("typed provenance and observations fail closed", () => {
@@ -388,119 +392,10 @@ test("typed provenance and observations fail closed", () => {
   );
 });
 
-test("offer-link eligibility is exact, approved, and evaluated at the caller's as-of time", () => {
-  const link = {
-    object: "evaluation_to_offer_link",
-    schema_version: "1",
-    evaluation_to_offer_link_id: "link_public-demo",
-    evaluated_configuration_id: `config_${"b".repeat(64)}`,
-    serving_offer_id: "offer_public-demo",
-    compatibility: "exact" as const,
-    evidence_basis: "benchmark_exact" as const,
-    evidence_source_artifact_id: `artifact_${"a".repeat(64)}`,
-    observed_at: "2026-07-09T00:00:00Z",
-    expires_at: "2026-07-10T00:00:00Z",
-    review_state: "approved" as const,
-  };
-  assert.equal(isEvaluationToOfferLinkEligible(link, "2026-07-09T12:00:00Z"), true);
-  assert.equal(isEvaluationToOfferLinkEligible({ ...link, evidence_basis: "inferred" }, "2026-07-09T12:00:00Z"), false);
-  assert.equal(isEvaluationToOfferLinkEligible({ ...link, review_state: "pending" }, "2026-07-09T12:00:00Z"), false);
-  assert.equal(isEvaluationToOfferLinkEligible(link, "2026-07-10T00:00:00Z"), false);
-  assert.equal("eligible" in link, false);
-
-  const fact = {
-    observed_at: "2026-07-09T00:00:00Z",
-    expires_at: "2026-07-10T00:00:00Z",
-    source_artifact_id: `artifact_${"a".repeat(64)}`,
-  };
-  const offer = parseServingOfferV1({
-    object: "serving_offer",
-    schema_version: "1",
-    serving_offer_id: "offer_public-demo",
-    provider_id: "provider-public",
-    sku: "public-demo",
-    region: "us-west",
-    context: { context_window_tokens: 128000, ...fact },
-    availability: { status: "available", ...fact },
-    pricing: {
-      uncached_input_microusd_per_million_tokens: 1000000,
-      cached_read_microusd_per_million_tokens: 200000,
-      output_microusd_per_million_tokens: 4800000,
-      cache_write_rates: [{ ttl_seconds: 300, microusd_per_million_tokens: 1200000 }],
-      cache_storage_microusd_per_million_token_hours: 100000,
-      effective_at: "2026-07-09T01:00:00Z",
-      ...fact,
-    },
-  });
-  assert.equal(isServingOfferDecisionEligible(offer, link, "2026-07-09T12:00:00Z"), true);
-  assert.equal(isServingOfferDecisionEligible(offer, link, "2026-07-09T00:30:00Z"), false);
-  assert.equal(
-    isServingOfferDecisionEligible({ ...offer, availability: { ...offer.availability, status: "unavailable" } }, link, "2026-07-09T12:00:00Z"),
-    false,
-  );
-  assert.equal(isServingOfferDecisionEligible(offer, link, "2026-07-10T00:00:00Z"), false);
-});
-
-test("eligibility helpers fail closed for malformed runtime input", () => {
-  const link = {
-    object: "evaluation_to_offer_link",
-    schema_version: "1",
-    evaluation_to_offer_link_id: "link_public-demo",
-    evaluated_configuration_id: `config_${"b".repeat(64)}`,
-    serving_offer_id: "offer_public-demo",
-    compatibility: "exact",
-    evidence_basis: "benchmark_exact",
-    evidence_source_artifact_id: `artifact_${"a".repeat(64)}`,
-    observed_at: "2026-07-09T00:00:00Z",
-    expires_at: "2026-07-10T00:00:00Z",
-    review_state: "approved",
-  } satisfies Record<string, unknown>;
-  const fact = {
-    observed_at: "2026-07-09T00:00:00Z",
-    expires_at: "2026-07-10T00:00:00Z",
-    source_artifact_id: `artifact_${"a".repeat(64)}`,
-  };
-  const offer = {
-    object: "serving_offer",
-    schema_version: "1",
-    serving_offer_id: "offer_public-demo",
-    provider_id: "provider-public",
-    sku: "public-demo",
-    region: "us-west",
-    context: { context_window_tokens: 128000, ...fact },
-    availability: { status: "available", ...fact },
-    pricing: {
-      uncached_input_microusd_per_million_tokens: 1000000,
-      cached_read_microusd_per_million_tokens: 200000,
-      output_microusd_per_million_tokens: 4800000,
-      cache_write_rates: [{ ttl_seconds: 300, microusd_per_million_tokens: 1200000 }],
-      cache_storage_microusd_per_million_token_hours: 100000,
-      effective_at: "2026-07-09T01:00:00Z",
-      ...fact,
-    },
-  } satisfies Record<string, unknown>;
-
-  for (const malformed of [
-    { ...link, evidence_basis: "invented" },
-    { ...link, evidence_source_artifact_id: "mutable-latest" },
-    { ...link, observed_at: "not-a-timestamp" },
-  ]) {
-    assert.equal(isEvaluationToOfferLinkEligible(malformed, "2026-07-09T12:00:00Z"), false);
-    assert.equal(isServingOfferDecisionEligible(offer, malformed, "2026-07-09T12:00:00Z"), false);
-  }
-  assert.equal(isEvaluationToOfferLinkEligible(link, "not-a-timestamp"), false);
-  assert.equal(
-    isServingOfferDecisionEligible(
-      { ...offer, pricing: { ...(offer.pricing as Record<string, unknown>), effective_at: "bad" } },
-      link,
-      "2026-07-09T12:00:00Z",
-    ),
-    false,
-  );
-});
-
-test("monthly schedule pricing uses BigInt, one final ceiling, and fails closed", () => {
-  assert.equal("monthlyCostMicrousd" in contracts, true);
+test("schedule pricing uses BigInt, one final ceiling, and fails closed", () => {
+  assert.equal("projectedCostMicrousd" in contracts, true);
+  assert.equal("monthlyCostMicrousd" in contracts, false);
+  assert.equal("parseEvaluationToOfferLinkV1" in contracts, false);
   const usage = {
     basis: "measured" as const,
     uncached_input_tokens: 1,
@@ -521,9 +416,9 @@ test("monthly schedule pricing uses BigInt, one final ceiling, and fails closed"
     source_artifact_id: `artifact_${"a".repeat(64)}`,
   };
 
-  assert.equal(contracts.monthlyCostMicrousd(usage, pricing), 1);
+  assert.equal(contracts.projectedCostMicrousd(usage, pricing), 1);
   assert.equal(
-    contracts.monthlyCostMicrousd(
+    contracts.projectedCostMicrousd(
       { ...usage, uncached_input_tokens: 0, cached_read_tokens: 1, output_tokens: 0, cache_writes: [], cache_storage_token_seconds: 0 },
       { ...pricing, cached_read_microusd_per_million_tokens: null },
     ),
@@ -553,141 +448,96 @@ test("monthly schedule pricing uses BigInt, one final ceiling, and fails closed"
   );
 });
 
-test("receipt parsing verifies the full-body hash", async () => {
-  const wire = { ...golden.receipt.body, receipt_id: golden.receipt.receipt_id };
-  assert.equal((await parseDecisionReceiptV1(wire)).receipt_id, golden.receipt.receipt_id);
-  await assert.rejects(
-    () => parseDecisionReceiptV1({ ...wire, methodology_version: "2026-07-09.2.changed" }),
-    /receipt_id/,
-  );
+function goldenWire(name: string): Record<string, unknown> {
+  const row = golden.receipts.find((item) => item.name === name)!;
+  return structuredClone({ ...row.body, receipt_id: row.receipt_id });
+}
 
-  const unsortedBody = structuredClone(golden.receipt.body);
-  (unsortedBody.evidence as unknown[]).reverse();
-  (unsortedBody.sensitivity as unknown[]).reverse();
-  assert.equal(await receiptId(unsortedBody), golden.receipt.receipt_id);
+async function rehashed(wire: Record<string, unknown>): Promise<Record<string, unknown>> {
+  const { receipt_id: _ignored, ...body } = wire;
+  return { ...body, receipt_id: await receiptId(body) };
+}
 
-  await assert.rejects(
-    () => parseDecisionReceiptV1({ ...wire, reasons: [] }),
-    /reasons/,
-  );
-  const badSensitivity = structuredClone(wire);
-  (badSensitivity.sensitivity as Array<Record<string, unknown>>)[0].selected_configuration_ids = [`config_${"b".repeat(64)}`];
-  await assert.rejects(() => parseDecisionReceiptV1(badSensitivity), /sensitivity|leave_one_family_out/);
-
-  await assert.rejects(
-    () => parseDecisionReceiptV1({ ...wire, decided_at: "2026-07-10T00:00:00Z" }),
-    /decided_at|current/,
-  );
-  const wrongCost = structuredClone(wire);
-  (wrongCost.selections as Array<Record<string, unknown>>)[0].projected_monthly_cost_microusd = 43000000;
-  await assert.rejects(() => parseDecisionReceiptV1(wrongCost), /computed monthly cost/);
-  const missingLinkEvidence = structuredClone(wire);
-  missingLinkEvidence.evidence = (missingLinkEvidence.evidence as Array<Record<string, unknown>>)
-    .filter((row) => row.kind !== "evaluation_to_offer_link");
-  await assert.rejects(() => parseDecisionReceiptV1(missingLinkEvidence), /offer-link evidence|cited evidence_id/);
-
-  const unequalCosts = structuredClone(wire);
-  (unequalCosts.selections as Array<Record<string, unknown>>).push({
-    evaluated_configuration_id: `config_${"c".repeat(64)}`,
-    serving_offer_id: "offer_public-demo-two",
-    capability_rank: 2,
-    projected_monthly_cost_microusd: 45000000,
-    zero_cache_sensitivity_projected_monthly_cost_microusd: 48000000,
-  });
-  await assert.rejects(() => parseDecisionReceiptV1(unequalCosts), /equal minimum cost/);
-
-  const duplicateConfiguration = structuredClone(wire);
-  (duplicateConfiguration.selections as Array<Record<string, unknown>>).push({
-    ...(duplicateConfiguration.selections as Array<Record<string, unknown>>)[0],
-    serving_offer_id: "offer_public-demo-two",
-  });
-  await assert.rejects(() => parseDecisionReceiptV1(duplicateConfiguration), /selections must be unique/);
-});
-
-test("receipt cost fields and reasons describe projections under declared profiles", () => {
-  const selection = (golden.receipt.body.selections as Array<Record<string, unknown>>)[0];
-  assert.equal("projected_monthly_cost_microusd" in selection, true);
-  assert.equal("zero_cache_sensitivity_projected_monthly_cost_microusd" in selection, true);
-  assert.equal(`${"estimated"}_monthly_cost_microusd` in selection, false);
-  assert.equal(`${"zero_cache_sensitivity"}_monthly_cost_microusd` in selection, false);
-  const codes = new Set(
-    (golden.receipt.body.reasons as Array<Record<string, unknown>>)
-      .map((reason) => reason.code),
-  );
-  assert.equal(codes.has("lowest_cost_under_usage_profile"), true);
-  assert.equal(codes.has("budget_fit_under_declared_profiles"), true);
-  assert.equal(codes.has(`${"lowest"}_verified_cost`), false);
-  assert.equal(codes.has(`${"budget"}_constraint_met`), false);
-});
-
-test("hard budgets cover every declared profile and differing estimated projections are caveated", async () => {
-  const uncaveated = structuredClone(golden.receipt.body);
-  for (const reason of uncaveated.reasons as Array<Record<string, unknown>>) {
-    if (["lowest_cost_under_usage_profile", "budget_fit_under_declared_profiles"].includes(String(reason.code))) {
-      reason.caveat_codes = (reason.caveat_codes as unknown[])
-        .filter((code) => code !== "cost_sensitive_to_usage");
-    }
+test("every golden receipt parses to its exact body and Python receipt id", async () => {
+  for (const row of golden.receipts) {
+    const parsed = await parseDecisionReceiptV2({ ...row.body, receipt_id: row.receipt_id });
+    const { receipt_id: identifier, ...body } = parsed;
+    assert.equal(identifier, row.receipt_id, row.name);
+    assert.equal(canonicalJson(body), canonicalJson(row.body), row.name);
+    assert.equal(await sha256Hex(row.body), row.body_sha256, row.name);
   }
-  const uncaveatedReceipt = {
-    ...uncaveated,
-    receipt_id: golden.receipt.receipt_id,
-  };
-  await assert.rejects(
-    () => parseDecisionReceiptV1(uncaveatedReceipt),
-    /cost_sensitive_to_usage/,
-  );
-
-  const overBudgetSensitivity = structuredClone(golden.receipt.body);
-  (overBudgetSensitivity.query as Record<string, unknown>).monthly_budget_microusd = 42_000_000;
-  for (const reason of overBudgetSensitivity.reasons as Array<Record<string, unknown>>) {
-    if (reason.code === "budget_fit_under_declared_profiles") reason.threshold = "42000000";
-  }
-  const overBudgetSensitivityReceipt = {
-    ...overBudgetSensitivity,
-    receipt_id: golden.receipt.receipt_id,
-  };
-  await assert.rejects(
-    () => parseDecisionReceiptV1(overBudgetSensitivityReceipt),
-    /zero-cache sensitivity.*budget/,
-  );
+  assert.deepEqual(golden.receipts.map((row) => row.name), [
+    "value_pick", "top_set_pick", "pinned_level", "substituted_effort",
+    "abstain_no_ranked_candidate", "abstain_no_eligible_offer", "abstain_stale_evidence", "abstain_not_a_model_cell",
+  ]);
 });
 
-test("capability receipts still disclose differing projected costs", async () => {
-  const capabilityBody = structuredClone(golden.receipt.body);
-  const query = capabilityBody.query as Record<string, unknown>;
-  query.objective = "capability_top_set";
-  for (const field of [
-    "provider_ids",
-    "regions",
-    "minimum_context_tokens",
-    "monthly_budget_microusd",
-  ]) delete query[field];
-  capabilityBody.reasons = (capabilityBody.reasons as Array<Record<string, unknown>>)
-    .filter((reason) => reason.code === "within_capability_top_set");
-  capabilityBody.sensitivity = (capabilityBody.sensitivity as Array<Record<string, unknown>>)
-    .filter((row) => row.scenario === "leave_one_family_out");
-  capabilityBody.freshness = {
-    observed_at: "2026-07-09T00:00:00Z",
-    expires_at: "2026-07-10T00:00:00Z",
-  };
+test("receipt parsing verifies the full-body hash and keeps selection order", async () => {
+  const wire = goldenWire("value_pick");
+  await assert.rejects(() => parseDecisionReceiptV2({ ...wire, decided_at: "2026-11-01T09:00:01Z" }), /receipt_id/);
+  const unsorted = structuredClone(wire);
+  (unsorted.exclusions as unknown[]).reverse();
+  (unsorted.snapshot_ids as unknown[]).reverse();
+  assert.equal((await parseDecisionReceiptV2(unsorted)).receipt_id, wire.receipt_id);
+  const reordered = structuredClone(wire);
+  (reordered.selections as unknown[]).reverse();
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(reordered)), /cheapest/);
+});
 
-  const uncaveatedCapabilityReceipt = {
-    ...capabilityBody,
-    receipt_id: golden.receipt.receipt_id,
-  };
-  await assert.rejects(
-    () => parseDecisionReceiptV1(uncaveatedCapabilityReceipt),
-    /cost_sensitive_to_usage/,
-  );
+test("receipt semantics match the Python validator", async () => {
+  const pick = goldenWire("value_pick");
+  const unpriced = structuredClone(pick);
+  const first = (unpriced.selections as Array<Record<string, unknown>>)[1];
+  first.projected_cost_microusd = null;
+  first.effort_multiplier = null;
+  first.caveats = [{ code: "cost_unmeasured" }];
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(unpriced)), /priced configurations only/);
 
-  (capabilityBody.reasons as Array<Record<string, unknown>>)[0].caveat_codes = [
-    "cost_sensitive_to_usage",
-  ];
-  const receipt = await parseDecisionReceiptV1({
-    ...capabilityBody,
-    receipt_id: await receiptId(capabilityBody),
-  });
-  assert.deepEqual(receipt.reasons[0].caveat_codes, ["cost_sensitive_to_usage"]);
+  const noCaveat = structuredClone(unpriced);
+  (noCaveat.selections as Array<Record<string, unknown>>)[1].caveats = [];
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(noCaveat)), /cost_unmeasured caveat/);
+
+  const badMultiplier = structuredClone(pick);
+  (badMultiplier.selections as Array<Record<string, unknown>>)[0].effort_multiplier = { multiplier_ppm: 2, source: "comparison_level" };
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(badMultiplier)), /exactly 1/);
+
+  const pinned = structuredClone(pick);
+  (pinned.query as Record<string, unknown>).reasoning_effort = "medium";
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(pinned)), /pinned reasoning_effort/);
+
+  const wrongUsage = structuredClone(pick);
+  (wrongUsage.usage_profile as Record<string, unknown>).basis = "caller";
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(wrongUsage)), /echo/);
+
+  const abstainWithPick = structuredClone(pick);
+  abstainWithPick.outcome = "abstain";
+  abstainWithPick.abstain_reasons = ["stale_evidence"];
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(abstainWithPick)), /abstain carries no selection/);
+
+  const v1Reason = goldenWire("abstain_stale_evidence");
+  v1Reason.abstain_reasons = ["evidence_stale"];
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(v1Reason)), /abstain_reasons item/);
+
+  const topSet = goldenWire("top_set_pick");
+  (topSet.selections as unknown[]).reverse();
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(topSet)), /highest-scoring/);
+
+  const substituted = goldenWire("substituted_effort");
+  ((substituted.selections as Array<Record<string, unknown>>)[0].caveats as Array<Record<string, unknown>>)[0].measured_effort = "medium";
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(substituted)), /other than the selection's/);
+
+  const caller = goldenWire("pinned_level");
+  assert.equal((await parseDecisionReceiptV2(caller)).usage_profile.basis, "caller");
+  assert.deepEqual((await parseDecisionReceiptV2(pick)).usage_profile.profile, DEFAULT_AGENT_TASK_MIX);
+});
+
+test("via_not_supported is a public problem code with a golden example", () => {
+  const problem = golden.problems.find((row) => row.name === "via_not_supported")!;
+  assert.equal(problem.problem.code, "via_not_supported");
+  assert.equal(problem.problem.status, 422);
+  assert.deepEqual(problem.problem.supported_via, [...SUPPORTED_VIA]);
+  assert.equal(resolvedVia(parseDecisionQueryV2(problem.query)), "anthropic");
+  assert.equal((SUPPORTED_VIA as readonly string[]).includes("anthropic"), false);
 });
 
 test("snapshot-set IDs hash one normalized float-free descriptor", async () => {
@@ -1202,7 +1052,7 @@ function previewEligibility() {
 test("Draft 2020 schemas enforce the portable semantic shapes they can express", () => {
   const names = [
     "source-artifact", "run-provenance", "observation", "configuration-passport",
-    "evaluated-configuration", "serving-offer", "evaluation-to-offer-link", "decision-query", "decision-receipt",
+    "evaluated-configuration", "serving-offer", "decision-query", "decision-receipt", "problem",
   ];
   const schemas = names.map((name) => JSON.parse(
     readFileSync(new URL(`../../../schemas/${name}.schema.json`, import.meta.url), "utf8"),
@@ -1216,28 +1066,31 @@ test("Draft 2020 schemas enforce the portable semantic shapes they can express",
 
   const queryValidator = ajv.getSchema("https://evalrank.ai/schemas/decision-query.schema.json")!;
   const receiptValidator = ajv.getSchema("https://evalrank.ai/schemas/decision-receipt.schema.json")!;
+  const problemValidator = ajv.getSchema("https://evalrank.ai/schemas/problem.schema.json")!;
   const observationValidator = ajv.getSchema("https://evalrank.ai/schemas/observation.schema.json")!;
   const provenanceValidator = ajv.getSchema("https://evalrank.ai/schemas/run-provenance.schema.json")!;
   const offerValidator = ajv.getSchema("https://evalrank.ai/schemas/serving-offer.schema.json")!;
-  const linkValidator = ajv.getSchema("https://evalrank.ai/schemas/evaluation-to-offer-link.schema.json")!;
   assert.equal(queryValidator(golden.query.input), true, ajv.errorsText(queryValidator.errors));
-  assert.equal(
-    receiptValidator({ ...golden.receipt.body, receipt_id: golden.receipt.receipt_id }),
-    true,
-    ajv.errorsText(receiptValidator.errors),
-  );
+  for (const row of golden.receipts) {
+    assert.equal(
+      receiptValidator({ ...row.body, receipt_id: row.receipt_id }),
+      true,
+      `${row.name}: ${ajv.errorsText(receiptValidator.errors)}`,
+    );
+  }
+  for (const row of golden.problems) {
+    assert.equal(problemValidator(row.problem), true, ajv.errorsText(problemValidator.errors));
+    assert.equal(queryValidator(row.query), true, ajv.errorsText(queryValidator.errors));
+  }
+  assert.equal(queryValidator({ schema_version: "2", cell_id: "writing", objective: "lowest_cost_within_top_set" }), true);
+  for (const row of golden.rejection_vectors.slice(2)) {
+    assert.equal(queryValidator(row.value), false, row.name);
+  }
 
   const partialUsage = structuredClone(golden.query.input);
   delete (partialUsage.usage_profile as Record<string, unknown>).output_tokens;
   assert.equal(queryValidator(partialUsage), false);
-  const missingZeroCache = structuredClone(golden.query.input);
-  delete missingZeroCache.zero_cache_sensitivity_usage_profile;
-  assert.equal(queryValidator(missingZeroCache), false);
-  const measured = structuredClone(golden.query.input);
-  (measured.usage_profile as Record<string, unknown>).basis = "measured";
-  delete measured.zero_cache_sensitivity_usage_profile;
-  assert.equal(queryValidator(measured), true, ajv.errorsText(queryValidator.errors));
-  const zeroUsage = structuredClone(measured);
+  const zeroUsage = structuredClone(golden.query.input);
   zeroUsage.usage_profile = {
     basis: "measured",
     uncached_input_tokens: 0,
@@ -1250,13 +1103,57 @@ test("Draft 2020 schemas enforce the portable semantic shapes they can express",
   (zeroUsage.usage_profile as Record<string, unknown>).cache_storage_token_seconds = 1;
   assert.equal(queryValidator(zeroUsage), false);
 
-  const evidence = golden.receipt.body.evidence as Array<Record<string, unknown>>;
-  const offer = structuredClone(evidence.find((row) => row.kind === "serving_offer")!.serving_offer);
-  const link = structuredClone(evidence.find((row) => row.kind === "evaluation_to_offer_link")!.evaluation_to_offer_link);
+  const pick = golden.receipts.find((row) => row.name === "value_pick")!;
+  const wire = (): Record<string, unknown> => structuredClone({ ...pick.body, receipt_id: pick.receipt_id });
+  const pickWithReason = wire();
+  pickWithReason.abstain_reasons = ["stale_evidence"];
+  assert.equal(receiptValidator(pickWithReason), false);
+  const emptyPick = wire();
+  emptyPick.selections = [];
+  assert.equal(receiptValidator(emptyPick), false);
+  const floatRatio = wire();
+  (floatRatio.selections as Array<Record<string, unknown>>)[0].capability_ratio_ppm = 0.985;
+  assert.equal(receiptValidator(floatRatio), false);
+  const omittedEffort = wire();
+  delete (omittedEffort.selections as Array<Record<string, unknown>>)[0].reasoning_effort;
+  assert.equal(receiptValidator(omittedEffort), false);
+  const v1Field = wire();
+  v1Field.publication_snapshot = {};
+  assert.equal(receiptValidator(v1Field), false);
+
+  const offer = {
+    object: "serving_offer",
+    schema_version: "1",
+    serving_offer_id: "offer_public-demo",
+    provider_id: "provider-public",
+    sku: "public-demo",
+    region: "us-west",
+    context: {
+      context_window_tokens: 128000,
+      observed_at: "2026-07-09T00:00:00Z",
+      expires_at: "2026-07-10T00:00:00Z",
+      source_artifact_id: `artifact_${"a".repeat(64)}`,
+    },
+    availability: {
+      status: "available",
+      observed_at: "2026-07-09T00:00:00Z",
+      expires_at: "2026-07-10T00:00:00Z",
+      source_artifact_id: `artifact_${"a".repeat(64)}`,
+    },
+    pricing: {
+      uncached_input_microusd_per_million_tokens: 1,
+      cached_read_microusd_per_million_tokens: null,
+      output_microusd_per_million_tokens: 1,
+      cache_write_rates: [],
+      cache_storage_microusd_per_million_token_hours: null,
+      observed_at: "2026-07-09T00:00:00Z",
+      effective_at: "2026-07-09T00:00:00Z",
+      expires_at: "2026-07-10T00:00:00Z",
+      source_artifact_id: `artifact_${"a".repeat(64)}`,
+    },
+  };
   assert.equal(offerValidator(offer), true, ajv.errorsText(offerValidator.errors));
-  assert.equal(linkValidator(link), true, ajv.errorsText(linkValidator.errors));
-  delete (link as Record<string, unknown>).evidence_basis;
-  assert.equal(linkValidator(link), false);
+  assert.equal(parseServingOfferV1(offer).serving_offer_id, "offer_public-demo");
   const legacyPricing = structuredClone(offer) as Record<string, unknown>;
   legacyPricing.pricing = {
     input_microusd_per_million_tokens: 1,
@@ -1266,68 +1163,6 @@ test("Draft 2020 schemas enforce the portable semantic shapes they can express",
     source_artifact_id: `artifact_${"a".repeat(64)}`,
   };
   assert.equal(offerValidator(legacyPricing), false);
-
-  const emptyReasons = { ...golden.receipt.body, receipt_id: golden.receipt.receipt_id, reasons: [] };
-  assert.equal(receiptValidator(emptyReasons), false);
-  const removedCostVocabulary = structuredClone({
-    ...golden.receipt.body,
-    receipt_id: golden.receipt.receipt_id,
-  });
-  const removedSelection = (
-    removedCostVocabulary.selections as Array<Record<string, unknown>>
-  )[0];
-  removedSelection[`${"estimated"}_monthly_cost_microusd`] =
-    removedSelection.projected_monthly_cost_microusd;
-  delete removedSelection.projected_monthly_cost_microusd;
-  assert.equal(receiptValidator(removedCostVocabulary), false);
-  const missingLeaveOneOut = structuredClone({ ...golden.receipt.body, receipt_id: golden.receipt.receipt_id });
-  missingLeaveOneOut.sensitivity = (missingLeaveOneOut.sensitivity as Array<Record<string, unknown>>)
-    .filter((row) => row.scenario !== "leave_one_family_out");
-  assert.equal(receiptValidator(missingLeaveOneOut), false);
-
-  const honestCostAbstention = structuredClone({
-    ...golden.receipt.body,
-    receipt_id: golden.receipt.receipt_id,
-  });
-  honestCostAbstention.outcome = "abstain";
-  honestCostAbstention.selections = [];
-  honestCostAbstention.exclusions = [];
-  honestCostAbstention.reasons = [];
-  honestCostAbstention.sensitivity = [];
-  honestCostAbstention.evidence = [];
-  honestCostAbstention.abstention_reason = "no_eligible_serving_offer";
-  assert.equal(
-    receiptValidator(honestCostAbstention),
-    true,
-    ajv.errorsText(receiptValidator.errors),
-  );
-
-  const invalidComparisonThreshold = structuredClone({
-    ...golden.receipt.body,
-    receipt_id: golden.receipt.receipt_id,
-  });
-  const contextReason = (invalidComparisonThreshold.reasons as Array<Record<string, unknown>>)
-    .find((row) => row.code === "context_requirement_met")!;
-  contextReason.threshold = null;
-  assert.equal(receiptValidator(invalidComparisonThreshold), false);
-
-  const invalidStatus = structuredClone({
-    ...honestCostAbstention,
-    reasons: [{
-      reason_type: "avoid_when",
-      code: "insufficient_evidence",
-      subject_id: `config_${"a".repeat(64)}`,
-      predicate: "unavailable",
-      axis: "capability",
-      observed_value: "invented-status",
-      unit: "status",
-      threshold: null,
-      evidence_ids: ["evidence-observation"],
-      freshness: honestCostAbstention.freshness,
-      caveat_codes: [],
-    }],
-  });
-  assert.equal(receiptValidator(invalidStatus), false);
 
   const provenance = {
     object: "run_provenance",

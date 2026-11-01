@@ -12,7 +12,7 @@ Package metadata:
 
 ## Public Surface
 
-- `DecisionQueryV1` and `DecisionReceiptV1` provide the closed semantic query and content-addressed receipt contracts.
+- `DecisionQueryV2` and `DecisionReceiptV2` provide the closed semantic query and content-addressed receipt contracts: a `pick` (ordered selections, each callable as returned with `model_id`, `reasoning_effort`, and `api`) or an `abstain` with reasons. `resolvedVia`, `SUPPORTED_VIA`, `DEFAULT_AGENT_TASK_MIX`, and `projectedCostMicrousd` mirror the Python core.
 - `BenchmarkHealth`, `Leaderboard`, `ExplorerEvidenceView`, `ExplorerViewIdentity`, `EntityDetail`, and `CompareResult` type launch reads, immutable family/feed selectors, and truthful evidence snapshot identity.
 - `EvalRankClient` covers `useCases`, `benchmarkHealth`, `leaderboard`, `entity`, `compare`, `decide`, and `decisionReceipt`.
 - Read methods verify benchmark-health counts/status, leaderboard snapshots, entity details, and comparisons; decision methods validate the query and receipt hash.
@@ -25,9 +25,9 @@ There are no recommendation or scoring-stage client methods or response aliases.
 ## Example
 
 ```ts
-import { EvalRankClient, type DecisionQueryV1 } from "@evalrank/sdk";
+import { EvalRankClient, type DecisionQueryV2 } from "@evalrank/sdk";
 
-const query: DecisionQueryV1 = JSON.parse(await Bun.file("query.json").text());
+const query: DecisionQueryV2 = JSON.parse(await Bun.file("query.json").text());
 const client = new EvalRankClient("https://evalrank.example");
 const receipt = await client.decide(query, { share: true });
 const replayed = await client.decisionReceipt(receipt.receipt_id);

@@ -233,151 +233,118 @@ export interface ServingOfferV1 {
   pricing: PricingScheduleFactV1;
 }
 
-export interface EvaluationToOfferLinkV1 {
-  object: "evaluation_to_offer_link";
-  schema_version: "1";
-  evaluation_to_offer_link_id: string;
-  evaluated_configuration_id: string;
-  serving_offer_id: string;
-  compatibility: "exact" | "incompatible" | "unresolved";
-  evidence_basis: "benchmark_exact" | "provider_attested" | "operator_reviewed" | "inferred";
-  evidence_source_artifact_id: string;
-  observed_at: string;
-  expires_at: string;
-  review_state: "pending" | "approved" | "rejected";
-}
+export const REASONING_EFFORTS = ["none", "minimal", "low", "medium", "high", "xhigh", "max"] as const;
+export const DECISION_OBJECTIVES = ["lowest_cost_within_top_set", "capability_top_set"] as const;
+export const DECISION_APIS = ["chat_completions", "responses"] as const;
+export const ABSTAIN_REASONS = ["no_ranked_candidate", "no_eligible_offer", "stale_evidence", "not_a_model_cell"] as const;
+export const EXCLUSION_CODES = [
+  "ambiguous_identity",
+  "effort_not_accepted",
+  "api_not_supported",
+  "no_serving_offer",
+  "cost_unmeasured",
+  "effort_gap_too_large",
+  "constraints_not_met",
+] as const;
+export const LOCK_STATUSES = ["admitted", "held", "rejected", "unlocked"] as const;
+/** Call surfaces with a probed effort vocabulary; any other `via` is a 422 `via_not_supported`. */
+export const SUPPORTED_VIA = ["openai", "openrouter"] as const;
+/** The usage profile a query without `usage_profile` is priced at: cache-heavy agent traffic. */
+export const DEFAULT_AGENT_TASK_MIX: UsageProfileV1 = Object.freeze({
+  basis: "estimated",
+  uncached_input_tokens: 1_000,
+  cached_read_tokens: 8_000,
+  output_tokens: 500,
+  cache_writes: [],
+  cache_storage_token_seconds: 0,
+}) as UsageProfileV1;
 
-export interface DecisionQueryV1 {
-  object: "decision_query";
-  schema_version: "1";
+export type ReasoningEffort = (typeof REASONING_EFFORTS)[number];
+export type DecisionObjective = (typeof DECISION_OBJECTIVES)[number];
+export type DecisionApi = (typeof DECISION_APIS)[number];
+export type AbstainReasonV2 = (typeof ABSTAIN_REASONS)[number];
+
+export interface DecisionQueryV2 {
+  object?: "decision_query";
+  schema_version: "2";
   cell_id: string;
-  ranking_group_id: string;
-  entity_kind: EntityKind;
-  interaction_policy: InteractionPolicy;
-  configuration_passport_class: ConfigurationPassportClass;
-  objective: "capability_top_set" | "lowest_cost_within_top_set";
+  objective: DecisionObjective;
+  via?: string;
   provider_ids?: string[];
+  api?: DecisionApi;
+  reasoning_effort?: ReasoningEffort;
   regions?: string[];
   minimum_context_tokens?: number;
   usage_profile?: UsageProfileV1;
-  zero_cache_sensitivity_usage_profile?: UsageProfileV1;
-  monthly_budget_microusd?: number;
 }
 
-export interface PublicationSnapshotRefV1 {
-  publication_snapshot_id: string;
-  ranking_group_id: string;
-  manifest_version: string;
-  published_at: string;
+export interface DecisionFamilyV2 {
+  family_id: string;
+  lock_status: (typeof LOCK_STATUSES)[number];
+  weight_ppm: number;
+  stale_at: string | null;
 }
 
-export interface DecisionSelectionV1 {
-  evaluated_configuration_id: string;
-  serving_offer_id: string | null;
-  capability_rank: number;
-  projected_monthly_cost_microusd: number | null;
-  zero_cache_sensitivity_projected_monthly_cost_microusd: number | null;
+export interface DecisionPriceV2 {
+  input_microusd_per_million: number | null;
+  cached_input_microusd_per_million: number | null;
+  output_microusd_per_million: number | null;
 }
 
-export interface DecisionExclusionV1 {
-  evaluated_configuration_id: string;
-  code:
-    | "constraints_not_met"
-    | "not_in_capability_top_set"
-    | "serving_offer_unverified"
-    | "evidence_stale"
-    | "incompatible_configuration";
-  evidence_ids: string[];
+export interface EffortMultiplierV2 {
+  multiplier_ppm: number;
+  /** Cost family id, or `comparison_level` for exactly 1. */
+  source: string;
 }
 
-export interface DecisionFreshnessV1 {
-  observed_at: string;
-  expires_at: string;
+export type DecisionCaveatV2 =
+  | { code: "effort_substituted"; measured_effort: ReasoningEffort; gap_ppm: number }
+  | { code: "cost_unmeasured" };
+
+export interface DecisionSelectionV2 {
+  /** Host-native id for the query's via: `openai/gpt-6-sol` on openrouter, `gpt-6-sol` on openai. */
+  model_id: string;
+  display_name: string;
+  provider_id: string;
+  serving_offer_id: string;
+  /** Always explicit: send it as returned. */
+  reasoning_effort: ReasoningEffort;
+  api: DecisionApi;
+  capability_ratio_ppm: number;
+  family_coverage: number;
+  price: DecisionPriceV2;
+  effort_multiplier: EffortMultiplierV2 | null;
+  projected_cost_microusd: number | null;
+  latency_p50_ms: number | null;
+  caveats: DecisionCaveatV2[];
 }
 
-export interface DecisionReasonV1 {
-  reason_type: "best_when" | "avoid_when";
-  code:
-    | "strongest_capability_evidence"
-    | "within_capability_top_set"
-    | "lowest_cost_under_usage_profile"
-    | "budget_fit_under_declared_profiles"
-    | "provider_constraint_match"
-    | "region_constraint_match"
-    | "context_requirement_met"
-    | "insufficient_evidence"
-    | "serving_offer_unverified"
-    | "budget_exceeded"
-    | "stale_evidence";
-  subject_id: string;
-  predicate: "eq" | "ne" | "lt" | "lte" | "gt" | "gte" | "within_top_set" | "unavailable";
-  axis: "capability" | "monthly_cost" | "context" | "availability" | "freshness" | "provider" | "region";
-  observed_value: string;
-  unit: "probability" | "score" | "microusd_per_month" | "tokens" | "status" | "timestamp" | "provider_id" | "region_id";
-  threshold: string | null;
-  evidence_ids: string[];
-  freshness: DecisionFreshnessV1;
-  caveat_codes: Array<
-    | "provider_offer_link_required"
-    | "limited_availability"
-    | "evidence_near_expiry"
-    | "incomplete_family_coverage"
-    | "cost_sensitive_to_usage"
-  >;
+export interface DecisionExclusionV2 {
+  model_key: string;
+  code: (typeof EXCLUSION_CODES)[number];
+  reasoning_effort?: ReasoningEffort;
+  detail?: string;
 }
 
-export interface DecisionSensitivityV1 {
-  scenario: "price_plus_20_percent" | "price_minus_20_percent" | "usage_double" | "leave_one_family_out";
-  stable: boolean;
-  selected_configuration_ids: string[];
+export interface DecisionUsageV2 {
+  basis: "caller" | "default_agent_task_mix";
+  profile: UsageProfileV1;
 }
 
-export interface ObservationEvidenceV1 {
-  kind: "observation";
-  evidence_id: string;
-  observation: ObservationV1;
-}
-
-export interface ServingOfferEvidenceV1 {
-  kind: "serving_offer";
-  evidence_id: string;
-  serving_offer: ServingOfferV1;
-}
-
-export interface EvaluationToOfferLinkEvidenceV1 {
-  kind: "evaluation_to_offer_link";
-  evidence_id: string;
-  evaluation_to_offer_link: EvaluationToOfferLinkV1;
-}
-
-export type DecisionEvidenceV1 =
-  | ObservationEvidenceV1
-  | ServingOfferEvidenceV1
-  | EvaluationToOfferLinkEvidenceV1;
-
-export type AbstentionReasonV1 =
-  | "insufficient_comparable_evidence"
-  | "no_eligible_serving_offer"
-  | "constraints_eliminate_all_candidates"
-  | "evidence_stale"
-  | "methodology_unavailable";
-
-export interface DecisionReceiptV1 {
+/** `pick`: `selections[0]` is the pick and the rest is the band in order. `abstain`: no selection, one or more reasons. */
+export interface DecisionReceiptV2 {
   object: "decision_receipt";
-  schema_version: "1";
+  schema_version: "2";
   receipt_id: string;
-  query: DecisionQueryV1;
-  publication_snapshot: PublicationSnapshotRefV1;
-  methodology_version: string;
+  query: DecisionQueryV2;
   decided_at: string;
-  outcome: "top_set" | "abstain";
-  selections: DecisionSelectionV1[];
-  exclusions: DecisionExclusionV1[];
-  reasons: DecisionReasonV1[];
-  sensitivity: DecisionSensitivityV1[];
-  evidence: DecisionEvidenceV1[];
-  freshness: DecisionFreshnessV1;
-  abstention_reason: AbstentionReasonV1 | null;
+  outcome: "pick" | "abstain";
+  snapshot_ids: string[];
+  families: DecisionFamilyV2[];
+  selections: DecisionSelectionV2[];
+  exclusions: DecisionExclusionV2[];
+  usage_profile: DecisionUsageV2;
+  abstain_reasons: AbstainReasonV2[];
 }
 
 export interface SnapshotSetDescriptorV1 {
@@ -1249,171 +1216,50 @@ export function parseServingOfferV1(value: unknown): ServingOfferV1 {
   };
 }
 
-export function parseEvaluationToOfferLinkV1(value: unknown): EvaluationToOfferLinkV1 {
-  const payload = closed(value, [
-    "object", "schema_version", "evaluation_to_offer_link_id", "evaluated_configuration_id",
-    "serving_offer_id", "compatibility", "evidence_basis", "evidence_source_artifact_id", "observed_at", "expires_at", "review_state",
-  ]);
-  envelope(payload, "evaluation_to_offer_link");
-  const observed = timestamp(payload.observed_at, "observed_at");
-  const expires = timestamp(payload.expires_at, "expires_at");
-  if (expires <= observed) {
-    throw new TypeError("expires_at must be after observed_at");
-  }
-  return {
-    object: "evaluation_to_offer_link",
-    schema_version: "1",
-    evaluation_to_offer_link_id: prefixString(payload.evaluation_to_offer_link_id, "link_", "evaluation_to_offer_link_id"),
-    evaluated_configuration_id: patternString(payload.evaluated_configuration_id, configurationIdPattern, "evaluated_configuration_id"),
-    serving_offer_id: prefixString(payload.serving_offer_id, "offer_", "serving_offer_id"),
-    compatibility: enumValue(payload.compatibility, ["exact", "incompatible", "unresolved"] as const, "compatibility"),
-    evidence_basis: enumValue(
-      payload.evidence_basis,
-      ["benchmark_exact", "provider_attested", "operator_reviewed", "inferred"] as const,
-      "evidence_basis",
-    ),
-    evidence_source_artifact_id: patternString(payload.evidence_source_artifact_id, artifactIdPattern, "evidence_source_artifact_id"),
-    observed_at: observed,
-    expires_at: expires,
-    review_state: enumValue(payload.review_state, ["pending", "approved", "rejected"] as const, "review_state"),
-  };
-}
+const queryOptional = [
+  "via", "provider_ids", "api", "reasoning_effort", "regions", "minimum_context_tokens", "usage_profile",
+] as const;
+const ppm = 1_000_000;
 
-export function isEvaluationToOfferLinkEligible(link: unknown, asOf: unknown): boolean {
-  try {
-    return normalizedLinkIsEligible(
-      parseEvaluationToOfferLinkV1(link),
-      timestamp(asOf, "as_of"),
-    );
-  } catch {
-    return false;
-  }
-}
-
-export function isServingOfferDecisionEligible(
-  offer: unknown,
-  link: unknown,
-  asOf: unknown,
-): boolean {
-  try {
-    const normalizedOffer = parseServingOfferV1(offer);
-    const normalizedLink = parseEvaluationToOfferLinkV1(link);
-    const instant = timestamp(asOf, "as_of");
-    if (
-      normalizedLink.serving_offer_id !== normalizedOffer.serving_offer_id
-      || normalizedOffer.availability.status !== "available"
-      || !normalizedLinkIsEligible(normalizedLink, instant)
-    ) return false;
-    return [normalizedOffer.context, normalizedOffer.availability].every(
-      (fact) => fact.observed_at <= instant && instant < fact.expires_at,
-    ) && normalizedOffer.pricing.observed_at <= instant
-      && normalizedOffer.pricing.effective_at <= instant
-      && instant < normalizedOffer.pricing.expires_at;
-  } catch {
-    return false;
-  }
-}
-
-function normalizedLinkIsEligible(
-  link: EvaluationToOfferLinkV1,
-  instant: string,
-): boolean {
-  return link.compatibility === "exact"
-    && link.review_state === "approved"
-    && link.evidence_basis !== "inferred"
-    && link.observed_at <= instant
-    && instant < link.expires_at;
-}
-
-export function parseDecisionQueryV1(value: unknown): DecisionQueryV1 {
-  const required = [
-    "object", "schema_version", "cell_id", "ranking_group_id", "entity_kind", "interaction_policy",
-    "configuration_passport_class", "objective",
-  ];
-  const optional = [
-    "provider_ids", "regions", "minimum_context_tokens", "usage_profile",
-    "zero_cache_sensitivity_usage_profile", "monthly_budget_microusd",
-  ];
-  const payload = closed(value, required, optional);
-  envelope(payload, "decision_query");
-  for (const name of optional) {
+/** Validate and normalize a query: only sent fields survive, set filters sort, `object` is always present. */
+export function parseDecisionQueryV2(value: unknown): DecisionQueryV2 {
+  const payload = closed(value, ["schema_version", "cell_id", "objective"], ["object", ...queryOptional]);
+  envelope({ object: "decision_query", ...payload }, "decision_query", "2");
+  for (const name of queryOptional) {
     if (name in payload && payload[name] === null) {
       throw new TypeError(`${name} must not be null; omit it instead`);
     }
   }
-  const query: DecisionQueryV1 = {
+  const query: DecisionQueryV2 = {
     object: "decision_query",
-    schema_version: "1",
+    schema_version: "2",
     cell_id: nonEmptyString(payload.cell_id, "cell_id"),
-    ranking_group_id: nonEmptyString(payload.ranking_group_id, "ranking_group_id"),
-    ...parseIdentity(payload),
-    objective: enumValue(payload.objective, ["capability_top_set", "lowest_cost_within_top_set"] as const, "objective"),
+    objective: enumValue(payload.objective, DECISION_OBJECTIVES, "objective"),
   };
+  if ("via" in payload) query.via = patternString(payload.via, /^[a-z0-9][a-z0-9-]*$/, "via");
   if ("provider_ids" in payload) query.provider_ids = normalizedStringSet(payload.provider_ids, "provider_ids");
+  if ("api" in payload) query.api = enumValue(payload.api, DECISION_APIS, "api");
+  if ("reasoning_effort" in payload) query.reasoning_effort = enumValue(payload.reasoning_effort, REASONING_EFFORTS, "reasoning_effort");
   if ("regions" in payload) query.regions = normalizedStringSet(payload.regions, "regions");
   if ("minimum_context_tokens" in payload) query.minimum_context_tokens = safeInteger(payload.minimum_context_tokens, "minimum_context_tokens", 1);
   if ("usage_profile" in payload) query.usage_profile = parseUsageProfileV1(payload.usage_profile);
-  if ("zero_cache_sensitivity_usage_profile" in payload) {
-    query.zero_cache_sensitivity_usage_profile = parseUsageProfileV1(payload.zero_cache_sensitivity_usage_profile);
-  }
-  if ("monthly_budget_microusd" in payload) query.monthly_budget_microusd = safeInteger(payload.monthly_budget_microusd, "monthly_budget_microusd", 0);
-  if (query.objective === "lowest_cost_within_top_set" && query.usage_profile === undefined) {
-    throw new TypeError("lowest_cost_within_top_set requires usage_profile");
-  }
-  if (query.monthly_budget_microusd !== undefined && query.usage_profile === undefined) {
-    throw new TypeError("monthly_budget_microusd requires usage_profile");
-  }
-  validateZeroCacheSensitivity(query);
   return query;
 }
 
-function validateZeroCacheSensitivity(query: DecisionQueryV1): void {
-  const usage = query.usage_profile;
-  const sensitivity = query.zero_cache_sensitivity_usage_profile;
-  const hasCacheUsage = usage !== undefined && (
-    usage.cached_read_tokens !== 0
-    || usage.cache_writes.length !== 0
-    || usage.cache_storage_token_seconds !== 0
-  );
-  const required = usage?.basis === "estimated" && hasCacheUsage;
-  if (required && sensitivity === undefined) {
-    throw new TypeError("estimated cached usage requires zero_cache_sensitivity_usage_profile");
-  }
-  if (!required && sensitivity !== undefined) {
-    const basis = usage?.basis === "measured" ? "measured" : "uncached";
-    throw new TypeError(`zero_cache_sensitivity_usage_profile is not allowed for ${basis} usage`);
-  }
-  if (usage === undefined || sensitivity === undefined) return;
-  if (sensitivity.basis !== "estimated") {
-    throw new TypeError("zero_cache_sensitivity_usage_profile must be estimated");
-  }
-  if (
-    sensitivity.cached_read_tokens !== 0
-    || sensitivity.cache_writes.length !== 0
-    || sensitivity.cache_storage_token_seconds !== 0
-  ) {
-    throw new TypeError("zero_cache_sensitivity_usage_profile must contain no cache usage");
-  }
-  if (totalInputTokens(sensitivity) !== totalInputTokens(usage)) {
-    throw new TypeError("zero_cache_sensitivity_usage_profile must preserve total input tokens");
-  }
-  if (sensitivity.output_tokens !== usage.output_tokens) {
-    throw new TypeError("zero_cache_sensitivity_usage_profile must preserve output tokens");
-  }
+/** The call surface: the sent `via`, else openai for `provider_ids == ["openai"]`, else openrouter. */
+export function resolvedVia(query: DecisionQueryV2): string {
+  if (query.via !== undefined) return query.via;
+  return query.provider_ids?.length === 1 && query.provider_ids[0] === "openai" ? "openai" : "openrouter";
 }
 
-function totalInputTokens(usage: UsageProfileV1): bigint {
-  return BigInt(usage.uncached_input_tokens)
-    + BigInt(usage.cached_read_tokens)
-    + usage.cache_writes.reduce((total, row) => total + BigInt(row.tokens), 0n);
+export function decisionUsageFor(query: DecisionQueryV2): DecisionUsageV2 {
+  return query.usage_profile === undefined
+    ? { basis: "default_agent_task_mix", profile: parseUsageProfileV1(DEFAULT_AGENT_TASK_MIX) }
+    : { basis: "caller", profile: query.usage_profile };
 }
 
-export async function parseDecisionReceiptV1(value: unknown): Promise<DecisionReceiptV1> {
-  const payload = closed(value, [
-    "object", "schema_version", "receipt_id", "query", "publication_snapshot", "methodology_version", "decided_at",
-    "outcome", "selections", "exclusions", "reasons", "sensitivity", "evidence", "freshness", "abstention_reason",
-  ]);
-  envelope(payload, "decision_receipt");
+export async function parseDecisionReceiptV2(value: unknown): Promise<DecisionReceiptV2> {
+  const payload = closed(value, ["receipt_id", ...receiptBodyFields]);
   const identifier = patternString(payload.receipt_id, /^receipt_[0-9a-f]{64}$/, "receipt_id");
   const { receipt_id: _ignored, ...rawBody } = payload;
   const body = normalizeReceiptBody(rawBody);
@@ -1423,39 +1269,178 @@ export async function parseDecisionReceiptV1(value: unknown): Promise<DecisionRe
   return { receipt_id: identifier, ...body };
 }
 
-function normalizeReceiptBody(value: unknown): Omit<DecisionReceiptV1, "receipt_id"> {
-  const payload = closed(value, [
-    "object", "schema_version", "query", "publication_snapshot", "methodology_version", "decided_at",
-    "outcome", "selections", "exclusions", "reasons", "sensitivity", "evidence", "freshness", "abstention_reason",
-  ]);
-  envelope(payload, "decision_receipt");
-  const body: Omit<DecisionReceiptV1, "receipt_id"> = {
-    object: "decision_receipt",
-    schema_version: "1",
-    query: parseDecisionQueryV1(payload.query),
-    publication_snapshot: parsePublicationSnapshot(payload.publication_snapshot),
-    methodology_version: patternString(payload.methodology_version, /^\d{4}-\d{2}-\d{2}\.[1-9]\d*\.([a-z0-9]+-)*[a-z0-9]+$/, "methodology_version"),
-    decided_at: timestamp(payload.decided_at, "decided_at"),
-    outcome: enumValue(payload.outcome, ["top_set", "abstain"] as const, "outcome"),
-    selections: normalizeRecords(array(payload.selections, "selections").map(parseSelection), (row) => [row.evaluated_configuration_id], "selections"),
-    exclusions: normalizeRecords(array(payload.exclusions, "exclusions").map(parseExclusion), (row) => [row.evaluated_configuration_id, row.code], "exclusions"),
-    reasons: normalizeRecords(array(payload.reasons, "reasons").map(parseReason), (row) => [row.reason_type, row.code, row.subject_id, row.axis], "reasons"),
-    sensitivity: normalizeRecords(array(payload.sensitivity, "sensitivity").map(parseSensitivity), (row) => [row.scenario], "sensitivity"),
-    evidence: normalizeRecords(array(payload.evidence, "evidence").map(parseEvidence), (row) => [row.evidence_id], "evidence"),
-    freshness: parseFreshness(payload.freshness),
-    abstention_reason: payload.abstention_reason === null
-      ? null
-      : enumValue(payload.abstention_reason, [
-          "insufficient_comparable_evidence", "no_eligible_serving_offer", "constraints_eliminate_all_candidates",
-          "evidence_stale", "methodology_unavailable",
-        ] as const, "abstention_reason"),
-  };
-  const evidenceTargets = body.evidence.map(evidenceTarget);
-  if (new Set(evidenceTargets).size !== evidenceTargets.length) {
-    throw new TypeError("evidence targets must be unique");
+const receiptBodyFields = [
+  "object", "schema_version", "query", "decided_at", "outcome", "snapshot_ids", "families",
+  "selections", "exclusions", "usage_profile", "abstain_reasons",
+];
+
+function normalizeReceiptBody(value: unknown): Omit<DecisionReceiptV2, "receipt_id"> {
+  const payload = closed(value, receiptBodyFields);
+  envelope(payload, "decision_receipt", "2");
+  const query = parseDecisionQueryV2(payload.query);
+  const selections = array(payload.selections, "selections").map(parseSelection);
+  const configurations = selections.map((row) => `${row.serving_offer_id}|${row.reasoning_effort}`);
+  if (new Set(configurations).size !== configurations.length) {
+    throw new TypeError("selections must not repeat a (serving_offer_id, reasoning_effort) configuration");
   }
-  validateReceiptSemantics(body);
+  const body: Omit<DecisionReceiptV2, "receipt_id"> = {
+    object: "decision_receipt",
+    schema_version: "2",
+    query,
+    decided_at: timestamp(payload.decided_at, "decided_at"),
+    outcome: enumValue(payload.outcome, ["pick", "abstain"] as const, "outcome"),
+    snapshot_ids: normalizedStringSet(payload.snapshot_ids, "snapshot_ids", true)
+      .map((item) => patternString(item, /^explorer_.+$/, "snapshot_ids item")),
+    families: normalizeRecords(array(payload.families, "families").map(parseFamily), (row) => [row.family_id], "families"),
+    selections,
+    exclusions: normalizeRecords(
+      array(payload.exclusions, "exclusions").map(parseExclusion),
+      (row) => [row.model_key, row.reasoning_effort ?? "", row.code],
+      "exclusions",
+    ),
+    usage_profile: parseUsage(payload.usage_profile),
+    abstain_reasons: normalizedStringSet(payload.abstain_reasons, "abstain_reasons", true)
+      .map((item) => enumValue(item, ABSTAIN_REASONS, "abstain_reasons item")),
+  };
+  if (canonicalJson(body.usage_profile) !== canonicalJson(decisionUsageFor(query))) {
+    throw new TypeError("usage_profile must echo the query's profile (caller) or the default agent task mix");
+  }
+  if (body.outcome === "pick") validatePick(body);
+  else if (body.selections.length || !body.abstain_reasons.length) {
+    throw new TypeError("abstain carries no selection and at least one abstain reason");
+  }
   return body;
+}
+
+function validatePick(body: Omit<DecisionReceiptV2, "receipt_id">): void {
+  const { query, selections } = body;
+  if (!selections.length || body.abstain_reasons.length) {
+    throw new TypeError("pick carries at least one selection and no abstain reason");
+  }
+  if (!body.snapshot_ids.length) throw new TypeError("pick must cite the explorer snapshots it ranked");
+  if (query.reasoning_effort !== undefined && selections.some((row) => row.reasoning_effort !== query.reasoning_effort)) {
+    throw new TypeError("a pinned reasoning_effort admits only configurations at that level");
+  }
+  if (query.api !== undefined && selections.some((row) => row.api !== query.api)) {
+    throw new TypeError("every selection must use the query's api");
+  }
+  if (query.provider_ids !== undefined && selections.some((row) => !query.provider_ids!.includes(row.provider_id))) {
+    throw new TypeError("every selection must come from the query's provider_ids");
+  }
+  const pick = selections[0];
+  if (query.objective === "lowest_cost_within_top_set") {
+    const costs = selections.map((row) => row.projected_cost_microusd);
+    if (costs.some((cost) => cost === null)) {
+      throw new TypeError("lowest_cost_within_top_set selects priced configurations only");
+    }
+    if (pick.projected_cost_microusd !== Math.min(...(costs as number[]))) {
+      throw new TypeError("lowest_cost_within_top_set picks the cheapest configuration of the band");
+    }
+  } else if (pick.capability_ratio_ppm !== Math.max(...selections.map((row) => row.capability_ratio_ppm))) {
+    throw new TypeError("capability_top_set picks the highest-scoring configuration");
+  }
+}
+
+function parseFamily(value: unknown): DecisionFamilyV2 {
+  const payload = closed(value, ["family_id", "lock_status", "weight_ppm", "stale_at"]);
+  return {
+    family_id: nonEmptyString(payload.family_id, "family_id"),
+    lock_status: enumValue(payload.lock_status, LOCK_STATUSES, "lock_status"),
+    weight_ppm: safeInteger(payload.weight_ppm, "weight_ppm", 0),
+    stale_at: payload.stale_at === null ? null : timestamp(payload.stale_at, "stale_at"),
+  };
+}
+
+function parseSelection(value: unknown): DecisionSelectionV2 {
+  const payload = closed(value, [
+    "model_id", "display_name", "provider_id", "serving_offer_id", "reasoning_effort", "api",
+    "capability_ratio_ppm", "family_coverage", "price", "effort_multiplier", "projected_cost_microusd",
+    "latency_p50_ms", "caveats",
+  ]);
+  const price = closed(payload.price, [
+    "input_microusd_per_million", "cached_input_microusd_per_million", "output_microusd_per_million",
+  ]);
+  const selection: DecisionSelectionV2 = {
+    model_id: nonEmptyString(payload.model_id, "model_id"),
+    display_name: nonEmptyString(payload.display_name, "display_name"),
+    provider_id: nonEmptyString(payload.provider_id, "provider_id"),
+    serving_offer_id: nonEmptyString(payload.serving_offer_id, "serving_offer_id"),
+    reasoning_effort: enumValue(payload.reasoning_effort, REASONING_EFFORTS, "reasoning_effort"),
+    api: enumValue(payload.api, DECISION_APIS, "api"),
+    capability_ratio_ppm: safeInteger(payload.capability_ratio_ppm, "capability_ratio_ppm", 0),
+    family_coverage: safeInteger(payload.family_coverage, "family_coverage", 1),
+    price: {
+      input_microusd_per_million: nullableSafeInteger(price.input_microusd_per_million, "input_microusd_per_million", 0),
+      cached_input_microusd_per_million: nullableSafeInteger(price.cached_input_microusd_per_million, "cached_input_microusd_per_million", 0),
+      output_microusd_per_million: nullableSafeInteger(price.output_microusd_per_million, "output_microusd_per_million", 0),
+    },
+    effort_multiplier: payload.effort_multiplier === null ? null : parseMultiplier(payload.effort_multiplier),
+    projected_cost_microusd: nullableSafeInteger(payload.projected_cost_microusd, "projected_cost_microusd", 0),
+    latency_p50_ms: nullableSafeInteger(payload.latency_p50_ms, "latency_p50_ms", 0),
+    caveats: normalizeRecords(array(payload.caveats, "caveats").map(parseCaveat), (row) => [row.code], "caveats"),
+  };
+  if (selection.capability_ratio_ppm > ppm) throw new TypeError("capability_ratio_ppm must not exceed 1000000");
+  const unmeasured = selection.caveats.some((row) => row.code === "cost_unmeasured");
+  if ((selection.projected_cost_microusd === null) !== unmeasured) {
+    throw new TypeError("cost_unmeasured caveat is required exactly when projected_cost_microusd is null");
+  }
+  if (selection.projected_cost_microusd !== null && selection.effort_multiplier === null) {
+    throw new TypeError("a priced selection needs its effort_multiplier");
+  }
+  for (const caveat of selection.caveats) {
+    if (caveat.code === "effort_substituted" && caveat.measured_effort === selection.reasoning_effort) {
+      throw new TypeError("effort_substituted must name a measured effort other than the selection's");
+    }
+  }
+  return selection;
+}
+
+function parseMultiplier(value: unknown): EffortMultiplierV2 {
+  const payload = closed(value, ["multiplier_ppm", "source"]);
+  const multiplier = {
+    multiplier_ppm: safeInteger(payload.multiplier_ppm, "multiplier_ppm", 0),
+    source: nonEmptyString(payload.source, "source"),
+  };
+  if (multiplier.source === "comparison_level" && multiplier.multiplier_ppm !== ppm) {
+    throw new TypeError("a comparison_level multiplier must be exactly 1 (1000000 ppm)");
+  }
+  return multiplier;
+}
+
+function parseCaveat(value: unknown): DecisionCaveatV2 {
+  const code = record(value, "caveat").code;
+  if (code === "effort_substituted") {
+    const payload = closed(value, ["code", "measured_effort", "gap_ppm"]);
+    return {
+      code,
+      measured_effort: enumValue(payload.measured_effort, REASONING_EFFORTS, "measured_effort"),
+      gap_ppm: safeInteger(payload.gap_ppm, "gap_ppm", 0),
+    };
+  }
+  const payload = closed(value, ["code"]);
+  return { code: enumValue(payload.code, ["cost_unmeasured"] as const, "code") };
+}
+
+function parseExclusion(value: unknown): DecisionExclusionV2 {
+  const payload = closed(value, ["model_key", "code"], ["reasoning_effort", "detail"]);
+  const exclusion: DecisionExclusionV2 = {
+    model_key: nonEmptyString(payload.model_key, "model_key"),
+    code: enumValue(payload.code, EXCLUSION_CODES, "code"),
+  };
+  if ("reasoning_effort" in payload) exclusion.reasoning_effort = enumValue(payload.reasoning_effort, REASONING_EFFORTS, "reasoning_effort");
+  if ("detail" in payload) {
+    if (typeof payload.detail !== "string") throw new TypeError("detail must be a string");
+    exclusion.detail = payload.detail;
+  }
+  return exclusion;
+}
+
+function parseUsage(value: unknown): DecisionUsageV2 {
+  const payload = closed(value, ["basis", "profile"]);
+  return {
+    basis: enumValue(payload.basis, ["caller", "default_agent_task_mix"] as const, "basis"),
+    profile: parseUsageProfileV1(payload.profile),
+  };
 }
 
 function parseTrialPolicy(value: unknown): TrialPolicyV1 {
@@ -1699,470 +1684,8 @@ function datedFact(payload: Record<string, unknown>): DatedFactV1 {
   };
 }
 
-function parsePublicationSnapshot(value: unknown): PublicationSnapshotRefV1 {
-  const payload = closed(value, ["publication_snapshot_id", "ranking_group_id", "manifest_version", "published_at"]);
-  return {
-    publication_snapshot_id: patternString(payload.publication_snapshot_id, /^snapshot_[0-9a-f]{64}$/, "publication_snapshot_id"),
-    ranking_group_id: nonEmptyString(payload.ranking_group_id, "ranking_group_id"),
-    manifest_version: patternString(payload.manifest_version, /^\d{4}-\d{2}-\d{2}\.[1-9]\d*$/, "manifest_version"),
-    published_at: timestamp(payload.published_at, "published_at"),
-  };
-}
-
-function parseSelection(value: unknown): DecisionSelectionV1 {
-  const payload = closed(value, [
-    "evaluated_configuration_id", "serving_offer_id", "capability_rank",
-    "projected_monthly_cost_microusd", "zero_cache_sensitivity_projected_monthly_cost_microusd",
-  ]);
-  const selection: DecisionSelectionV1 = {
-    evaluated_configuration_id: patternString(payload.evaluated_configuration_id, configurationIdPattern, "evaluated_configuration_id"),
-    serving_offer_id: payload.serving_offer_id === null ? null : prefixString(payload.serving_offer_id, "offer_", "serving_offer_id"),
-    capability_rank: safeInteger(payload.capability_rank, "capability_rank", 1),
-    projected_monthly_cost_microusd: nullableSafeInteger(payload.projected_monthly_cost_microusd, "projected_monthly_cost_microusd", 0),
-    zero_cache_sensitivity_projected_monthly_cost_microusd: nullableSafeInteger(
-      payload.zero_cache_sensitivity_projected_monthly_cost_microusd,
-      "zero_cache_sensitivity_projected_monthly_cost_microusd",
-      0,
-    ),
-  };
-  if (
-    (selection.projected_monthly_cost_microusd !== null
-      || selection.zero_cache_sensitivity_projected_monthly_cost_microusd !== null)
-    && selection.serving_offer_id === null
-  ) {
-    throw new TypeError("serving_offer_id is required when a monthly cost is present");
-  }
-  return selection;
-}
-
-function parseExclusion(value: unknown): DecisionExclusionV1 {
-  const payload = closed(value, ["evaluated_configuration_id", "code", "evidence_ids"]);
-  return {
-    evaluated_configuration_id: patternString(payload.evaluated_configuration_id, configurationIdPattern, "evaluated_configuration_id"),
-    code: enumValue(payload.code, [
-      "constraints_not_met", "not_in_capability_top_set", "serving_offer_unverified", "evidence_stale", "incompatible_configuration",
-    ] as const, "code"),
-    evidence_ids: normalizedStringSet(payload.evidence_ids, "evidence_ids"),
-  };
-}
-
-function parseFreshness(value: unknown): DecisionFreshnessV1 {
-  const payload = closed(value, ["observed_at", "expires_at"]);
-  const observed = timestamp(payload.observed_at, "observed_at");
-  const expires = timestamp(payload.expires_at, "expires_at");
-  if (expires <= observed) throw new TypeError("expires_at must be after observed_at");
-  return { observed_at: observed, expires_at: expires };
-}
-
-function parseReason(value: unknown): DecisionReasonV1 {
-  const payload = closed(value, [
-    "reason_type", "code", "subject_id", "predicate", "axis", "observed_value", "unit", "threshold",
-    "evidence_ids", "freshness", "caveat_codes",
-  ]);
-  const reason: DecisionReasonV1 = {
-    reason_type: enumValue(payload.reason_type, ["best_when", "avoid_when"] as const, "reason_type"),
-    code: enumValue(payload.code, [
-      "strongest_capability_evidence", "within_capability_top_set", "lowest_cost_under_usage_profile", "budget_fit_under_declared_profiles",
-      "provider_constraint_match", "region_constraint_match", "context_requirement_met", "insufficient_evidence",
-      "serving_offer_unverified", "budget_exceeded", "stale_evidence",
-    ] as const, "code"),
-    subject_id: nonEmptyString(payload.subject_id, "subject_id"),
-    predicate: enumValue(payload.predicate, ["eq", "ne", "lt", "lte", "gt", "gte", "within_top_set", "unavailable"] as const, "predicate"),
-    axis: enumValue(payload.axis, ["capability", "monthly_cost", "context", "availability", "freshness", "provider", "region"] as const, "axis"),
-    observed_value: nonEmptyString(payload.observed_value, "observed_value"),
-    unit: enumValue(payload.unit, ["probability", "score", "microusd_per_month", "tokens", "status", "timestamp", "provider_id", "region_id"] as const, "unit"),
-    threshold: nullableString(payload.threshold, "threshold"),
-    evidence_ids: normalizedStringSet(payload.evidence_ids, "evidence_ids"),
-    freshness: parseFreshness(payload.freshness),
-    caveat_codes: normalizedEnumSet(payload.caveat_codes, [
-      "provider_offer_link_required", "limited_availability", "evidence_near_expiry",
-      "incomplete_family_coverage", "cost_sensitive_to_usage",
-    ] as const, "caveat_codes", true),
-  };
-  if (!["status", "timestamp", "provider_id", "region_id"].includes(reason.unit)) {
-    decimal(reason.observed_value, "observed_value");
-    if (reason.threshold !== null) decimal(reason.threshold, "threshold");
-  }
-  const requiredShape: Partial<Record<DecisionReasonV1["code"], [DecisionReasonV1["axis"], DecisionReasonV1["unit"], DecisionReasonV1["predicate"]]>> = {
-    strongest_capability_evidence: ["capability", "score", "gte"],
-    within_capability_top_set: ["capability", "score", "within_top_set"],
-    provider_constraint_match: ["provider", "provider_id", "eq"],
-    region_constraint_match: ["region", "region_id", "eq"],
-    lowest_cost_under_usage_profile: ["monthly_cost", "microusd_per_month", "eq"],
-    budget_fit_under_declared_profiles: ["monthly_cost", "microusd_per_month", "lte"],
-    budget_exceeded: ["monthly_cost", "microusd_per_month", "gt"],
-    context_requirement_met: ["context", "tokens", "gte"],
-    insufficient_evidence: ["capability", "status", "unavailable"],
-    serving_offer_unverified: ["availability", "status", "unavailable"],
-    stale_evidence: ["freshness", "timestamp", "lt"],
-  };
-  const expected = requiredShape[reason.code];
-  if (expected && (reason.axis !== expected[0] || reason.unit !== expected[1] || reason.predicate !== expected[2])) {
-    throw new TypeError(`${reason.code} requires axis=${expected[0]}, unit=${expected[1]}, predicate=${expected[2]}`);
-  }
-  if (["eq", "ne", "lt", "lte", "gt", "gte"].includes(reason.predicate) && reason.threshold === null) {
-    throw new TypeError(`${reason.predicate} predicate requires threshold`);
-  }
-  if (["within_top_set", "unavailable"].includes(reason.predicate) && reason.threshold !== null) {
-    throw new TypeError(`${reason.predicate} predicate requires a null threshold`);
-  }
-  const positive = new Set<DecisionReasonV1["code"]>([
-    "strongest_capability_evidence", "within_capability_top_set", "lowest_cost_under_usage_profile",
-    "budget_fit_under_declared_profiles", "provider_constraint_match", "region_constraint_match", "context_requirement_met",
-  ]);
-  if (positive.has(reason.code) !== (reason.reason_type === "best_when")) {
-    throw new TypeError(`${reason.code} requires reason_type=${positive.has(reason.code) ? "best_when" : "avoid_when"}`);
-  }
-  if (reason.unit === "timestamp") {
-    timestamp(reason.observed_value, "observed_value");
-    if (reason.threshold !== null) timestamp(reason.threshold, "threshold");
-  }
-  if (reason.unit === "status") {
-    const statuses = ["available", "limited", "unavailable", "sufficient", "insufficient", "fresh", "stale"] as const;
-    enumValue(reason.observed_value, statuses, "observed_value");
-    if (reason.threshold !== null) enumValue(reason.threshold, statuses, "threshold");
-  }
-  return reason;
-}
-
-function parseSensitivity(value: unknown): DecisionSensitivityV1 {
-  const payload = closed(value, ["scenario", "stable", "selected_configuration_ids"]);
-  const identifiers = normalizedStringSet(payload.selected_configuration_ids, "selected_configuration_ids", true);
-  identifiers.forEach((identifier) => patternString(identifier, configurationIdPattern, "selected_configuration_ids item"));
-  if (typeof payload.stable !== "boolean") throw new TypeError("stable must be a boolean");
-  return {
-    scenario: enumValue(payload.scenario, ["price_plus_20_percent", "price_minus_20_percent", "usage_double", "leave_one_family_out"] as const, "scenario"),
-    stable: payload.stable,
-    selected_configuration_ids: identifiers,
-  };
-}
-
-function parseEvidence(value: unknown): DecisionEvidenceV1 {
-  const input = record(value, "decision evidence");
-  if (input.kind === "observation") {
-    const payload = closed(input, ["kind", "evidence_id", "observation"]);
-    return {
-      kind: "observation",
-      evidence_id: nonEmptyString(payload.evidence_id, "evidence_id"),
-      observation: parseObservationV1(payload.observation),
-    };
-  }
-  if (input.kind === "serving_offer") {
-    const payload = closed(input, ["kind", "evidence_id", "serving_offer"]);
-    return {
-      kind: "serving_offer",
-      evidence_id: nonEmptyString(payload.evidence_id, "evidence_id"),
-      serving_offer: parseServingOfferV1(payload.serving_offer),
-    };
-  }
-  if (input.kind === "evaluation_to_offer_link") {
-    const payload = closed(input, ["kind", "evidence_id", "evaluation_to_offer_link"]);
-    return {
-      kind: "evaluation_to_offer_link",
-      evidence_id: nonEmptyString(payload.evidence_id, "evidence_id"),
-      evaluation_to_offer_link: parseEvaluationToOfferLinkV1(payload.evaluation_to_offer_link),
-    };
-  }
-  throw new TypeError("evidence.kind must be observation, serving_offer, or evaluation_to_offer_link");
-}
-
-function validateReceiptSemantics(receipt: Omit<DecisionReceiptV1, "receipt_id">): void {
-  if (receipt.publication_snapshot.ranking_group_id !== receipt.query.ranking_group_id) {
-    throw new TypeError("publication_snapshot ranking_group_id must match query");
-  }
-  if (receipt.decided_at < receipt.publication_snapshot.published_at) {
-    throw new TypeError("decided_at must be on or after publication_snapshot.published_at");
-  }
-  if (!(receipt.freshness.observed_at <= receipt.decided_at && receipt.decided_at < receipt.freshness.expires_at)) {
-    throw new TypeError("receipt freshness must contain decided_at");
-  }
-  if (receipt.outcome === "top_set") {
-    if (receipt.selections.length === 0) throw new TypeError("top_set outcome requires at least one selection");
-    if (receipt.abstention_reason !== null) throw new TypeError("abstention_reason must be null for top_set");
-    if (receipt.reasons.length === 0) throw new TypeError("top_set outcome requires reasons");
-    if (receipt.evidence.length === 0) throw new TypeError("top_set outcome requires evidence");
-  } else {
-    if (receipt.selections.length !== 0) throw new TypeError("abstain outcome must not contain selections");
-    if (receipt.abstention_reason === null) throw new TypeError("abstention_reason is required for abstain");
-  }
-  if (receipt.outcome === "top_set" && receipt.query.objective === "lowest_cost_within_top_set") {
-    for (const selection of receipt.selections) {
-      if (selection.serving_offer_id === null) throw new TypeError("lowest_cost_within_top_set requires serving_offer_id for every selection");
-      if (selection.projected_monthly_cost_microusd === null) throw new TypeError("lowest_cost_within_top_set requires projected_monthly_cost_microusd for every selection");
-      if (receipt.query.monthly_budget_microusd !== undefined && selection.projected_monthly_cost_microusd > receipt.query.monthly_budget_microusd) {
-        throw new TypeError("selection cost must not exceed monthly_budget_microusd");
-      }
-      if (
-        receipt.query.monthly_budget_microusd !== undefined
-        && receipt.query.zero_cache_sensitivity_usage_profile !== undefined
-        && (
-          selection.zero_cache_sensitivity_projected_monthly_cost_microusd === null
-          || selection.zero_cache_sensitivity_projected_monthly_cost_microusd
-            > receipt.query.monthly_budget_microusd
-        )
-      ) {
-        throw new TypeError(
-          "zero-cache sensitivity projected monthly cost must not exceed monthly_budget_microusd",
-        );
-      }
-    }
-    if (new Set(receipt.selections.map((row) => row.projected_monthly_cost_microusd)).size !== 1) {
-      throw new TypeError("lowest_cost_within_top_set selections must share one equal minimum cost");
-    }
-  }
-  if (receipt.outcome === "top_set" && receipt.selections.length === 1) {
-    const winner = receipt.selections[0].evaluated_configuration_id;
-    const leaveOneOut = receipt.sensitivity.find((row) => row.scenario === "leave_one_family_out");
-    if (!leaveOneOut || !leaveOneOut.stable || leaveOneOut.selected_configuration_ids.length !== 1 || leaveOneOut.selected_configuration_ids[0] !== winner) {
-      throw new TypeError("a single selection requires stable leave_one_family_out sensitivity for the same winner");
-    }
-  }
-  const selected = new Set(receipt.selections.map((row) => row.evaluated_configuration_id));
-  const excluded = new Set(receipt.exclusions.map((row) => row.evaluated_configuration_id));
-  if (receipt.exclusions.some((row) => selected.has(row.evaluated_configuration_id))) {
-    throw new TypeError("a configuration cannot be both selected and excluded");
-  }
-  if (receipt.outcome === "top_set") {
-    const leaveOneOut = receipt.sensitivity.find((row) => row.scenario === "leave_one_family_out");
-    if (!leaveOneOut || !leaveOneOut.stable || !setEquals(selected, new Set(leaveOneOut.selected_configuration_ids))) {
-      throw new TypeError("every top_set requires stable leave_one_family_out sensitivity for the exact selected set");
-    }
-    if (receipt.query.objective === "lowest_cost_within_top_set") {
-      for (const scenario of ["price_plus_20_percent", "price_minus_20_percent", "usage_double"] as const) {
-        if (!receipt.sensitivity.some((row) => row.scenario === scenario)) {
-          throw new TypeError(`lowest_cost_within_top_set requires ${scenario} sensitivity`);
-        }
-      }
-    }
-    for (const sensitivity of receipt.sensitivity) {
-      const sensitivityIds = new Set(sensitivity.selected_configuration_ids);
-      const same = setEquals(selected, sensitivityIds);
-      if (sensitivity.stable && !same) throw new TypeError("stable sensitivity must preserve the exact selected configuration set");
-      if (!sensitivity.stable && same) throw new TypeError("unstable sensitivity must change the selected configuration set");
-      if ([...sensitivityIds].some((identifier) => !selected.has(identifier) && !excluded.has(identifier))) {
-        throw new TypeError("sensitivity selected_configuration_ids must be known decision candidates");
-      }
-    }
-    for (const selection of receipt.selections) {
-      const covered = receipt.reasons.some((reason) =>
-        reason.subject_id === selection.evaluated_configuration_id || reason.subject_id === selection.serving_offer_id
-      );
-      if (!covered) throw new TypeError("reasons must cover every selected configuration or serving offer");
-    }
-    validateSelectedDecisionEvidence(receipt);
-  }
-  const evidence = new Map(receipt.evidence.map((row) => [row.evidence_id, row]));
-  for (const identifier of [...receipt.exclusions.flatMap((row) => row.evidence_ids), ...receipt.reasons.flatMap((row) => row.evidence_ids)]) {
-    if (!evidence.has(identifier)) throw new TypeError("every cited evidence_id must be present in evidence");
-  }
-  for (const exclusion of receipt.exclusions) {
-    if (exclusion.evidence_ids.length === 0 || !exclusion.evidence_ids.every(
-      (identifier) => evidenceConfigurationId(evidence.get(identifier)!) === exclusion.evaluated_configuration_id,
-    )) {
-      throw new TypeError("exclusion evidence must concern its excluded configuration");
-    }
-  }
-}
-
-function evidenceTarget(evidence: DecisionEvidenceV1): string {
-  if (evidence.kind === "observation") return canonicalJson([evidence.kind, evidence.observation.observation_id]);
-  if (evidence.kind === "serving_offer") return canonicalJson([evidence.kind, evidence.serving_offer.serving_offer_id]);
-  const link = evidence.evaluation_to_offer_link;
-  return canonicalJson([evidence.kind, link.evaluated_configuration_id, link.serving_offer_id]);
-}
-
-function evidenceConfigurationId(evidence: DecisionEvidenceV1): string | null {
-  if (evidence.kind === "observation") return evidence.observation.evaluated_configuration_id;
-  if (evidence.kind === "evaluation_to_offer_link") return evidence.evaluation_to_offer_link.evaluated_configuration_id;
-  return null;
-}
-
-function validateSelectedDecisionEvidence(receipt: Omit<DecisionReceiptV1, "receipt_id">): void {
-  const evidence = new Map(receipt.evidence.map((row) => [row.evidence_id, row]));
-  for (const reason of receipt.reasons) {
-    if (reason.reason_type === "best_when" && !(reason.freshness.observed_at <= receipt.decided_at && receipt.decided_at < reason.freshness.expires_at)) {
-      throw new TypeError("positive reason freshness must contain decided_at");
-    }
-  }
-  for (const selection of receipt.selections) {
-    const capabilityReasons = receipt.reasons.filter(
-      (reason) => reason.subject_id === selection.evaluated_configuration_id
-        && ["strongest_capability_evidence", "within_capability_top_set"].includes(reason.code),
-    );
-    if (capabilityReasons.length === 0 || !capabilityReasons.every((reason) =>
-      reason.evidence_ids.length > 0 && reason.evidence_ids.every((identifier) => {
-        const row = evidence.get(identifier);
-        return row?.kind === "observation"
-          && row.observation.evaluated_configuration_id === selection.evaluated_configuration_id;
-      })
-    )) {
-      throw new TypeError("every selected configuration requires matching capability observation evidence");
-    }
-
-    const query = receipt.query;
-    const offerRequired = selection.serving_offer_id !== null
-      || query.objective === "lowest_cost_within_top_set"
-      || query.provider_ids !== undefined
-      || query.regions !== undefined
-      || query.minimum_context_tokens !== undefined
-      || query.usage_profile !== undefined
-      || query.monthly_budget_microusd !== undefined;
-    if (!offerRequired) continue;
-    if (selection.serving_offer_id === null) throw new TypeError("selected configuration requires serving_offer_id for applied offer constraints");
-    const offerEvidence = receipt.evidence.find(
-      (row): row is ServingOfferEvidenceV1 => row.kind === "serving_offer" && row.serving_offer.serving_offer_id === selection.serving_offer_id,
-    );
-    const linkEvidence = receipt.evidence.find(
-      (row): row is EvaluationToOfferLinkEvidenceV1 => row.kind === "evaluation_to_offer_link"
-        && row.evaluation_to_offer_link.evaluated_configuration_id === selection.evaluated_configuration_id
-        && row.evaluation_to_offer_link.serving_offer_id === selection.serving_offer_id,
-    );
-    if (!offerEvidence) throw new TypeError("selected serving offer requires full typed serving-offer evidence");
-    if (!linkEvidence) throw new TypeError("selected serving offer requires full typed offer-link evidence");
-    const offer = offerEvidence.serving_offer;
-    const link = linkEvidence.evaluation_to_offer_link;
-    if (!isServingOfferDecisionEligible(offer, link, receipt.decided_at)) {
-      throw new TypeError("selected offer and link must be exact, approved, non-inferred, available, and current at decided_at");
-    }
-    if (query.provider_ids && !query.provider_ids.includes(offer.provider_id)) throw new TypeError("selected offer provider must satisfy provider_ids");
-    if (query.regions && !query.regions.includes(offer.region)) throw new TypeError("selected offer region must satisfy regions");
-    if (query.minimum_context_tokens !== undefined && offer.context.context_window_tokens < query.minimum_context_tokens) {
-      throw new TypeError("selected offer must satisfy minimum_context_tokens");
-    }
-    let computedCost: number | null = null;
-    if (query.usage_profile !== undefined) {
-      computedCost = monthlyCostMicrousd(query.usage_profile, offer.pricing);
-      if (computedCost === null) {
-        throw new TypeError("pricing schedule lacks a rate for nonzero usage; decision must abstain");
-      }
-      if (selection.projected_monthly_cost_microusd !== computedCost) {
-        throw new TypeError("projected_monthly_cost_microusd must equal the computed monthly cost");
-      }
-      if (query.monthly_budget_microusd !== undefined && computedCost > query.monthly_budget_microusd) {
-        throw new TypeError("computed monthly cost must not exceed monthly_budget_microusd");
-      }
-    } else if (selection.projected_monthly_cost_microusd !== null) {
-      throw new TypeError("projected_monthly_cost_microusd must be null when query usage is omitted");
-    }
-    const sensitivity = query.zero_cache_sensitivity_usage_profile;
-    let sensitivityCost: number | null = null;
-    if (sensitivity !== undefined) {
-      sensitivityCost = monthlyCostMicrousd(sensitivity, offer.pricing);
-      if (sensitivityCost === null) {
-        throw new TypeError("pricing schedule lacks a rate for zero-cache sensitivity usage; decision must abstain");
-      }
-      if (selection.zero_cache_sensitivity_projected_monthly_cost_microusd !== sensitivityCost) {
-        throw new TypeError("zero_cache_sensitivity_projected_monthly_cost_microusd must equal the computed sensitivity cost");
-      }
-      if (
-        query.monthly_budget_microusd !== undefined
-        && sensitivityCost > query.monthly_budget_microusd
-      ) {
-        throw new TypeError(
-          "zero-cache sensitivity projected monthly cost must not exceed monthly_budget_microusd",
-        );
-      }
-    } else if (selection.zero_cache_sensitivity_projected_monthly_cost_microusd !== null) {
-      throw new TypeError("zero_cache_sensitivity_projected_monthly_cost_microusd must be null when query sensitivity is omitted");
-    }
-    const requiredIds = new Set([offerEvidence.evidence_id, linkEvidence.evidence_id]);
-    const observedAt = [
-      offer.context.observed_at,
-      offer.availability.observed_at,
-      offer.pricing.observed_at,
-      offer.pricing.effective_at,
-      link.observed_at,
-    ].sort().at(-1)!;
-    const expiresAt = [offer.context.expires_at, offer.availability.expires_at, offer.pricing.expires_at, link.expires_at].sort()[0];
-    const costSensitiveToUsage = query.usage_profile?.basis === "estimated"
-      && sensitivityCost !== null
-      && computedCost !== sensitivityCost;
-    if (costSensitiveToUsage && !receipt.reasons.some(
-      (reason) => reason.caveat_codes.includes("cost_sensitive_to_usage")
-        && (
-          reason.subject_id === selection.evaluated_configuration_id
-          || reason.subject_id === selection.serving_offer_id
-        ),
-    )) {
-      throw new TypeError(
-        "differing estimated profile costs require cost_sensitive_to_usage on a matching selected configuration or offer reason",
-      );
-    }
-    if (query.objective === "lowest_cost_within_top_set") {
-      requireOfferReason(
-        receipt,
-        selection,
-        "lowest_cost_under_usage_profile",
-        String(computedCost),
-        String(computedCost),
-        requiredIds,
-        observedAt,
-        expiresAt,
-        costSensitiveToUsage,
-      );
-    }
-    if (query.monthly_budget_microusd !== undefined) {
-      const declaredProfileCost = Math.max(
-        ...[computedCost, sensitivityCost].filter((cost): cost is number => cost !== null),
-      );
-      requireOfferReason(
-        receipt,
-        selection,
-        "budget_fit_under_declared_profiles",
-        String(declaredProfileCost),
-        String(query.monthly_budget_microusd),
-        requiredIds,
-        observedAt,
-        expiresAt,
-        costSensitiveToUsage,
-      );
-    }
-    if (query.provider_ids) requireOfferReason(receipt, selection, "provider_constraint_match", offer.provider_id, offer.provider_id, requiredIds, observedAt, expiresAt);
-    if (query.regions) requireOfferReason(receipt, selection, "region_constraint_match", offer.region, offer.region, requiredIds, observedAt, expiresAt);
-    if (query.minimum_context_tokens !== undefined) {
-      requireOfferReason(receipt, selection, "context_requirement_met", String(offer.context.context_window_tokens), String(query.minimum_context_tokens), requiredIds, observedAt, expiresAt);
-    }
-  }
-  const positive = receipt.reasons.filter((row) => row.reason_type === "best_when");
-  if (positive.length) {
-    const observedAt = positive.map((row) => row.freshness.observed_at).sort().at(-1)!;
-    const expiresAt = positive.map((row) => row.freshness.expires_at).sort()[0];
-    if (receipt.freshness.observed_at !== observedAt || receipt.freshness.expires_at !== expiresAt) {
-      throw new TypeError("receipt freshness must equal the intersection of positive reason freshness");
-    }
-  }
-}
-
-function requireOfferReason(
-  receipt: Omit<DecisionReceiptV1, "receipt_id">,
-  selection: DecisionSelectionV1,
-  code: DecisionReasonV1["code"],
-  observedValue: string,
-  threshold: string,
-  evidenceIds: Set<string>,
-  observedAt: string,
-  expiresAt: string,
-  requireCostSensitiveCaveat = false,
-): void {
-  const reason = receipt.reasons.find((row) => row.code === code && row.subject_id === selection.serving_offer_id);
-  if (!reason) throw new TypeError(`applied query constraint requires ${code} reason`);
-  if (reason.observed_value !== observedValue || reason.threshold !== threshold) {
-    throw new TypeError(`${code} observed_value/threshold must match the selected offer and query`);
-  }
-  if (!setEquals(evidenceIds, new Set(reason.evidence_ids))) {
-    throw new TypeError(`${code} must cite exactly the matching serving-offer and offer-link evidence`);
-  }
-  if (reason.freshness.observed_at !== observedAt || reason.freshness.expires_at !== expiresAt) {
-    throw new TypeError(`${code} freshness must equal the selected offer/link validity intersection`);
-  }
-  if (requireCostSensitiveCaveat && !reason.caveat_codes.includes("cost_sensitive_to_usage")) {
-    throw new TypeError(
-      `${code} requires cost_sensitive_to_usage when estimated profile costs differ`,
-    );
-  }
-}
-
-export function monthlyCostMicrousd(
+/** Exact cost of `usage` under `pricing` (rounded up), or null when a needed rate is missing. */
+export function projectedCostMicrousd(
   usage: UsageProfileV1,
   pricing: PricingScheduleFactV1,
 ): number | null {
@@ -2208,7 +1731,7 @@ export function monthlyCostMicrousd(
   const divisor = 3_600_000_000n;
   const value = (numerator + divisor - 1n) / divisor;
   const result = Number(value);
-  if (!Number.isSafeInteger(result)) throw new TypeError("computed monthly cost must be a safe integer");
+  if (!Number.isSafeInteger(result)) throw new TypeError("computed projected cost must be a safe integer");
   return result;
 }
 
@@ -2287,9 +1810,9 @@ function closed(value: unknown, required: string[], optional: string[] = []): Re
   return payload;
 }
 
-function envelope(payload: Record<string, unknown>, objectName: string): void {
+function envelope(payload: Record<string, unknown>, objectName: string, schemaVersion = "1"): void {
   if (payload.object !== objectName) throw new TypeError(`object must be ${objectName}`);
-  if (payload.schema_version !== "1") throw new TypeError("schema_version must be 1");
+  if (payload.schema_version !== schemaVersion) throw new TypeError(`schema_version must be ${schemaVersion}`);
 }
 
 function nonEmptyString(value: unknown, name: string): string {
@@ -2357,14 +1880,6 @@ function normalizedStringSet(value: unknown, name: string, allowEmpty = false): 
   if (!allowEmpty && values.length === 0) throw new TypeError(`${name} must not be empty`);
   if (new Set(values).size !== values.length) throw new TypeError(`${name} must be unique`);
   return values.sort();
-}
-
-function normalizedPatternSet(value: unknown, name: string, pattern: RegExp): string[] {
-  return normalizedStringSet(value, name).map((item) => patternString(item, pattern, `${name} item`));
-}
-
-function normalizedEnumSet<const T extends readonly string[]>(value: unknown, allowed: T, name: string, allowEmpty = false): T[number][] {
-  return normalizedStringSet(value, name, allowEmpty).map((item) => enumValue(item, allowed, `${name} item`));
 }
 
 function normalizeRecords<T>(values: T[], key: (value: T) => readonly string[] | string, name: string): T[] {

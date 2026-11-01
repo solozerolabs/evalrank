@@ -22,6 +22,7 @@ PROBLEM_CODES = {
     "internal",
     "unauthorized",
     "forbidden",
+    "via_not_supported",
 }
 _PUBLIC_TIMESTAMP_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
 _METHODOLOGY_VERSION_RE = re.compile(

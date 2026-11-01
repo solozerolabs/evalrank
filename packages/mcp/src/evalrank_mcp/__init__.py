@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
+from evalrank_core.decision_contracts import REASONING_EFFORTS, SUPPORTED_VIA
 from evalrank_core.fixtures import (
     PUBLIC_FIXTURE_KINDS,
     sample_public_fixture,
@@ -37,7 +38,7 @@ def list_tools() -> list[dict[str, Any]]:
         },
         {
             "name": DECIDE_TOOL_NAME,
-            "description": "Return one deterministic public EvalRank decision receipt.",
+            "description": "Return one EvalRank decision receipt: a callable pick with its priced band, or an abstain with reasons.",
             "inputSchema": {
                 "type": "object",
                 "additionalProperties": False,
@@ -200,47 +201,39 @@ def _decision_query_schema() -> dict[str, Any]:
             "cache_storage_token_seconds": {"type": "integer", "minimum": 0},
         },
     }
+    string_set = {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": True,
+        "items": {"type": "string", "minLength": 1},
+    }
     return {
         "type": "object",
         "additionalProperties": False,
-        "required": [
-            "object",
-            "schema_version",
-            "cell_id",
-            "ranking_group_id",
-            "entity_kind",
-            "interaction_policy",
-            "configuration_passport_class",
-            "objective",
-        ],
+        "required": ["schema_version", "cell_id", "objective"],
         "properties": {
             "object": {"const": "decision_query"},
-            "schema_version": {"const": "1"},
+            "schema_version": {"const": "2"},
             "cell_id": {"type": "string", "minLength": 1},
-            "ranking_group_id": {"type": "string", "minLength": 1},
-            "entity_kind": {"type": "string"},
-            "interaction_policy": {"type": "string"},
-            "configuration_passport_class": {"type": "string"},
             "objective": {
                 "type": "string",
-                "enum": ["capability_top_set", "lowest_cost_within_top_set"],
+                "enum": ["lowest_cost_within_top_set", "capability_top_set"],
             },
-            "provider_ids": {
-                "type": "array",
-                "minItems": 1,
-                "uniqueItems": True,
-                "items": {"type": "string", "minLength": 1},
+            "via": {
+                "type": "string",
+                "enum": list(SUPPORTED_VIA),
+                "description": "Call surface; default openai when provider_ids is [\"openai\"], else openrouter.",
             },
-            "regions": {
-                "type": "array",
-                "minItems": 1,
-                "uniqueItems": True,
-                "items": {"type": "string", "minLength": 1},
+            "provider_ids": string_set,
+            "api": {"type": "string", "enum": ["chat_completions", "responses"]},
+            "reasoning_effort": {
+                "type": "string",
+                "enum": list(REASONING_EFFORTS),
+                "description": "Comparison level, default medium; capability_top_set ignores it unless pinned.",
             },
+            "regions": string_set,
             "minimum_context_tokens": {"type": "integer", "minimum": 1},
             "usage_profile": usage_profile,
-            "zero_cache_sensitivity_usage_profile": usage_profile,
-            "monthly_budget_microusd": {"type": "integer", "minimum": 0},
         },
     }
 

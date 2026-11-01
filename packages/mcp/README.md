@@ -26,6 +26,6 @@ call_tool("evalrank.decide", {"query": {...}, "share": True}, base_url="https://
 call_tool("evalrank.decision_receipt", {"receipt_id": "receipt_..."}, base_url="https://evalrank.example")
 ```
 
-The MCP host configures `base_url` outside model-controlled tool arguments. The decision tool advertises a closed `DecisionQueryV1`-shaped input and validates it again through the SDK. `share` defaults to false. Problem Details responses are returned as MCP errors without rewriting their typed public fields.
+The MCP host configures `base_url` outside model-controlled tool arguments. The decision tool advertises a closed `DecisionQueryV2`-shaped input and validates it again through the SDK. `share` defaults to false. Problem Details responses are returned as MCP errors without rewriting their typed public fields.
 
 There are no legacy recommendation or scoring-stage tools. This package does not start a server, discover services, read environment defaults, add auth, retry, or call private services.

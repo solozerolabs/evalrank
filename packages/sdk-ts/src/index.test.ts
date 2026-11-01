@@ -14,8 +14,8 @@ import {
   snapshotSetId,
   verifyBenchmarkHealthSemantics,
   type BenchmarkHealth,
-  type DecisionQueryV1,
-  type DecisionReceiptV1,
+  type DecisionQueryV2,
+  type DecisionReceiptV2,
   type ProblemDetails,
   type UseCaseCatalog,
 } from "./index.ts";
@@ -1205,22 +1205,22 @@ function readBody(request: http.IncomingMessage): Promise<string> {
 function decisionCorpus() {
   return JSON.parse(
     readFileSync(
-      new URL("../../../examples/decision-contract-v1.golden.json", import.meta.url),
+      new URL("../../../examples/decision-contract-v2.golden.json", import.meta.url),
       "utf8",
     ),
   );
 }
 
-function decisionQuery(): DecisionQueryV1 {
-  return decisionCorpus().receipt.body.query as DecisionQueryV1;
+function decisionQuery(): DecisionQueryV2 {
+  return decisionCorpus().receipts[0].body.query as DecisionQueryV2;
 }
 
-function decisionReceiptPayload(): DecisionReceiptV1 {
+function decisionReceiptPayload(): DecisionReceiptV2 {
   const corpus = decisionCorpus();
   return {
-    ...corpus.receipt.body,
-    receipt_id: corpus.receipt.receipt_id,
-  } as DecisionReceiptV1;
+    ...corpus.receipts[0].body,
+    receipt_id: corpus.receipts[0].receipt_id,
+  } as DecisionReceiptV2;
 }
 
 async function clientReadPayloads() {

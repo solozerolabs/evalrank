@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 import unittest
 from dataclasses import replace
@@ -10,34 +11,34 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CORE_SRC = REPO_ROOT / "packages" / "core" / "src"
 SCHEMAS = REPO_ROOT / "schemas"
-GOLDEN = REPO_ROOT / "examples" / "decision-contract-v1.golden.json"
+GOLDEN = REPO_ROOT / "examples" / "decision-contract-v2.golden.json"
 sys.path.insert(0, str(CORE_SRC))
 
 from evalrank_core.canonical_json import sha256_hex  # noqa: E402
 import evalrank_core.decision_contracts as decision_contracts  # noqa: E402
 from evalrank_core.decision_contracts import (  # noqa: E402
+    DEFAULT_AGENT_TASK_MIX,
     AdapterMetadataV1,
     AvailabilityFactV1,
     ConfigurationPassportV1,
     ContextFactV1,
     ContinuousMetricV1,
-    DecisionExclusionV1,
-    DecisionFreshnessV1,
-    DecisionQueryV1,
-    DecisionReasonV1,
-    DecisionReceiptV1,
-    DecisionSelectionV1,
-    DecisionSensitivityV1,
+    DecisionCaveatV2,
+    DecisionExclusionV2,
+    DecisionFamilyV2,
+    DecisionPriceV2,
+    DecisionQueryV2,
+    DecisionReceiptV2,
+    DecisionSelectionV2,
+    DecisionUsageV2,
+    EffortMultiplierV2,
     EvaluatedConfigurationV1,
-    EvaluationToOfferLinkV1,
-    EvaluationToOfferLinkEvidenceV1,
     IntervalUncertaintyV1,
     IDENTITY_TRIPLES,
     PairwisePreferenceMetricV1,
     PassAtKMetricV1,
     PricingScheduleFactV1,
     ProportionMetricV1,
-    PublicationSnapshotRefV1,
     RankOnlyMetricV1,
     RunInputArtifactV1,
     RunProvenanceV1,
@@ -47,8 +48,6 @@ from evalrank_core.decision_contracts import (  # noqa: E402
     TrialPolicyV1,
     UnknownUncertaintyV1,
     ObservationV1,
-    ObservationEvidenceV1,
-    ServingOfferEvidenceV1,
 )
 
 
@@ -312,7 +311,7 @@ class ServingOfferTests(unittest.TestCase):
         self.assertTrue(hasattr(decision_contracts, "PricingScheduleFactV1"))
         self.assertFalse(hasattr(decision_contracts, "PricingFactV1"))
 
-    def test_monthly_cost_joins_every_nonzero_component_and_ceilings_once(self):
+    def test_projected_cost_joins_every_nonzero_component_and_ceilings_once(self):
         usage = decision_contracts.UsageProfileV1(
             basis="measured",
             uncached_input_tokens=1,
@@ -338,7 +337,7 @@ class ServingOfferTests(unittest.TestCase):
             source_artifact_id=ARTIFACT_A,
         )
 
-        self.assertEqual(1, decision_contracts.monthly_cost_microusd(usage, pricing))
+        self.assertEqual(1, decision_contracts.projected_cost_microusd(usage, pricing))
         self.assertEqual(pricing, decision_contracts.PricingScheduleFactV1.from_dict(pricing.to_dict()))
 
     def test_usage_profile_rejects_a_zero_workload(self):
@@ -355,7 +354,7 @@ class ServingOfferTests(unittest.TestCase):
                     cache_storage_token_seconds=storage,
                 )
 
-    def test_monthly_cost_fails_closed_for_each_missing_nonzero_cache_rate(self):
+    def test_projected_cost_fails_closed_for_each_missing_nonzero_cache_rate(self):
         base_usage = decision_contracts.UsageProfileV1(
             basis="measured",
             uncached_input_tokens=0,
@@ -376,9 +375,9 @@ class ServingOfferTests(unittest.TestCase):
             source_artifact_id=ARTIFACT_A,
         )
 
-        self.assertIsNone(decision_contracts.monthly_cost_microusd(base_usage, base_pricing))
+        self.assertIsNone(decision_contracts.projected_cost_microusd(base_usage, base_pricing))
         self.assertIsNone(
-            decision_contracts.monthly_cost_microusd(
+            decision_contracts.projected_cost_microusd(
                 replace(
                     base_usage,
                     cached_read_tokens=0,
@@ -388,7 +387,7 @@ class ServingOfferTests(unittest.TestCase):
             )
         )
         self.assertIsNone(
-            decision_contracts.monthly_cost_microusd(
+            decision_contracts.projected_cost_microusd(
                 replace(
                     base_usage,
                     uncached_input_tokens=1,
@@ -400,13 +399,6 @@ class ServingOfferTests(unittest.TestCase):
         )
         with self.assertRaisesRegex(ValueError, "non-zero workload"):
             replace(base_usage, cached_read_tokens=0)
-
-    def test_pricing_effective_at_controls_offer_eligibility(self):
-        offer = _serving_offer()
-        link = _offer_link()
-
-        self.assertFalse(offer.is_decision_eligible(link, as_of="2026-07-09T00:30:00Z"))
-        self.assertTrue(offer.is_decision_eligible(link, as_of="2026-07-09T01:00:00Z"))
 
     def test_offer_requires_three_independently_dated_sourced_facts(self):
         offer = _serving_offer()
@@ -421,577 +413,251 @@ class ServingOfferTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "source_artifact_id"):
             ServingOfferV1.from_dict(payload)
 
-    def test_offer_eligibility_requires_current_facts_and_exact_approved_link(self):
-        offer = _serving_offer()
-        link = _offer_link()
-
-        self.assertTrue(offer.is_decision_eligible(link, as_of="2026-07-09T12:00:00Z"))
-        for basis in ("benchmark_exact", "provider_attested", "operator_reviewed"):
-            with self.subTest(basis=basis):
-                self.assertTrue(replace(link, evidence_basis=basis).is_eligible(as_of="2026-07-09T12:00:00Z"))
-        self.assertFalse(replace(link, evidence_basis="inferred").is_eligible(as_of="2026-07-09T12:00:00Z"))
-        self.assertFalse(offer.is_decision_eligible(replace(link, compatibility="unresolved"), as_of="2026-07-09T12:00:00Z"))
-        self.assertFalse(offer.is_decision_eligible(replace(link, review_state="pending"), as_of="2026-07-09T12:00:00Z"))
-        self.assertFalse(offer.is_decision_eligible(link, as_of="2026-07-11T00:00:00Z"))
-
-    def test_link_never_serializes_a_stale_eligibility_boolean(self):
-        link = _offer_link()
-
-        self.assertNotIn("eligible", link.to_dict())
-        self.assertTrue(link.is_eligible(as_of="2026-07-09T12:00:00Z"))
-        self.assertFalse(link.is_eligible(as_of="2026-07-10T00:00:00Z"))
-
 
 class DecisionQueryTests(unittest.TestCase):
-    def test_estimated_cached_usage_requires_an_exact_zero_cache_sensitivity(self):
-        usage = _usage_profile()
-        sensitivity = _zero_cache_sensitivity(usage)
-        query = _query(usage_profile=usage, zero_cache_sensitivity_usage_profile=sensitivity)
+    def test_three_fields_are_a_complete_query_and_only_sent_fields_serialize(self):
+        query = DecisionQueryV2.from_dict(
+            {"schema_version": "2", "cell_id": "writing", "objective": "lowest_cost_within_top_set"}
+        )
 
-        self.assertEqual(20_000_000, sensitivity.uncached_input_tokens)
-        self.assertEqual(usage.output_tokens, sensitivity.output_tokens)
-        self.assertEqual((), sensitivity.cache_writes)
-        self.assertEqual(query, DecisionQueryV1.from_dict(query.to_dict()))
-
-        with self.assertRaisesRegex(ValueError, "zero_cache_sensitivity"):
-            replace(query, zero_cache_sensitivity_usage_profile=None)
-        with self.assertRaisesRegex(ValueError, "total input"):
-            replace(
-                query,
-                zero_cache_sensitivity_usage_profile=replace(
-                    sensitivity,
-                    uncached_input_tokens=sensitivity.uncached_input_tokens - 1,
-                ),
-            )
-        with self.assertRaisesRegex(ValueError, "measured"):
-            replace(query, usage_profile=replace(usage, basis="measured"))
-
-    def test_query_rejects_removed_per_request_usage_axes(self):
-        payload = _query().to_dict()
-        payload["input_tokens_per_request"] = 1
-
-        with self.assertRaisesRegex(ValueError, "unknown fields"):
-            DecisionQueryV1.from_dict(payload)
-
-    def test_query_sorts_set_filters_and_rejects_duplicates(self):
-        first = _query(provider_ids=("provider-b", "provider-a"), regions=("us-west", "eu-west"))
-        second = _query(provider_ids=("provider-a", "provider-b"), regions=("eu-west", "us-west"))
-
-        self.assertEqual(first.to_dict(), second.to_dict())
-        self.assertEqual(("provider-a", "provider-b"), first.provider_ids)
-        with self.assertRaisesRegex(ValueError, "provider_ids must be unique"):
-            _query(provider_ids=("provider-a", "provider-a"))
-
-        corpus = json.loads(GOLDEN.read_text(encoding="utf-8"))
-        vector = corpus["utf16_set_order"]
         self.assertEqual(
-            vector["canonical"],
-            DecisionQueryV1.from_dict({
-                **_query().to_dict(),
-                "provider_ids": vector["input"],
-            }).to_dict()["provider_ids"],
+            {
+                "object": "decision_query",
+                "schema_version": "2",
+                "cell_id": "writing",
+                "objective": "lowest_cost_within_top_set",
+            },
+            query.to_dict(),
         )
+        self.assertEqual(query, DecisionQueryV2.from_dict(query.to_dict()))
 
-    def test_query_rejects_transport_free_text_and_null_filters(self):
-        payload = _query().to_dict()
-        for forbidden in ("request_id", "customer_id", "requested_at", "workload", "risk", "latency"):
-            with self.subTest(forbidden=forbidden):
-                with self.assertRaisesRegex(ValueError, "unknown fields"):
-                    DecisionQueryV1.from_dict({**payload, forbidden: "transport-does-not-belong-here"})
+    def test_query_sorts_set_filters_and_rejects_duplicates_nulls_and_unknown_fields(self):
+        query = _query(provider_ids=("openai", "azure"), regions=("us-west", "eu-west"))
 
-        for nullable_filter in ("provider_ids", "regions", "minimum_context_tokens", "monthly_budget_microusd"):
-            with self.subTest(nullable_filter=nullable_filter):
-                with self.assertRaisesRegex(ValueError, "must not be null"):
-                    DecisionQueryV1.from_dict({**payload, nullable_filter: None})
+        self.assertEqual(("azure", "openai"), query.provider_ids)
+        self.assertEqual(("eu-west", "us-west"), query.regions)
+        with self.assertRaisesRegex(ValueError, "unique"):
+            _query(provider_ids=("openai", "openai"))
+        with self.assertRaisesRegex(ValueError, "must not be null"):
+            DecisionQueryV2.from_dict({**_query().to_dict(), "provider_ids": None})
+        for field, value in (
+            ("ranking_group_id", "rg-writing"),
+            ("entity_kind", "model_configuration"),
+            ("interaction_policy", "direct_prompt"),
+            ("configuration_passport_class", "model-configuration-v1"),
+            ("monthly_budget_microusd", 5),
+            ("zero_cache_sensitivity_usage_profile", _usage_profile().to_dict()),
+        ):
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError, "unknown fields"):
+                DecisionQueryV2.from_dict({**_query().to_dict(), field: value})
 
-    def test_lowest_cost_objective_requires_explicit_monthly_usage(self):
-        payload = _query().to_dict()
-        del payload["usage_profile"]
-        del payload["zero_cache_sensitivity_usage_profile"]
-        with self.assertRaisesRegex(ValueError, "usage_profile"):
-            DecisionQueryV1.from_dict(payload)
+    def test_query_rejects_v1_and_closed_enum_violations(self):
+        with self.assertRaisesRegex(ValueError, "schema_version must be 2"):
+            DecisionQueryV2.from_dict({**_query().to_dict(), "schema_version": "1"})
+        for field, value in (
+            ("objective", "top_set"),
+            ("api", "completions"),
+            ("reasoning_effort", "ultra"),
+            ("via", "Open Router"),
+        ):
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                _query(**{field: value})
 
-        with self.assertRaisesRegex(ValueError, "safe integer"):
-            replace(_usage_profile(), uncached_input_tokens=2**53)
-
-        capability = _query(
-            objective="capability_top_set",
-            usage_profile=None,
-            zero_cache_sensitivity_usage_profile=None,
-            monthly_budget_microusd=None,
-        )
-        with self.assertRaisesRegex(ValueError, "monthly_budget_microusd"):
-            replace(capability, monthly_budget_microusd=1)
+    def test_via_defaults_from_provider_ids(self):
+        self.assertEqual("openai", _query(provider_ids=("openai",)).resolved_via)
+        self.assertEqual("openrouter", _query(provider_ids=("openai", "azure")).resolved_via)
+        self.assertEqual("openrouter", _query().resolved_via)
+        self.assertEqual("anthropic", _query(via="anthropic").resolved_via)
 
 
 class DecisionReceiptTests(unittest.TestCase):
-    def test_cost_receipt_uses_projected_cost_vocabulary_only(self):
-        selection = DecisionSelectionV1.from_dict({
-            "evaluated_configuration_id": _evaluated_configuration().evaluated_configuration_id,
-            "serving_offer_id": "offer_public-demo-us-west",
-            "capability_rank": 1,
-            "projected_monthly_cost_microusd": 41_100_000,
-            "zero_cache_sensitivity_projected_monthly_cost_microusd": 44_000_000,
-        })
-
-        self.assertEqual(41_100_000, selection.projected_monthly_cost_microusd)
-        legacy_cost_field = "estimated" + "_monthly_cost_microusd"
-        legacy_sensitivity_field = (
-            "zero_cache_sensitivity" + "_monthly_cost_microusd"
-        )
-        self.assertNotIn(legacy_cost_field, selection.to_dict())
-        self.assertNotIn(
-            legacy_sensitivity_field,
-            selection.to_dict(),
-        )
-
-    def test_declared_zero_cache_sensitivity_must_also_fit_the_hard_budget(self):
-        values = _receipt_kwargs()
-        values["query"] = replace(values["query"], monthly_budget_microusd=42_000_000)
-        values["reasons"] = tuple(
-            replace(reason, threshold="42000000")
-            if reason.code == "budget_fit_under_declared_profiles"
-            else reason
-            for reason in values["reasons"]
-        )
-
-        with self.assertRaisesRegex(ValueError, "zero-cache sensitivity.*budget"):
-            DecisionReceiptV1.create(
-                **values,
-                outcome="top_set",
-                selections=(_selection(),),
-                abstention_reason=None,
-            )
-
-    def test_differing_estimated_cost_projections_require_an_explicit_caveat(self):
-        values = _receipt_kwargs()
-        cost_codes = {
-            "lowest_cost_under_usage_profile",
-            "budget_fit_under_declared_profiles",
-        }
-        values["reasons"] = tuple(
-            replace(
-                reason,
-                caveat_codes=tuple(
-                    code
-                    for code in reason.caveat_codes
-                    if code != "cost_sensitive_to_usage"
-                ),
-            )
-            if reason.code in cost_codes
-            else reason
-            for reason in values["reasons"]
-        )
-
-        with self.assertRaisesRegex(ValueError, "cost_sensitive_to_usage"):
-            DecisionReceiptV1.create(
-                **values,
-                outcome="top_set",
-                selections=(_selection(),),
-                abstention_reason=None,
-            )
-
-    def test_capability_receipt_still_discloses_differing_projected_costs(self):
-        values = _receipt_kwargs()
-        values["query"] = replace(
-            values["query"],
-            objective="capability_top_set",
-            provider_ids=None,
-            regions=None,
-            minimum_context_tokens=None,
-            monthly_budget_microusd=None,
-        )
-        capability_reason = next(
-            reason
-            for reason in values["reasons"]
-            if reason.code == "within_capability_top_set"
-        )
-        values["reasons"] = (capability_reason,)
-        values["sensitivity"] = tuple(
-            row
-            for row in values["sensitivity"]
-            if row.scenario == "leave_one_family_out"
-        )
-        values["freshness"] = DecisionFreshnessV1(
-            observed_at="2026-07-09T00:00:00Z",
-            expires_at="2026-07-10T00:00:00Z",
-        )
-
-        with self.assertRaisesRegex(ValueError, "cost_sensitive_to_usage"):
-            DecisionReceiptV1.create(
-                **values,
-                outcome="top_set",
-                selections=(_selection(),),
-                abstention_reason=None,
-            )
-
-        values["reasons"] = (
-            replace(capability_reason, caveat_codes=("cost_sensitive_to_usage",)),
-        )
-        receipt = DecisionReceiptV1.create(
-            **values,
-            outcome="top_set",
-            selections=(_selection(),),
-            abstention_reason=None,
-        )
-        self.assertEqual(
-            ("cost_sensitive_to_usage",),
-            receipt.reasons[0].caveat_codes,
-        )
-
-    def test_cost_reasons_use_declared_profile_vocabulary(self):
-        base = _receipt_kwargs()["reasons"][0]
-
-        lowest = replace(base, code="lowest_cost_under_usage_profile")
-        budget = replace(
-            base,
-            code="budget_fit_under_declared_profiles",
-            predicate="lte",
-            threshold="50000000",
-        )
-
-        self.assertEqual("lowest_cost_under_usage_profile", lowest.code)
-        self.assertEqual("budget_fit_under_declared_profiles", budget.code)
-
-    def test_estimated_cached_receipt_recomputes_zero_cache_sensitivity_cost(self):
-        receipt = _receipt()
-
-        self.assertEqual(
-            44_000_000,
-            receipt.selections[0].zero_cache_sensitivity_projected_monthly_cost_microusd,
-        )
-        with self.assertRaisesRegex(ValueError, "zero_cache_sensitivity"):
-            DecisionReceiptV1.create(
-                **_receipt_kwargs(),
-                outcome="top_set",
-                selections=(
-                    replace(
-                        _selection(),
-                        zero_cache_sensitivity_projected_monthly_cost_microusd=43_000_000,
-                    ),
-                ),
-                abstention_reason=None,
-            )
-
-    def test_receipt_fails_closed_when_pricing_omits_a_nonzero_usage_rate(self):
-        values = _receipt_kwargs()
-        values["evidence"] = tuple(
-            replace(
-                row,
-                serving_offer=replace(
-                    row.serving_offer,
-                    pricing=replace(
-                        row.serving_offer.pricing,
-                        cached_read_microusd_per_million_tokens=None,
-                    ),
-                ),
-            )
-            if isinstance(row, ServingOfferEvidenceV1)
-            else row
-            for row in values["evidence"]
-        )
-
-        with self.assertRaisesRegex(ValueError, "pricing.*nonzero usage"):
-            DecisionReceiptV1.create(
-                **values,
-                outcome="top_set",
-                selections=(_selection(),),
-                abstention_reason=None,
-            )
-
-    def test_receipt_id_hashes_full_body_except_receipt_id(self):
+    def test_receipt_id_hashes_the_full_canonical_body_except_receipt_id(self):
         receipt = _receipt()
         body = receipt.to_body_dict()
 
+        self.assertNotIn("receipt_id", body)
         self.assertEqual(f"receipt_{sha256_hex(body)}", receipt.receipt_id)
-        self.assertEqual(receipt, DecisionReceiptV1.from_dict(receipt.to_dict()))
+        self.assertEqual(receipt, DecisionReceiptV2.from_dict(receipt.to_dict()))
+        tampered = receipt.to_dict()
+        tampered["decided_at"] = "2026-11-01T09:00:01Z"
+        with self.assertRaisesRegex(ValueError, "receipt_id must hash"):
+            DecisionReceiptV2.from_dict(tampered)
 
-        changed = receipt.to_dict()
-        changed["methodology_version"] = "2026-07-09.2.changed"
-        with self.assertRaisesRegex(ValueError, "receipt_id"):
-            DecisionReceiptV1.from_dict(changed)
-
-    def test_decided_at_pins_offer_and_link_eligibility(self):
-        values = _receipt_kwargs()
-        values["decided_at"] = "2026-07-10T00:00:00Z"
-        with self.assertRaisesRegex(ValueError, "decided_at"):
-            DecisionReceiptV1.create(
-                **values,
-                outcome="top_set",
-                selections=(_selection(),),
-                abstention_reason=None,
-            )
-
-    def test_cost_receipt_recomputes_cost_and_requires_typed_capability_offer_and_link_evidence(self):
-        values = _receipt_kwargs()
-        with self.assertRaisesRegex(ValueError, "computed monthly cost"):
-            DecisionReceiptV1.create(
-                **values,
-                outcome="top_set",
-                selections=(replace(_selection(), projected_monthly_cost_microusd=43_000_000),),
-                abstention_reason=None,
-            )
-
-        without_link = {
-            **values,
-            "evidence": tuple(
-                row for row in values["evidence"]
-                if not isinstance(row, EvaluationToOfferLinkEvidenceV1)
+    def test_selections_keep_their_order_and_set_like_fields_sort(self):
+        cheap = _selection("model-a", cost=100)
+        dear = _selection("model-b", cost=200)
+        receipt = _receipt(
+            selections=(cheap, dear),
+            snapshot_ids=(f"explorer_{HASH_B}", f"explorer_{HASH_A}"),
+            exclusions=(
+                DecisionExclusionV2(model_key="zeta", code="no_serving_offer"),
+                DecisionExclusionV2(model_key="alpha", code="ambiguous_identity"),
             ),
-        }
-        with self.assertRaisesRegex(ValueError, "offer-link evidence|cited evidence_id"):
-            DecisionReceiptV1.create(
-                **without_link,
-                outcome="top_set",
-                selections=(_selection(),),
-                abstention_reason=None,
-            )
+        )
+        body = receipt.to_body_dict()
 
-    def test_receipt_sorts_set_like_evidence_and_rejects_duplicates(self):
-        receipt = _receipt()
+        self.assertEqual(["model-a", "model-b"], [row["model_id"] for row in body["selections"]])
+        self.assertEqual([f"explorer_{HASH_A}", f"explorer_{HASH_B}"], body["snapshot_ids"])
+        self.assertEqual(["alpha", "zeta"], [row["model_key"] for row in body["exclusions"]])
+        with self.assertRaisesRegex(ValueError, "cheapest"):
+            _receipt(selections=(dear, cheap))
 
+    def test_pick_and_abstain_shapes_are_exclusive(self):
+        with self.assertRaisesRegex(ValueError, "abstain carries no selection"):
+            _receipt(outcome="abstain", abstain_reasons=("no_ranked_candidate",))
+        with self.assertRaisesRegex(ValueError, "abstain carries no selection"):
+            _receipt(outcome="abstain", selections=())
+        with self.assertRaisesRegex(ValueError, "pick carries"):
+            _receipt(abstain_reasons=("stale_evidence",))
+        with self.assertRaisesRegex(ValueError, "abstain_reasons item"):
+            _receipt(outcome="abstain", selections=(), abstain_reasons=("insufficient_comparable_evidence",))
+        for reason in ("no_ranked_candidate", "no_eligible_offer", "stale_evidence", "not_a_model_cell"):
+            with self.subTest(reason=reason):
+                receipt = _receipt(outcome="abstain", selections=(), snapshot_ids=(), abstain_reasons=(reason,))
+                self.assertEqual((reason,), receipt.abstain_reasons)
+
+    def test_value_objective_needs_priced_selections_and_capability_objective_picks_the_best(self):
+        unpriced = _selection("model-c", cost=None)
+        with self.assertRaisesRegex(ValueError, "priced configurations only"):
+            _receipt(selections=(_selection("model-a", cost=100), unpriced))
+        top = _query(objective="capability_top_set")
+        best = _selection("model-c", cost=None, ratio_ppm=1_000_000)
+        runner_up = _selection("model-a", cost=100, ratio_ppm=990_000)
+
+        self.assertEqual("model-c", _receipt(query=top, selections=(best, runner_up)).selections[0].model_id)
+        with self.assertRaisesRegex(ValueError, "highest-scoring"):
+            _receipt(query=top, selections=(runner_up, best))
+
+    def test_pinned_effort_api_and_provider_filters_bind_every_selection(self):
+        with self.assertRaisesRegex(ValueError, "pinned reasoning_effort"):
+            _receipt(query=_query(reasoning_effort="low"))
+        with self.assertRaisesRegex(ValueError, "query's api"):
+            _receipt(query=_query(api="responses"))
+        with self.assertRaisesRegex(ValueError, "provider_ids"):
+            _receipt(query=_query(provider_ids=("azure",)))
+        pinned = _receipt(query=_query(reasoning_effort="low"), selections=(_selection("model-a", effort="low"),))
+        self.assertEqual("low", pinned.selections[0].reasoning_effort)
+
+    def test_usage_profile_echoes_the_caller_or_states_the_default_mix(self):
         self.assertEqual(
-            ["evidence-link", "evidence-offer"],
-            receipt.reasons[0].to_dict()["evidence_ids"],
+            DecisionUsageV2(basis="default_agent_task_mix", profile=DEFAULT_AGENT_TASK_MIX),
+            _receipt().usage_profile,
         )
-        with self.assertRaisesRegex(ValueError, "evidence_ids must be unique"):
-            replace(receipt.reasons[0], evidence_ids=("evidence-link", "evidence-link"))
-
-    def test_receipt_outcome_and_abstention_are_consistent(self):
-        with self.assertRaisesRegex(ValueError, "top_set"):
-            DecisionReceiptV1.create(
-                **_receipt_kwargs(),
-                outcome="top_set",
-                selections=(),
-                abstention_reason=None,
-            )
-
-    def test_cost_objective_requires_verified_offer_cost_within_budget(self):
-        values = _receipt_kwargs()
-        evaluated_id = _evaluated_configuration().evaluated_configuration_id
-        valid = DecisionSelectionV1(
-            evaluated_configuration_id=evaluated_id,
-            serving_offer_id="offer_public-demo-us-west",
-            capability_rank=1,
-            projected_monthly_cost_microusd=41_100_000,
-            zero_cache_sensitivity_projected_monthly_cost_microusd=44_000_000,
+        self.assertEqual(
+            {"basis": "estimated", "uncached_input_tokens": 1000, "cached_read_tokens": 8000, "output_tokens": 500, "cache_writes": [], "cache_storage_token_seconds": 0},
+            DEFAULT_AGENT_TASK_MIX.to_dict(),
         )
+        caller = _receipt(query=_query(usage_profile=_usage_profile()))
+        self.assertEqual(DecisionUsageV2(basis="caller", profile=_usage_profile()), caller.usage_profile)
+        payload = caller.to_dict()
+        payload["usage_profile"]["basis"] = "default_agent_task_mix"
+        with self.assertRaisesRegex(ValueError, "echo"):
+            DecisionReceiptV2.from_dict(payload)
 
-        for selection, message in (
-            (replace(valid, projected_monthly_cost_microusd=None), "projected_monthly_cost_microusd"),
-            (replace(valid, projected_monthly_cost_microusd=50_000_001), "monthly_budget_microusd"),
-        ):
-            with self.subTest(message=message):
-                with self.assertRaisesRegex(ValueError, message):
-                    DecisionReceiptV1.create(
-                        **values,
-                        outcome="top_set",
-                        selections=(selection,),
-                        abstention_reason=None,
-                    )
-
-        with self.assertRaisesRegex(ValueError, "serving_offer_id"):
-            DecisionSelectionV1(
-                evaluated_configuration_id=evaluated_id,
-                serving_offer_id=None,
-                capability_rank=1,
-                projected_monthly_cost_microusd=1,
-                zero_cache_sensitivity_projected_monthly_cost_microusd=1,
-            )
-
-        higher_cost = DecisionSelectionV1(
-            evaluated_configuration_id="config_" + HASH_B,
-            serving_offer_id="offer_public-demo-two",
-            capability_rank=2,
-            projected_monthly_cost_microusd=45_000_000,
-            zero_cache_sensitivity_projected_monthly_cost_microusd=48_000_000,
-        )
-        with self.assertRaisesRegex(ValueError, "equal minimum cost"):
-            DecisionReceiptV1.create(
-                **values,
-                outcome="top_set",
-                selections=(valid, higher_cost),
-                abstention_reason=None,
-            )
-
-        with self.assertRaisesRegex(ValueError, "selections must be unique"):
-            DecisionReceiptV1.create(
-                **values,
-                outcome="top_set",
-                selections=(valid, replace(valid, serving_offer_id="offer_public-demo-two")),
-                abstention_reason=None,
-            )
-
-    def test_structured_provider_and_region_reasons_use_matching_axes_and_units(self):
-        base = _receipt_kwargs()["reasons"][0]
-        provider = replace(
-            base,
-            code="provider_constraint_match",
-            predicate="eq",
-            axis="provider",
-            observed_value="provider-public",
-            unit="provider_id",
-            threshold="provider-public",
-        )
-        region = replace(
-            base,
-            code="region_constraint_match",
-            predicate="eq",
-            axis="region",
-            observed_value="us-west",
-            unit="region_id",
-            threshold="us-west",
-        )
-
-        self.assertEqual("provider", provider.axis)
-        self.assertEqual("region", region.axis)
-        with self.assertRaisesRegex(ValueError, "provider_constraint_match"):
+    def test_selection_cost_multiplier_and_caveats_are_consistent(self):
+        with self.assertRaisesRegex(ValueError, "cost_unmeasured caveat"):
+            replace(_selection("model-a"), caveats=(DecisionCaveatV2(code="cost_unmeasured"),))
+        with self.assertRaisesRegex(ValueError, "effort_multiplier"):
+            replace(_selection("model-a"), effort_multiplier=None)
+        with self.assertRaisesRegex(ValueError, "exactly 1"):
+            EffortMultiplierV2(multiplier_ppm=1_510_000, source="comparison_level")
+        with self.assertRaisesRegex(ValueError, "other than the selection's"):
             replace(
-                provider,
-                axis="monthly_cost",
-                unit="microusd_per_month",
-                observed_value="1",
-                threshold="1",
+                _selection("model-a"),
+                caveats=(DecisionCaveatV2(code="effort_substituted", measured_effort="medium", gap_ppm=1),),
             )
-
-    def test_single_selection_requires_stable_leave_one_family_out(self):
-        values = _receipt_kwargs()
-        evaluated_id = _evaluated_configuration().evaluated_configuration_id
-        selection = DecisionSelectionV1(
-            evaluated_configuration_id=evaluated_id,
-            serving_offer_id="offer_public-demo-us-west",
-            capability_rank=1,
-            projected_monthly_cost_microusd=41_100_000,
-            zero_cache_sensitivity_projected_monthly_cost_microusd=44_000_000,
+        with self.assertRaisesRegex(ValueError, "must not exceed"):
+            _selection("model-a", ratio_ppm=1_000_001)
+        substituted = replace(
+            _selection("model-a"),
+            caveats=(DecisionCaveatV2(code="effort_substituted", measured_effort="max", gap_ppm=12_000),),
         )
-        values["sensitivity"] = ()
+        self.assertEqual(
+            [{"code": "effort_substituted", "measured_effort": "max", "gap_ppm": 12_000}],
+            substituted.to_dict()["caveats"],
+        )
+        self.assertEqual(substituted, DecisionSelectionV2.from_dict(substituted.to_dict()))
 
-        with self.assertRaisesRegex(ValueError, "leave_one_family_out"):
-            DecisionReceiptV1.create(
-                **values,
-                outcome="top_set",
-                selections=(selection,),
-                abstention_reason=None,
-            )
+    def test_selections_never_repeat_a_configuration(self):
+        with self.assertRaisesRegex(ValueError, "repeat"):
+            _receipt(selections=(_selection("model-a"), _selection("model-a")))
 
-    def test_every_top_set_requires_stable_leave_one_family_out_and_cost_scenarios(self):
-        values = _receipt_kwargs()
-        for scenario in (
-            "leave_one_family_out",
-            "price_plus_20_percent",
-            "price_minus_20_percent",
-            "usage_double",
-        ):
-            invalid = {
-                **values,
-                "sensitivity": tuple(row for row in values["sensitivity"] if row.scenario != scenario),
-            }
-            with self.subTest(scenario=scenario):
-                with self.assertRaisesRegex(ValueError, scenario):
-                    DecisionReceiptV1.create(
-                        **invalid,
-                        outcome="top_set",
-                        selections=(_selection(),),
-                        abstention_reason=None,
-                    )
-        with self.assertRaisesRegex(ValueError, "abstention_reason"):
-            DecisionReceiptV1.create(
-                **_receipt_kwargs(),
-                outcome="abstain",
-                selections=(),
-                abstention_reason=None,
-            )
-
-    def test_golden_receipt_and_query_decode_and_rehash(self):
+    def test_golden_corpus_decodes_rehashes_and_covers_every_outcome(self):
         corpus = json.loads(GOLDEN.read_text(encoding="utf-8"))
 
-        query = DecisionQueryV1.from_dict(corpus["query"]["input"])
-        receipt = DecisionReceiptV1.from_dict({
-            **corpus["receipt"]["body"],
-            "receipt_id": corpus["receipt"]["receipt_id"],
-        })
-
+        query = DecisionQueryV2.from_dict(corpus["query"]["input"])
         self.assertEqual(corpus["query"]["canonical"], query.canonical_json())
-        self.assertEqual(corpus["receipt"]["receipt_id"], receipt.receipt_id)
-        null_filter = next(
-            row["value"]
-            for row in corpus["rejection_vectors"]
-            if row["name"] == "null_provider_filter"
+        names = []
+        queries = set()
+        for row in corpus["receipts"]:
+            with self.subTest(name=row["name"]):
+                receipt = DecisionReceiptV2.from_dict({**row["body"], "receipt_id": row["receipt_id"]})
+                self.assertEqual(row["body"], receipt.to_body_dict())
+                self.assertEqual(f"receipt_{row['body_sha256']}", receipt.receipt_id)
+                self.assertEqual(row["body_sha256"], sha256_hex(row["body"]))
+                names.append(row["name"])
+                queries.add(receipt.query.canonical_json())
+        self.assertEqual(
+            [
+                "value_pick",
+                "top_set_pick",
+                "pinned_level",
+                "substituted_effort",
+                "abstain_no_ranked_candidate",
+                "abstain_no_eligible_offer",
+                "abstain_stale_evidence",
+                "abstain_not_a_model_cell",
+            ],
+            names,
         )
-        with self.assertRaisesRegex(ValueError, "must not be null"):
-            DecisionQueryV1.from_dict(null_filter)
+        self.assertEqual(len(names), len(queries), "every golden receipt answers a distinct query")
+        by_name = {row["name"]: row["body"] for row in corpus["receipts"]}
+        self.assertEqual(
+            [{"code": "effort_substituted", "measured_effort": "max", "gap_ppm": 12000}],
+            by_name["substituted_effort"]["selections"][0]["caveats"],
+        )
+        self.assertIn({"code": "cost_unmeasured"}, by_name["top_set_pick"]["selections"][0]["caveats"])
+        self.assertEqual("openai/gpt-6-sol", by_name["top_set_pick"]["selections"][0]["model_id"])
+        for name in ("abstain_no_ranked_candidate", "abstain_no_eligible_offer", "abstain_stale_evidence", "abstain_not_a_model_cell"):
+            self.assertEqual([name.removeprefix("abstain_")], by_name[name]["abstain_reasons"])
+        for row in corpus["rejection_vectors"][2:]:
+            with self.subTest(rejection=row["name"]), self.assertRaises(ValueError):
+                DecisionQueryV2.from_dict(row["value"])
+
+    def test_golden_file_is_generated_by_its_builder(self):
+        result = subprocess.run(
+            [sys.executable, str(REPO_ROOT / "scripts" / "build_decision_golden.py"), "--check"],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(0, result.returncode, result.stderr)
+
+    def test_golden_cells_and_families_resolve_against_the_canonical_manifest(self):
+        corpus = json.loads(GOLDEN.read_text(encoding="utf-8"))
+        cells = {row["cell_id"] for row in MANIFEST["cells"]}
+        families = {row["benchmark_family_id"] for row in MANIFEST["benchmark_families"]}
+
+        for row in corpus["receipts"]:
+            with self.subTest(name=row["name"]):
+                self.assertIn(row["body"]["query"]["cell_id"], cells)
+                for family in row["body"]["families"]:
+                    self.assertIn(family["family_id"], families)
+                for selection in row["body"]["selections"]:
+                    multiplier = selection["effort_multiplier"]
+                    if multiplier is not None and multiplier["source"] != "comparison_level":
+                        self.assertIn(multiplier["source"], families)
 
     def test_examples_resolve_against_the_canonical_manifest(self):
-        cells = {row["cell_id"] for row in MANIFEST["cells"]}
-        groups = {row["ranking_group_id"] for row in MANIFEST["ranking_groups"]}
         families = {row["benchmark_family_id"] for row in MANIFEST["benchmark_families"]}
         feeds = {(row["feed_id"], row["benchmark_family_id"]) for row in MANIFEST["feeds"]}
-
-        query = _query()
         provenance = _provenance()
-        self.assertIn(query.cell_id, cells)
-        self.assertIn(query.ranking_group_id, groups)
+
         self.assertIn(provenance.benchmark_family_id, families)
         self.assertIn((provenance.feed_id, provenance.benchmark_family_id), feeds)
 
-    def test_top_set_requires_explanation_and_evidence(self):
-        values = _receipt_kwargs()
-        evaluated_id = _evaluated_configuration().evaluated_configuration_id
-        selection = DecisionSelectionV1(
-            evaluated_configuration_id=evaluated_id,
-            serving_offer_id="offer_public-demo-us-west",
-            capability_rank=1,
-            projected_monthly_cost_microusd=41_100_000,
-            zero_cache_sensitivity_projected_monthly_cost_microusd=44_000_000,
-        )
-        for field in ("reasons", "evidence"):
-            invalid = {**values, field: ()}
-            with self.subTest(field=field):
-                with self.assertRaisesRegex(ValueError, field):
-                    DecisionReceiptV1.create(
-                        **invalid,
-                        outcome="top_set",
-                        selections=(selection,),
-                        abstention_reason=None,
-                    )
 
-    def test_sensitivity_stability_matches_the_selected_set(self):
-        values = _receipt_kwargs()
-        evaluated_id = _evaluated_configuration().evaluated_configuration_id
-        selection = DecisionSelectionV1(
-            evaluated_configuration_id=evaluated_id,
-            serving_offer_id="offer_public-demo-us-west",
-            capability_rank=1,
-            projected_monthly_cost_microusd=41_100_000,
-            zero_cache_sensitivity_projected_monthly_cost_microusd=44_000_000,
-        )
-        stable = next(row for row in values["sensitivity"] if row.scenario == "leave_one_family_out")
-        unrelated = replace(
-            next(row for row in values["sensitivity"] if row.scenario == "usage_double"),
-            selected_configuration_ids=("config_" + "c" * 64,),
-        )
-        for row in (
-            replace(stable, selected_configuration_ids=("config_" + HASH_B,)),
-            replace(stable, stable=False),
-            unrelated,
-        ):
-            invalid = {
-                **values,
-                "sensitivity": tuple(
-                    row if current.scenario == row.scenario else current
-                    for current in values["sensitivity"]
-                ),
-            }
-            with self.subTest(row=row):
-                with self.assertRaisesRegex(ValueError, "sensitivity"):
-                    DecisionReceiptV1.create(
-                        **invalid,
-                        outcome="top_set",
-                        selections=(selection,),
-                        abstention_reason=None,
-                    )
-
-    def test_all_nine_wire_schemas_are_closed_and_uniquely_identified(self):
+class WireSchemaTests(unittest.TestCase):
+    def test_all_eight_wire_schemas_are_closed_and_uniquely_identified(self):
         names = (
             "source-artifact.schema.json",
             "run-provenance.schema.json",
@@ -999,7 +665,6 @@ class DecisionReceiptTests(unittest.TestCase):
             "configuration-passport.schema.json",
             "evaluated-configuration.schema.json",
             "serving-offer.schema.json",
-            "evaluation-to-offer-link.schema.json",
             "decision-query.schema.json",
             "decision-receipt.schema.json",
         )
@@ -1012,30 +677,34 @@ class DecisionReceiptTests(unittest.TestCase):
                 self.assertFalse(schema["additionalProperties"])
                 ids.add(schema["$id"])
         self.assertEqual(len(names), len(ids))
+        self.assertFalse((SCHEMAS / "evaluation-to-offer-link.schema.json").exists())
 
-    def test_wire_schemas_publish_only_monthly_schedule_pricing(self):
-        offer = json.loads((SCHEMAS / "serving-offer.schema.json").read_text(encoding="utf-8"))
+    def test_wire_schemas_match_the_core_v2_vocabulary(self):
         query = json.loads((SCHEMAS / "decision-query.schema.json").read_text(encoding="utf-8"))
-        link = json.loads((SCHEMAS / "evaluation-to-offer-link.schema.json").read_text(encoding="utf-8"))
         receipt = json.loads((SCHEMAS / "decision-receipt.schema.json").read_text(encoding="utf-8"))
+        offer = json.loads((SCHEMAS / "serving-offer.schema.json").read_text(encoding="utf-8"))
+        selection = receipt["$defs"]["Selection"]
 
         self.assertEqual("#/$defs/PricingScheduleFact", offer["properties"]["pricing"]["$ref"])
-        self.assertNotIn("PricingFact", offer["$defs"])
-        self.assertIn("UsageProfile", query["$defs"])
-        self.assertNotIn("input_tokens_per_request", query["properties"])
-        self.assertIn("evidence_basis", link["required"])
-        self.assertIn(
-            "zero_cache_sensitivity_projected_monthly_cost_microusd",
-            receipt["$defs"]["Selection"]["required"],
+        self.assertEqual(["schema_version", "cell_id", "objective"], query["required"])
+        self.assertEqual(
+            {"object", "schema_version", "cell_id", "objective", *decision_contracts._QUERY_OPTIONAL},
+            set(query["properties"]),
         )
-        selection_fields = receipt["$defs"]["Selection"]["properties"]
-        self.assertIn("projected_monthly_cost_microusd", selection_fields)
-        self.assertNotIn("estimated" + "_monthly_cost_microusd", selection_fields)
-        reason_codes = receipt["$defs"]["Reason"]["properties"]["code"]["enum"]
-        self.assertIn("lowest_cost_under_usage_profile", reason_codes)
-        self.assertIn("budget_fit_under_declared_profiles", reason_codes)
-        self.assertNotIn("lowest_" + "verified_cost", reason_codes)
-        self.assertNotIn("budget_" + "constraint_met", reason_codes)
+        self.assertEqual(sorted(decision_contracts.DECISION_OBJECTIVES), sorted(query["properties"]["objective"]["enum"]))
+        self.assertEqual(list(decision_contracts.REASONING_EFFORTS), query["properties"]["reasoning_effort"]["enum"])
+        self.assertEqual(list(decision_contracts.REASONING_EFFORTS), selection["properties"]["reasoning_effort"]["enum"])
+        self.assertEqual(sorted(decision_contracts.ABSTAIN_REASONS), sorted(receipt["properties"]["abstain_reasons"]["items"]["enum"]))
+        self.assertEqual(sorted(decision_contracts.EXCLUSION_CODES), sorted(receipt["$defs"]["Exclusion"]["properties"]["code"]["enum"]))
+        self.assertEqual(sorted(decision_contracts.LOCK_STATUSES), sorted(receipt["$defs"]["Family"]["properties"]["lock_status"]["enum"]))
+        self.assertEqual(set(_selection("model-a").to_dict()), set(selection["required"]))
+        self.assertEqual(set(_receipt().to_dict()), set(receipt["required"]))
+        for retired in ("publication_snapshot", "methodology_version", "sensitivity", "evidence", "freshness", "reasons", "abstention_reason"):
+            self.assertNotIn(retired, receipt["properties"])
+        for retired in ("ranking_group_id", "entity_kind", "monthly_budget_microusd", "zero_cache_sensitivity_usage_profile"):
+            self.assertNotIn(retired, query["properties"])
+        for retired in ("EvaluationToOfferLinkV1", "PublicationSnapshotRefV1", "DecisionQueryV1", "DecisionReceiptV1", "monthly_cost_microusd"):
+            self.assertFalse(hasattr(decision_contracts, retired))
 
 
 def _source_artifact() -> SourceArtifactV1:
@@ -1145,259 +814,61 @@ def _serving_offer() -> ServingOfferV1:
     )
 
 
-def _offer_link() -> EvaluationToOfferLinkV1:
-    return EvaluationToOfferLinkV1(
-        evaluation_to_offer_link_id="link_public-demo-us-west",
-        evaluated_configuration_id=_evaluated_configuration().evaluated_configuration_id,
-        serving_offer_id="offer_public-demo-us-west",
-        compatibility="exact",
-        evidence_basis="benchmark_exact",
-        evidence_source_artifact_id=ARTIFACT_A,
-        observed_at="2026-07-09T00:00:00Z",
-        expires_at="2026-07-10T00:00:00Z",
-        review_state="approved",
-    )
-
-
-def _query(**overrides) -> DecisionQueryV1:
-    values = {
-        "cell_id": "coding-general",
-        "ranking_group_id": "rg-coding-general-model-configuration-direct-prompt-model-configuration-v1",
-        "entity_kind": "model_configuration",
-        "interaction_policy": "direct_prompt",
-        "configuration_passport_class": "model-configuration-v1",
-        "objective": "lowest_cost_within_top_set",
-        "provider_ids": ("provider-public",),
-        "regions": ("us-west",),
-        "minimum_context_tokens": 32_000,
-        "usage_profile": _usage_profile(),
-        "zero_cache_sensitivity_usage_profile": _zero_cache_sensitivity(_usage_profile()),
-        "monthly_budget_microusd": 50_000_000,
-    }
+def _query(**overrides) -> DecisionQueryV2:
+    values = {"cell_id": "writing", "objective": "lowest_cost_within_top_set"}
     values.update(overrides)
-    return DecisionQueryV1(**values)
+    return DecisionQueryV2(**values)
 
 
 def _usage_profile() -> decision_contracts.UsageProfileV1:
     return decision_contracts.UsageProfileV1(
-        basis="estimated",
-        uncached_input_tokens=10_000_000,
-        cached_read_tokens=5_000_000,
-        output_tokens=5_000_000,
-        cache_writes=(
-            decision_contracts.CacheWriteUsageV1(ttl_seconds=300, tokens=5_000_000),
-        ),
-        cache_storage_token_seconds=3_600_000_000,
-    )
-
-
-def _zero_cache_sensitivity(
-    usage: decision_contracts.UsageProfileV1,
-) -> decision_contracts.UsageProfileV1:
-    return decision_contracts.UsageProfileV1(
-        basis="estimated",
-        uncached_input_tokens=usage.total_input_tokens,
+        basis="measured",
+        uncached_input_tokens=2_400,
         cached_read_tokens=0,
-        output_tokens=usage.output_tokens,
+        output_tokens=300,
         cache_writes=(),
         cache_storage_token_seconds=0,
     )
 
 
-def _receipt_kwargs() -> dict:
-    evaluated_id = _evaluated_configuration().evaluated_configuration_id
-    excluded_observation = ObservationV1(
-        observation_id="obs_public_demo_excluded",
-        evaluated_configuration_id="config_" + HASH_B,
-        metric=ProportionMetricV1(value="0.5", numerator=1, denominator=2),
-        uncertainty=UnknownUncertaintyV1(),
-        provenance=_provenance(),
+def _selection(model: str, *, cost: int | None = 100, ratio_ppm: int = 990_000, effort: str = "medium") -> DecisionSelectionV2:
+    return DecisionSelectionV2(
+        model_id=model,
+        display_name=model.upper(),
+        provider_id="openai",
+        serving_offer_id=f"offer_{model}",
+        reasoning_effort=effort,
+        api="chat_completions",
+        capability_ratio_ppm=ratio_ppm,
+        family_coverage=2,
+        price=DecisionPriceV2(
+            input_microusd_per_million=1_250_000,
+            cached_input_microusd_per_million=None,
+            output_microusd_per_million=10_000_000,
+        ),
+        effort_multiplier=None if cost is None else EffortMultiplierV2(multiplier_ppm=1_000_000, source="comparison_level"),
+        projected_cost_microusd=cost,
+        latency_p50_ms=None,
+        caveats=() if cost is not None else (DecisionCaveatV2(code="cost_unmeasured"),),
     )
-    return {
+
+
+def _receipt(**overrides) -> DecisionReceiptV2:
+    values = {
         "query": _query(),
-        "publication_snapshot": PublicationSnapshotRefV1(
-            publication_snapshot_id="snapshot_" + HASH_B,
-            ranking_group_id="rg-coding-general-model-configuration-direct-prompt-model-configuration-v1",
-            manifest_version="2026-07-09.2",
-            published_at="2026-07-09T00:00:00Z",
+        "decided_at": "2026-11-01T09:00:00Z",
+        "outcome": "pick",
+        "snapshot_ids": (f"explorer_{HASH_A}",),
+        "families": (
+            DecisionFamilyV2(family_id="eqbench-creative-writing-v3", lock_status="admitted", weight_ppm=400_000, stale_at="2026-11-12T00:00:00Z"),
+            DecisionFamilyV2(family_id="lmarena-instruction-following", lock_status="admitted", weight_ppm=600_000, stale_at=None),
         ),
-        "methodology_version": "2026-07-09.2.public-decision-v1",
-        "decided_at": "2026-07-09T12:00:00Z",
-        "exclusions": (
-            DecisionExclusionV1(
-                evaluated_configuration_id="config_" + HASH_B,
-                code="constraints_not_met",
-                evidence_ids=("evidence-excluded",),
-            ),
-        ),
-        "reasons": (
-            DecisionReasonV1(
-                reason_type="best_when",
-                code="lowest_cost_under_usage_profile",
-                subject_id="offer_public-demo-us-west",
-                predicate="eq",
-                axis="monthly_cost",
-                observed_value="41100000",
-                unit="microusd_per_month",
-                threshold="41100000",
-                evidence_ids=("evidence-link", "evidence-offer"),
-                freshness=DecisionFreshnessV1(
-                    observed_at="2026-07-09T01:00:00Z",
-                    expires_at="2026-07-10T00:00:00Z",
-                ),
-                caveat_codes=(
-                    "cost_sensitive_to_usage",
-                    "provider_offer_link_required",
-                ),
-            ),
-            DecisionReasonV1(
-                reason_type="best_when",
-                code="budget_fit_under_declared_profiles",
-                subject_id="offer_public-demo-us-west",
-                predicate="lte",
-                axis="monthly_cost",
-                observed_value="44000000",
-                unit="microusd_per_month",
-                threshold="50000000",
-                evidence_ids=("evidence-link", "evidence-offer"),
-                freshness=DecisionFreshnessV1(
-                    observed_at="2026-07-09T01:00:00Z",
-                    expires_at="2026-07-10T00:00:00Z",
-                ),
-                caveat_codes=(
-                    "cost_sensitive_to_usage",
-                    "provider_offer_link_required",
-                ),
-            ),
-            DecisionReasonV1(
-                reason_type="best_when",
-                code="provider_constraint_match",
-                subject_id="offer_public-demo-us-west",
-                predicate="eq",
-                axis="provider",
-                observed_value="provider-public",
-                unit="provider_id",
-                threshold="provider-public",
-                evidence_ids=("evidence-link", "evidence-offer"),
-                freshness=DecisionFreshnessV1(
-                    observed_at="2026-07-09T01:00:00Z",
-                    expires_at="2026-07-10T00:00:00Z",
-                ),
-                caveat_codes=("provider_offer_link_required",),
-            ),
-            DecisionReasonV1(
-                reason_type="best_when",
-                code="region_constraint_match",
-                subject_id="offer_public-demo-us-west",
-                predicate="eq",
-                axis="region",
-                observed_value="us-west",
-                unit="region_id",
-                threshold="us-west",
-                evidence_ids=("evidence-link", "evidence-offer"),
-                freshness=DecisionFreshnessV1(
-                    observed_at="2026-07-09T01:00:00Z",
-                    expires_at="2026-07-10T00:00:00Z",
-                ),
-                caveat_codes=("provider_offer_link_required",),
-            ),
-            DecisionReasonV1(
-                reason_type="best_when",
-                code="context_requirement_met",
-                subject_id="offer_public-demo-us-west",
-                predicate="gte",
-                axis="context",
-                observed_value="128000",
-                unit="tokens",
-                threshold="32000",
-                evidence_ids=("evidence-link", "evidence-offer"),
-                freshness=DecisionFreshnessV1(
-                    observed_at="2026-07-09T01:00:00Z",
-                    expires_at="2026-07-10T00:00:00Z",
-                ),
-                caveat_codes=("provider_offer_link_required",),
-            ),
-            DecisionReasonV1(
-                reason_type="best_when",
-                code="within_capability_top_set",
-                subject_id=evaluated_id,
-                predicate="within_top_set",
-                axis="capability",
-                observed_value="0.75",
-                unit="score",
-                threshold=None,
-                evidence_ids=("evidence-observation",),
-                freshness=DecisionFreshnessV1(
-                    observed_at="2026-07-09T00:00:00Z",
-                    expires_at="2026-07-10T00:00:00Z",
-                ),
-                caveat_codes=(),
-            ),
-        ),
-        "sensitivity": (
-            DecisionSensitivityV1(
-                scenario="leave_one_family_out",
-                stable=True,
-                selected_configuration_ids=(evaluated_id,),
-            ),
-            DecisionSensitivityV1(
-                scenario="price_minus_20_percent",
-                stable=True,
-                selected_configuration_ids=(evaluated_id,),
-            ),
-            DecisionSensitivityV1(
-                scenario="price_plus_20_percent",
-                stable=False,
-                selected_configuration_ids=(),
-            ),
-            DecisionSensitivityV1(
-                scenario="usage_double",
-                stable=False,
-                selected_configuration_ids=(),
-            ),
-        ),
-        "evidence": (
-            ObservationEvidenceV1(
-                evidence_id="evidence-observation",
-                observation=_observation(),
-            ),
-            ObservationEvidenceV1(
-                evidence_id="evidence-excluded",
-                observation=excluded_observation,
-            ),
-            ServingOfferEvidenceV1(
-                evidence_id="evidence-offer",
-                serving_offer=_serving_offer(),
-            ),
-            EvaluationToOfferLinkEvidenceV1(
-                evidence_id="evidence-link",
-                evaluation_to_offer_link=_offer_link(),
-            ),
-        ),
-        "freshness": DecisionFreshnessV1(
-            observed_at="2026-07-09T01:00:00Z",
-            expires_at="2026-07-10T00:00:00Z",
-        ),
+        "selections": (_selection("model-a"),),
+        "exclusions": (),
+        "abstain_reasons": (),
     }
-
-
-def _receipt() -> DecisionReceiptV1:
-    return DecisionReceiptV1.create(
-        **_receipt_kwargs(),
-        outcome="top_set",
-        selections=(_selection(),),
-        abstention_reason=None,
-    )
-
-
-def _selection() -> DecisionSelectionV1:
-    return DecisionSelectionV1(
-        evaluated_configuration_id=_evaluated_configuration().evaluated_configuration_id,
-        serving_offer_id="offer_public-demo-us-west",
-        capability_rank=1,
-        projected_monthly_cost_microusd=41_100_000,
-        zero_cache_sensitivity_projected_monthly_cost_microusd=44_000_000,
-    )
+    values.update(overrides)
+    return DecisionReceiptV2.create(**values)
 
 
 if __name__ == "__main__":

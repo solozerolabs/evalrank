@@ -23,8 +23,8 @@ from evalrank_core.fixtures import sample_public_fixture as core_sample_public_f
 from evalrank_core.fixtures import sample_problem_details as core_sample_problem_details  # noqa: E402
 from evalrank_sdk import (  # noqa: E402
     CapabilityFingerprintInput,
-    DecisionQueryV1,
-    DecisionReceiptV1,
+    DecisionQueryV2,
+    DecisionReceiptV2,
     EvalRankApiError,
     EvalRankClient,
     ObservationV1,
@@ -57,22 +57,22 @@ def _manifest_use_cases() -> list[dict]:
     ]
 
 
-def _decision_vector() -> tuple[DecisionQueryV1, dict]:
+def _decision_vector() -> tuple[DecisionQueryV2, dict]:
     corpus = json.loads(
-        (REPO_ROOT / "examples" / "decision-contract-v1.golden.json").read_text(
+        (REPO_ROOT / "examples" / "decision-contract-v2.golden.json").read_text(
             encoding="utf-8"
         )
     )
     receipt = {
-        **corpus["receipt"]["body"],
-        "receipt_id": corpus["receipt"]["receipt_id"],
+        **corpus["receipts"][0]["body"],
+        "receipt_id": corpus["receipts"][0]["receipt_id"],
     }
-    DecisionReceiptV1.from_dict(receipt)
-    return DecisionQueryV1.from_dict(receipt["query"]), receipt
+    DecisionReceiptV2.from_dict(receipt)
+    return DecisionQueryV2.from_dict(receipt["query"]), receipt
 
 
 class PythonSdkTests(unittest.TestCase):
-    def test_sdk_re_exports_monthly_schedule_pricing_contracts(self):
+    def test_sdk_re_exports_schedule_pricing_contracts(self):
         import evalrank_core  # noqa: PLC0415
         import evalrank_sdk  # noqa: PLC0415
 
@@ -81,13 +81,14 @@ class PythonSdkTests(unittest.TestCase):
             "CacheWriteUsageV1",
             "PricingScheduleFactV1",
             "UsageProfileV1",
-            "monthly_cost_microusd",
+            "projected_cost_microusd",
         ):
             with self.subTest(name=name):
                 self.assertTrue(hasattr(evalrank_core, name))
                 self.assertIs(getattr(evalrank_sdk, name), getattr(evalrank_core, name))
-        self.assertFalse(hasattr(evalrank_core, "PricingFactV1"))
-        self.assertFalse(hasattr(evalrank_sdk, "PricingFactV1"))
+        for retired in ("PricingFactV1", "monthly_cost_microusd", "EvaluationToOfferLinkV1", "PublicationSnapshotRefV1"):
+            self.assertFalse(hasattr(evalrank_core, retired))
+            self.assertFalse(hasattr(evalrank_sdk, retired))
 
     def test_sdk_re_exports_aggregation_identity_contract(self):
         import evalrank_core  # noqa: PLC0415
@@ -111,8 +112,8 @@ class PythonSdkTests(unittest.TestCase):
             "RawEntry",
             "ObservationV1",
             "UseCaseCatalog",
-            "DecisionQueryV1",
-            "DecisionReceiptV1",
+            "DecisionQueryV2",
+            "DecisionReceiptV2",
             "ProblemDetails",
             "PROBLEM_CODES",
             "EvalRankClient",

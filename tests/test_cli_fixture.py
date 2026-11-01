@@ -28,13 +28,13 @@ from evalrank_core.fixtures import (  # noqa: E402
 
 def _decision_vector() -> tuple[dict, dict]:
     corpus = json.loads(
-        (REPO_ROOT / "examples" / "decision-contract-v1.golden.json").read_text(
+        (REPO_ROOT / "examples" / "decision-contract-v2.golden.json").read_text(
             encoding="utf-8"
         )
     )
-    return corpus["receipt"]["body"]["query"], {
-        **corpus["receipt"]["body"],
-        "receipt_id": corpus["receipt"]["receipt_id"],
+    return corpus["receipts"][0]["body"]["query"], {
+        **corpus["receipts"][0]["body"],
+        "receipt_id": corpus["receipts"][0]["receipt_id"],
     }
 
 

@@ -1,9 +1,9 @@
 import {
   canonicalJson,
-  parseDecisionQueryV1,
-  parseDecisionReceiptV1,
-  type DecisionQueryV1,
-  type DecisionReceiptV1,
+  parseDecisionQueryV2,
+  parseDecisionReceiptV2,
+  type DecisionQueryV2,
+  type DecisionReceiptV2,
   type SnapshotSetDescriptorV1,
   verifyCompareResultSemantics,
   verifyEntityDetailSemantics,
@@ -30,6 +30,7 @@ export const PROBLEM_CODES = [
   "internal",
   "unauthorized",
   "forbidden",
+  "via_not_supported",
 ] as const;
 
 export const PUBLIC_FIXTURE_KINDS = [
@@ -485,13 +486,13 @@ export class EvalRankClient {
   }
 
   async decide(
-    query: DecisionQueryV1,
+    query: DecisionQueryV2,
     options: { share?: boolean } = {},
-  ): Promise<DecisionReceiptV1> {
+  ): Promise<DecisionReceiptV2> {
     if (options.share !== undefined && typeof options.share !== "boolean") {
       throw new TypeError("share must be a boolean");
     }
-    const parsed = parseDecisionQueryV1(query);
+    const parsed = parseDecisionQueryV2(query);
     const response = await this.requestJson<unknown>(
       options.share ? "/v1/decisions?share=true" : "/v1/decisions",
       {
@@ -502,15 +503,15 @@ export class EvalRankClient {
       body: canonicalJson(parsed),
       },
     );
-    return parseDecisionReceiptV1(response);
+    return parseDecisionReceiptV2(response);
   }
 
-  async decisionReceipt(receiptId: string): Promise<DecisionReceiptV1> {
+  async decisionReceipt(receiptId: string): Promise<DecisionReceiptV2> {
     if (!/^receipt_[0-9a-f]{64}$/.test(receiptId)) {
       throw new TypeError("receiptId must be receipt_<64 lowercase hex characters>");
     }
     const response = await this.requestJson<unknown>(`/v1/decisions/${receiptId}`);
-    return parseDecisionReceiptV1(response);
+    return parseDecisionReceiptV2(response);
   }
 
   private async requestJson<T>(

@@ -25,9 +25,10 @@ if str(CORE_SRC) not in sys.path:
 
 from evalrank_core.canonical_json import restricted_jcs, sha256_hex  # noqa: E402
 from evalrank_core.decision_contracts import (  # noqa: E402
+    SUPPORTED_VIA,
     ConfigurationPassportV1,
-    DecisionQueryV1,
-    DecisionReceiptV1,
+    DecisionQueryV2,
+    DecisionReceiptV2,
     EvaluatedConfigurationV1,
 )
 from evalrank_core.fixtures import sample_use_case_catalog  # noqa: E402
@@ -54,17 +55,17 @@ class _ReferenceServer(ThreadingHTTPServer):
         super().__init__(address, _ReferenceHandler)
         self.repo_root = repo_root
         corpus = json.loads(
-            (repo_root / "examples" / "decision-contract-v1.golden.json").read_text(
+            (repo_root / "examples" / "decision-contract-v2.golden.json").read_text(
                 encoding="utf-8"
             )
         )
-        receipt_payload = {
-            **corpus["receipt"]["body"],
-            "receipt_id": corpus["receipt"]["receipt_id"],
-        }
-        self.golden_receipt = DecisionReceiptV1.from_dict(receipt_payload)
-        self.golden_receipt_bytes = restricted_jcs(self.golden_receipt.to_dict())
-        self.golden_query_canonical = self.golden_receipt.query.canonical_json()
+        self.golden_receipts: dict[str, tuple[str, bytes]] = {}
+        for row in corpus["receipts"]:
+            receipt = DecisionReceiptV2.from_dict({**row["body"], "receipt_id": row["receipt_id"]})
+            self.golden_receipts[receipt.query.canonical_json()] = (
+                receipt.receipt_id,
+                restricted_jcs(receipt.to_dict()),
+            )
         self.use_cases_bytes = restricted_jcs(sample_use_case_catalog().to_dict())
         self.benchmark_health_bytes = restricted_jcs(_benchmark_health(repo_root))
         read_fixtures = _public_read_fixtures()
@@ -193,23 +194,25 @@ class _ReferenceHandler(BaseHTTPRequestHandler):
             self._problem(400, "validation", f"Malformed JSON request: {error}")
             return
         try:
-            query = DecisionQueryV1.from_dict(payload)
+            query = DecisionQueryV2.from_dict(payload)
         except (TypeError, ValueError) as error:
-            self._problem(422, "validation", f"DecisionQueryV1 validation failed: {error}")
+            self._problem(422, "validation", f"DecisionQueryV2 validation failed: {error}")
             return
-        if query.canonical_json() != self.server.golden_query_canonical:
+        if query.resolved_via not in SUPPORTED_VIA:
+            self._via_not_supported(query.resolved_via)
+            return
+        golden = self.server.golden_receipts.get(query.canonical_json())
+        if golden is None:
             self._problem(
                 422,
                 "validation",
-                "The reference server supports only its published synthetic decision vector",
+                "The reference server supports only its published synthetic decision vectors",
             )
             return
+        receipt_id, receipt_bytes = golden
         if share:
-            self.server.retain_receipt(
-                self.server.golden_receipt.receipt_id,
-                self.server.golden_receipt_bytes,
-            )
-        self._json(200, self.server.golden_receipt_bytes, cache_control="no-store")
+            self.server.retain_receipt(receipt_id, receipt_bytes)
+        self._json(200, receipt_bytes, cache_control="no-store")
 
     def do_HEAD(self) -> None:
         self._problem(405, "validation", "HEAD is not implemented by the reference server")
@@ -277,6 +280,21 @@ class _ReferenceHandler(BaseHTTPRequestHandler):
             }
         )
         self._json(status, body, content_type="application/problem+json", cache_control="no-store")
+
+    def _via_not_supported(self, via: str) -> None:
+        body = restricted_jcs(
+            {
+                "type": "https://evalrank.ai/problems/via-not-supported",
+                "title": "Call surface not supported",
+                "status": 422,
+                "detail": f"via {via} has no probed effort vocabulary; call through openrouter",
+                "code": "via_not_supported",
+                "retriable": False,
+                "field": "via",
+                "supported_via": list(SUPPORTED_VIA),
+            }
+        )
+        self._json(422, body, content_type="application/problem+json", cache_control="no-store")
 
     def log_message(self, format: str, *args: object) -> None:
         return

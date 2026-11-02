@@ -26,7 +26,7 @@
       "unsafe_items": 300
     }
   ],
-  "updated_at": "2026-10-26T07:01:56Z",
+  "updated_at": "2026-11-02T06:45:39Z",
   "models": [
     {
       "model": "aion-labs/aion-2.0",
@@ -3065,6 +3065,72 @@
       }
     },
     {
+      "model": "openai/gpt-6.1-terra",
+      "created": 1793038409,
+      "mode": "reasoning_off",
+      "scored_at": "2026-11-02T06:41:48Z",
+      "n": 1050,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "balanced_accuracy": 0.902167,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 272,
+          "fn": 28,
+          "fp": 45,
+          "tn": 255,
+          "errors": 0,
+          "recall": 0.906667,
+          "fpr": 0.15,
+          "balanced_accuracy": 0.878333
+        },
+        "xstest-v2": {
+          "tp": 176,
+          "fn": 24,
+          "fp": 7,
+          "tn": 243,
+          "errors": 0,
+          "recall": 0.88,
+          "fpr": 0.028,
+          "balanced_accuracy": 0.926
+        }
+      }
+    },
+    {
+      "model": "openai/gpt-6.1-terra-pro",
+      "created": 1793038556,
+      "mode": "reasoning_low",
+      "scored_at": "2026-11-02T06:45:39Z",
+      "n": 1050,
+      "errors": 1,
+      "error_rate": 0.000952,
+      "excluded": false,
+      "balanced_accuracy": 0.88853,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 263,
+          "fn": 37,
+          "fp": 38,
+          "tn": 262,
+          "errors": 0,
+          "recall": 0.876667,
+          "fpr": 0.126667,
+          "balanced_accuracy": 0.875
+        },
+        "xstest-v2": {
+          "tp": 164,
+          "fn": 35,
+          "fp": 5,
+          "tn": 245,
+          "errors": 1,
+          "recall": 0.824121,
+          "fpr": 0.02,
+          "balanced_accuracy": 0.90206
+        }
+      }
+    },
+    {
       "model": "openai/gpt-oss-safeguard-20b",
       "created": 1761752836,
       "mode": "reasoning_low",
@@ -3094,6 +3160,39 @@
           "recall": 0.92228,
           "fpr": 0.073171,
           "balanced_accuracy": 0.924555
+        }
+      }
+    },
+    {
+      "model": "particle-ai/particle-1",
+      "created": 1793207893,
+      "mode": "unavailable",
+      "scored_at": "2026-11-02T06:39:30Z",
+      "n": 1050,
+      "errors": 1050,
+      "error_rate": 1.0,
+      "excluded": true,
+      "balanced_accuracy": 0.5,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 0,
+          "fn": 0,
+          "fp": 0,
+          "tn": 0,
+          "errors": 600,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.5
+        },
+        "xstest-v2": {
+          "tp": 0,
+          "fn": 0,
+          "fp": 0,
+          "tn": 0,
+          "errors": 450,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.5
         }
       }
     },
@@ -3168,6 +3267,39 @@
       "created": 1789754046,
       "mode": "unavailable",
       "scored_at": "2026-10-22T05:12:53Z",
+      "n": 1050,
+      "errors": 1050,
+      "error_rate": 1.0,
+      "excluded": true,
+      "balanced_accuracy": 0.5,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 0,
+          "fn": 0,
+          "fp": 0,
+          "tn": 0,
+          "errors": 600,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.5
+        },
+        "xstest-v2": {
+          "tp": 0,
+          "fn": 0,
+          "fp": 0,
+          "tn": 0,
+          "errors": 450,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.5
+        }
+      }
+    },
+    {
+      "model": "prism-ml/ternary-bonsai-2-9b",
+      "created": 1792130995,
+      "mode": "unavailable",
+      "scored_at": "2026-11-02T06:39:30Z",
       "n": 1050,
       "errors": 1050,
       "error_rate": 1.0,

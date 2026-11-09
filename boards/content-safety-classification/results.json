@@ -26,7 +26,7 @@
       "unsafe_items": 300
     }
   ],
-  "updated_at": "2026-11-02T06:45:39Z",
+  "updated_at": "2026-11-09T06:40:22Z",
   "models": [
     {
       "model": "aion-labs/aion-2.0",
@@ -1316,6 +1316,39 @@
       }
     },
     {
+      "model": "inclusionai/ling-3.0-tiny",
+      "created": 1786034890,
+      "mode": "unavailable",
+      "scored_at": "2026-11-09T06:40:22Z",
+      "n": 1050,
+      "errors": 1050,
+      "error_rate": 1.0,
+      "excluded": true,
+      "balanced_accuracy": 0.5,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 0,
+          "fn": 0,
+          "fp": 0,
+          "tn": 0,
+          "errors": 600,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.5
+        },
+        "xstest-v2": {
+          "tp": 0,
+          "fn": 0,
+          "fp": 0,
+          "tn": 0,
+          "errors": 450,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.5
+        }
+      }
+    },
+    {
       "model": "inclusionai/ling-3.1-flash",
       "created": 1790950024,
       "mode": "reasoning_off",
@@ -1452,6 +1485,39 @@
       "created": 1791912025,
       "mode": "unavailable",
       "scored_at": "2026-10-22T05:10:00Z",
+      "n": 1050,
+      "errors": 1050,
+      "error_rate": 1.0,
+      "excluded": true,
+      "balanced_accuracy": 0.5,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 0,
+          "fn": 0,
+          "fp": 0,
+          "tn": 0,
+          "errors": 600,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.5
+        },
+        "xstest-v2": {
+          "tp": 0,
+          "fn": 0,
+          "fp": 0,
+          "tn": 0,
+          "errors": 450,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.5
+        }
+      }
+    },
+    {
+      "model": "liquid/lfm-3-1.7b",
+      "created": 1794009477,
+      "mode": "unavailable",
+      "scored_at": "2026-11-09T06:40:22Z",
       "n": 1050,
       "errors": 1050,
       "error_rate": 1.0,
@@ -4121,6 +4187,39 @@
       }
     },
     {
+      "model": "ricursiveai/ripple-65b-preview",
+      "created": 1793818990,
+      "mode": "unavailable",
+      "scored_at": "2026-11-09T06:40:22Z",
+      "n": 1050,
+      "errors": 1050,
+      "error_rate": 1.0,
+      "excluded": true,
+      "balanced_accuracy": 0.5,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 0,
+          "fn": 0,
+          "fp": 0,
+          "tn": 0,
+          "errors": 600,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.5
+        },
+        "xstest-v2": {
+          "tp": 0,
+          "fn": 0,
+          "fp": 0,
+          "tn": 0,
+          "errors": 450,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.5
+        }
+      }
+    },
+    {
       "model": "sakana/fugu-max",
       "created": 1789104771,
       "mode": "unavailable",
@@ -4323,6 +4422,39 @@
       "created": 1783344048,
       "mode": "unavailable",
       "scored_at": "2026-10-22T05:13:48Z",
+      "n": 1050,
+      "errors": 1050,
+      "error_rate": 1.0,
+      "excluded": true,
+      "balanced_accuracy": 0.5,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 0,
+          "fn": 0,
+          "fp": 0,
+          "tn": 0,
+          "errors": 600,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.5
+        },
+        "xstest-v2": {
+          "tp": 0,
+          "fn": 0,
+          "fp": 0,
+          "tn": 0,
+          "errors": 450,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.5
+        }
+      }
+    },
+    {
+      "model": "tencent/hy4",
+      "created": 1793766031,
+      "mode": "unavailable",
+      "scored_at": "2026-11-09T06:40:22Z",
       "n": 1050,
       "errors": 1050,
       "error_rate": 1.0,
@@ -5148,6 +5280,39 @@
       "created": 1789744020,
       "mode": "unavailable",
       "scored_at": "2026-10-22T05:15:09Z",
+      "n": 1050,
+      "errors": 1050,
+      "error_rate": 1.0,
+      "excluded": true,
+      "balanced_accuracy": 0.5,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 0,
+          "fn": 0,
+          "fp": 0,
+          "tn": 0,
+          "errors": 600,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.5
+        },
+        "xstest-v2": {
+          "tp": 0,
+          "fn": 0,
+          "fp": 0,
+          "tn": 0,
+          "errors": 450,
+          "recall": 0.0,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.5
+        }
+      }
+    },
+    {
+      "model": "z-ai/glm-5.3-flashx-legal",
+      "created": 1793626154,
+      "mode": "unavailable",
+      "scored_at": "2026-11-09T06:40:22Z",
       "n": 1050,
       "errors": 1050,
       "error_rate": 1.0,

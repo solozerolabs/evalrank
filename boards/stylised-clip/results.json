@@ -24,7 +24,7 @@
       "items": 8
     }
   ],
-  "updated_at": "2026-11-14T19:17:07Z",
+  "updated_at": "2026-11-14T20:05:04Z",
   "models": [
     {
       "model": "HappyHorse 1.0",
@@ -300,7 +300,13 @@
           "wer": 0.0,
           "transcript": " Three customers signed up while I was asleep."
         }
-      ]
+      ],
+      "billing": {
+        "key_id": "fal_sk_34678afd9e5e4dcba4054a1750b6c4a2",
+        "started_at": "2026-11-14T19:53:21Z",
+        "finished_at": "2026-11-14T19:56:34Z",
+        "video_seconds": 5.038
+      }
     },
     {
       "model": "FLUX 3 Video (20260811)",
@@ -438,7 +444,13 @@
           "wer": 0.0,
           "transcript": " Three customers signed up while I was asleep."
         }
-      ]
+      ],
+      "billing": {
+        "key_id": "fal_sk_34678afd9e5e4dcba4054a1750b6c4a2",
+        "started_at": "2026-11-14T19:57:18Z",
+        "finished_at": "2026-11-14T20:00:37Z",
+        "video_seconds": 5.042
+      }
     },
     {
       "model": "Dreamina Seedance 2.0 (720p)",
@@ -856,7 +868,13 @@
           "wer": 0.0,
           "transcript": " Three customers signed up while I was asleep."
         }
-      ]
+      ],
+      "billing": {
+        "key_id": "fal_sk_34678afd9e5e4dcba4054a1750b6c4a2",
+        "started_at": "2026-11-14T20:01:58Z",
+        "finished_at": "2026-11-14T20:06:04Z",
+        "video_seconds": 5.042
+      }
     },
     {
       "model": "Hailuo 2.3",
@@ -1272,7 +1290,13 @@
           "wer": 0.0,
           "transcript": " Three customers signed up while I was asleep."
         }
-      ]
+      ],
+      "billing": {
+        "key_id": "fal_sk_34678afd9e5e4dcba4054a1750b6c4a2",
+        "started_at": "2026-11-14T20:00:36Z",
+        "finished_at": "2026-11-14T20:02:58Z",
+        "video_seconds": 5.042
+      }
     },
     {
       "model": "Wan 2.7",
@@ -1548,7 +1572,13 @@
           "wer": 0.0,
           "transcript": " Three customers signed up while I was asleep!"
         }
-      ]
+      ],
+      "billing": {
+        "key_id": "fal_sk_34678afd9e5e4dcba4054a1750b6c4a2",
+        "started_at": "2026-11-14T19:55:34Z",
+        "finished_at": "2026-11-14T19:57:44Z",
+        "video_seconds": 5.035
+      }
     },
     {
       "model": "Gemini Omni 1.1 Flash",
@@ -1688,7 +1718,13 @@
           "wer": 0.0,
           "transcript": " Three customers signed up while I was asleep."
         }
-      ]
+      ],
+      "billing": {
+        "key_id": "fal_sk_34678afd9e5e4dcba4054a1750b6c4a2",
+        "started_at": "2026-11-14T19:52:20Z",
+        "finished_at": "2026-11-14T19:54:21Z",
+        "video_seconds": 5.035
+      }
     },
     {
       "model": "Gemini Omni 1.2 Flash",
@@ -1827,7 +1863,13 @@
           "transcript": " Three customers signed up while I was asleep!"
         }
       ],
-      "attempts": 1
+      "attempts": 1,
+      "billing": {
+        "key_id": "fal_sk_34678afd9e5e4dcba4054a1750b6c4a2",
+        "started_at": "2026-11-14T19:48:35Z",
+        "finished_at": "2026-11-14T19:50:40Z",
+        "video_seconds": 5.035
+      }
     },
     {
       "model": "MiniMax H3",
@@ -1966,7 +2008,13 @@
           "transcript": " Three customers signed up while I was asleep!"
         }
       ],
-      "attempts": 1
+      "attempts": 1,
+      "billing": {
+        "key_id": "fal_sk_34678afd9e5e4dcba4054a1750b6c4a2",
+        "started_at": "2026-11-14T19:49:40Z",
+        "finished_at": "2026-11-14T19:53:20Z",
+        "video_seconds": 5.184
+      }
     },
     {
       "model": "Wan 2.6",
@@ -2242,7 +2290,13 @@
           "wer": 0.0,
           "transcript": " Three customers signed up while I was asleep!"
         }
-      ]
+      ],
+      "billing": {
+        "key_id": "fal_sk_34678afd9e5e4dcba4054a1750b6c4a2",
+        "started_at": "2026-11-14T19:59:37Z",
+        "finished_at": "2026-11-14T20:01:36Z",
+        "video_seconds": 5.042
+      }
     },
     {
       "model": "Grok Imagine Video 1.5 (720p)",
@@ -2380,7 +2434,13 @@
           "wer": 0.0,
           "transcript": " Three customers signed up while I was asleep!"
         }
-      ]
+      ],
+      "billing": {
+        "key_id": "fal_sk_34678afd9e5e4dcba4054a1750b6c4a2",
+        "started_at": "2026-11-14T19:56:44Z",
+        "finished_at": "2026-11-14T19:58:18Z",
+        "video_seconds": 5.042
+      }
     }
   ]
 }

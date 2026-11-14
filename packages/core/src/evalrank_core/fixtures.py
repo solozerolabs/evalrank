@@ -101,6 +101,7 @@ _USE_CASE_ROWS = (
         ("model",),
     ),
     ("image-generation", "Image generation", "Generate images from a text prompt", ("model",)),
+    ("video-generation", "Video generation", "Generate video from a text prompt or a still image", ("model",)),
 )
 
 

@@ -48,10 +48,16 @@ So EvalRank runs this board itself and publishes every row.
 - **Errors:** a clip that could not be judged (transport failure, or fewer than two judges
   answered) is an error, not a fail. A row with more than one error is published with
   `excluded: true`, never ranked, and retried next run.
-- **Candidates:** `candidates.json`, a reviewed map from LMArena arena names to the fal
-  endpoint that serves each model. The board's entity name is the arena name, so a row joins
-  the arena families as one model. `python3 harness.py candidates` prints the map with each
-  endpoint's fal status.
+- **Candidates:** discovered every run, with no hand-kept map. LMArena's `image_to_video`
+  board is joined to every active fal image-to-video endpoint by `match_endpoint`: version
+  tokens must be equal and every brand word present, so a lookalike (Veo 3 -> Wan 3.0) never
+  takes another model's arena rank. The 17 pairs reviewed by hand on 2026-11-14 are its test
+  oracle. The board's entity name is the arena name, so a row joins the arena families as one
+  model. `python3 harness.py candidates` prints the join.
+- **Price:** each row's `billing` says where its price is: what fal billed `key_id` (the
+  board's own key, which runs nothing else) on the endpoint between `started_at` and
+  `finished_at`, over `video_seconds` of delivered clips. A reader with a usage key divides
+  the bill by the seconds; fal's listed unit prices are not per second of video.
 - **Identity:** `results.json` records:
   - the item-set digest (stills, lines and length);
   - the prompt sha256 (prompt tail, judge prompt and schema);
@@ -78,13 +84,14 @@ changes.
 
 ## Refresh
 
-`.github/workflows/stylised-clip-board.yml` runs weekly. It scores candidates not yet on the
-board, retries an excluded row up to 3 runs in all, and commits `results.json`. A scheduled run
-scores at most 2 models (about $10 at worst; $0 when nothing is new) and refuses rather than
-rescoring every model when the prompt, items or judge panel changed; a manual run has no cap. It needs the repository secrets
-`FAL_API_KEY` and `OPENROUTER_API_KEY`; a scheduled run without them fails, so a stale board is
-never silent. A model costs its fal price for 40 s of video (about $2 to $8) plus a few cents
-of judging.
+`.github/workflows/stylised-clip-board.yml` runs weekly. A scheduled run scores only discovered
+models the arena ranks above the best passer (nothing else can become the pick), at most 2,
+retries an excluded row up to 3 runs in all, refuses rather than rescoring every model when the
+prompt, items or judge panel changed, and re-measures one passer's price (best first, when its
+bill is missing or over 28 days old; about $1). A quiet week costs $0; a manual run has no cap.
+It needs the repository secrets `FAL_API_KEY` (the board's own key) and `OPENROUTER_API_KEY`;
+a scheduled run without them fails, so a stale board is never silent. A model costs its fal
+price for 40 s of video (about $2 to $10) plus a few cents of judging.
 
 Run it locally:
 

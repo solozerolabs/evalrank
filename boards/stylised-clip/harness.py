@@ -52,13 +52,13 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 HARNESS_VERSION = "1"
 HERE = Path(__file__).resolve().parent
 ITEMS = HERE / "items.json"
-CANDIDATES = HERE / "candidates.json"
+ARENA_ROWS = "https://datasets-server.huggingface.co/rows?dataset=lmarena-ai/leaderboard-dataset&config=image_to_video&split=latest"
 FAL_QUEUE = "https://queue.fal.run"
 FAL_API = "https://api.fal.ai/v1"
 FAL_OPENAPI = "https://fal.ai/api/openapi/queue/openapi.json"
@@ -72,6 +72,8 @@ MAX_WER = 0.2
 MIN_SECONDS = 4.5
 MAX_ERRORS = 1
 MAX_ATTEMPTS = 3  # an excluded row is retried this many runs in all, then left for a person
+PASS_BAR = 0.875  # 7 of 8: the pass rate a consumer picking one clip model requires (7 of 8)
+REPRICE_DAYS = 28  # a passer's measured price is re-measured after this many days
 CLIP_TIMEOUT_SECONDS = 900
 REQUEST_TIMEOUT_SECONDS = 180
 RETRIES = 4
@@ -152,8 +154,97 @@ def items() -> dict:
     return json.loads(ITEMS.read_text(encoding="utf-8"))
 
 
+_STOP = {"image", "to", "video", "i2v", "us", "fal", "ai", "the"}
+_VARIANT = {"pro", "max", "turbo", "lite", "fast", "standard", "lora", "reference", "edit", "extend", "master", "plus", "flash"}
+
+
+def _tokens(text: str) -> list[str]:
+    out = []
+    for token in re.split(r"[^a-z0-9.]+", re.sub(r"\([^)]*\)", "", text.lower())):
+        token = token.strip(".")
+        if not token or token in _STOP:
+            continue
+        if re.fullmatch(r"v?\d+(\.\d+)*", token):
+            token = re.sub(r"(\.0)+$", "", token.lstrip("v"))
+        out.append(token)
+    return out
+
+
+def match_endpoint(arena_name: str, organization: str, endpoints: list[dict]) -> str | None:
+    """The fal endpoint that serves an arena model, or None. A wrong join hands one model
+    another's arena rank, so it is strict: version tokens equal, every brand word present
+    (a leading sub-brand like "Dreamina" may be absent when the organization is in the
+    endpoint), and a variant word ("pro") may be absent only from an endpoint with no variant.
+    Ties go to an image-to-video path, then the shortest endpoint."""
+    words = _tokens(arena_name)
+    versions = {w for w in words if re.search(r"\d", w)}
+    brand = [w for w in words if w not in versions]
+    if not any(len(w) >= 3 and w not in _VARIANT for w in brand):
+        return None
+    org = re.sub(r"[^a-z0-9]", "", (organization or "").lower())
+    ranked = []
+    for row in endpoints:
+        theirs = _tokens(row["endpoint"].replace("/", " ") + " " + (row.get("name") or ""))
+        their_versions = {w for w in theirs if re.search(r"\d", w)}
+        if their_versions != versions and not (not their_versions and versions == {"1"}):
+            continue
+        blob = "".join(theirs)
+        missing = [w for w in brand if w not in blob]
+        missing_brand = [w for w in missing if w not in _VARIANT]
+        if missing_brand and not (missing_brand == brand[:1] and len(org) >= 3 and org in blob):
+            continue
+        if not any(len(w) >= 3 and w not in _VARIANT and w in blob for w in brand):
+            continue
+        extra_variants = {w for w in theirs if w in _VARIANT} - set(brand)
+        if extra_variants and any(w in _VARIANT for w in missing):
+            continue
+        not_i2v = 0 if ("image-to-video" in row["endpoint"] or "i2v" in row["endpoint"]) else 1
+        ranked.append((len(missing), not_i2v, len(extra_variants), len(row["endpoint"]), row["endpoint"]))
+    ranked.sort()
+    if not ranked or (len(ranked) > 1 and ranked[0][:4] == ranked[1][:4]):
+        return None
+    return ranked[0][4]
+
+
+def join(arena: list[dict], endpoints: list[dict]) -> list[dict]:
+    """Arena rows x fal endpoints -> candidates best-ranked first; an endpoint keeps its best name."""
+    out, seen = [], set()
+    for row in sorted(arena, key=lambda r: r["rank"]):
+        endpoint = match_endpoint(row["model_name"], row.get("organization") or "", endpoints)
+        if endpoint and endpoint not in seen:
+            seen.add(endpoint)
+            out.append({"arena_name": row["model_name"], "endpoint": endpoint, "arena_rank": row["rank"]})
+    return out
+
+
+def fal_endpoints() -> list[dict]:
+    """Every active fal image-to-video endpoint (fal pages at 100)."""
+    out, cursor = [], ""
+    while True:
+        url = f"{FAL_API}/models?category=image-to-video&limit=100" + (f"&cursor={cursor}" if cursor else "")
+        body = json.loads(_retry(lambda url=url: _fetch(url)))
+        for model in body.get("models", []):
+            meta = model.get("metadata") or {}
+            if meta.get("status") == "active":
+                out.append({"endpoint": model["endpoint_id"], "name": meta.get("display_name")})
+        if not body.get("has_more"):
+            return out
+        cursor = body["next_cursor"]
+
+
+def arena_rows() -> list[dict]:
+    rows, offset = [], 0
+    while True:
+        body = json.loads(_retry(lambda offset=offset: _fetch(f"{ARENA_ROWS}&offset={offset}&length=100")))
+        rows += [r["row"] for r in body.get("rows", [])]
+        offset += 100
+        if offset >= body.get("num_rows_total", 0):
+            return rows
+
+
 def candidates() -> list[dict]:
-    return json.loads(CANDIDATES.read_text(encoding="utf-8"))["candidates"]
+    """Discovered each run: no hand-kept name map."""
+    return join(arena_rows(), fal_endpoints())
 
 
 def item_set_sha256(spec: dict) -> str:
@@ -441,6 +532,7 @@ def score_clip(endpoint: str, props: dict, still: dict, line: dict, still_url: s
     started = time.monotonic()
     try:
         payload = {"prompt": prompt_for(line), **fal_inputs(props, seconds, still_url)}
+        clip["video_seconds"] = float(payload.get("duration") or seconds)  # replaced by the probe below
         url = video_url(fal_run(fal_key, endpoint, payload))
     except Refused as exc:
         return {**clip, "delivered": False, "passed": False, "code": str(exc), "error": False}
@@ -459,6 +551,7 @@ def score_clip(endpoint: str, props: dict, still: dict, line: dict, still_url: s
     decided_fail = not (checks["format"] and checks["line"])
     undecided = checks["no_text"] is None and not decided_fail
     passed = not decided_fail and not undecided and bool(checks["no_text"] and checks["identity"])
+    clip["video_seconds"] = (checks.get("probe") or {}).get("seconds") or clip["video_seconds"]
     return {**clip, "delivered": True, **checks, "passed": passed, "error": undecided}
 
 
@@ -504,12 +597,27 @@ def score_model(candidate: dict, still_urls: dict[str, str], *, fal_key: str, ap
     spec = items()
     props = model_inputs(candidate["endpoint"])
     jobs = [(still, line) for still in spec["stills"] for line in spec["lines"]]
+    started = _now()
     with concurrent.futures.ThreadPoolExecutor(max(1, concurrency)) as pool:
         clips = list(pool.map(
             lambda job: score_clip(candidate["endpoint"], props, job[0], job[1], still_urls[job[0]["id"]], spec["seconds"], fal_key=fal_key, api_key=api_key),
             jobs,
         ))
-    return summarize(candidate["endpoint"], candidate["arena_name"], clips, list_price(fal_key, candidate["endpoint"]))
+    row = summarize(candidate["endpoint"], candidate["arena_name"], clips, list_price(fal_key, candidate["endpoint"]))
+    return {**row, "arena_rank": candidate.get("arena_rank"), "billing": billing(fal_key, started, clips)}
+
+
+def _now() -> str:
+    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def billing(fal_key: str, started: str, clips: list[dict]) -> dict:
+    """Where to read this row's price: what fal billed ``key_id`` on the endpoint between
+    ``started_at`` and ``finished_at``, over ``video_seconds`` of delivered clips. The board's key
+    runs nothing else, so the bill is these clips alone (a reader with a usage key reads it)."""
+    finished = (datetime.now(UTC) + timedelta(minutes=1)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    seconds = sum(c.get("video_seconds") or 0 for c in clips if c.get("delivered"))
+    return {"key_id": fal_key.split(":", 1)[0], "started_at": started, "finished_at": finished, "video_seconds": round(seconds, 3)}
 
 
 def empty_results() -> dict:
@@ -551,20 +659,58 @@ def load_results(path: Path) -> dict:
     return current if same else fresh  # a changed prompt, item set, harness or panel starts a new board
 
 
-def pick(results: dict, candidates: list[dict], wanted: set[str], *, rescore: bool) -> list[dict]:
+def passers(results: dict, candidates: list[dict]) -> list[dict]:
+    """Rows a pick could come from, best arena rank first (undiscovered rows drop out)."""
+    rank = {c["endpoint"]: c["arena_rank"] for c in candidates}
+    rows = [r for r in results["models"] if not r["excluded"] and r["score"] >= PASS_BAR and r["endpoint"] in rank]
+    return sorted(rows, key=lambda r: rank[r["endpoint"]])
+
+
+def pick(results: dict, candidates: list[dict], wanted: set[str], *, rescore: bool, above_best: bool = False) -> list[dict]:
     """Candidates to score: unscored ones, plus excluded ones under ``MAX_ATTEMPTS``.
 
-    Naming endpoints or ``--rescore`` overrides both rules; that is a person deciding to spend.
+    ``above_best`` keeps only models the arena ranks above the best passer: nothing else can
+    become the pick, so a scheduled run spends only when something could change it.
+    Naming endpoints or ``--rescore`` overrides these rules; that is a person deciding to spend.
     """
     todo = [c for c in candidates if (c["endpoint"] in wanted if wanted else True)]
     if rescore or wanted:
         return todo
+    if above_best:
+        best = next(iter(passers(results, candidates)), None)
+        rank = {c["endpoint"]: c["arena_rank"] for c in candidates}
+        if best is not None:
+            todo = [c for c in todo if c["arena_rank"] < rank[best["endpoint"]]]
     rows = {row["endpoint"]: row for row in results["models"]}
     return [
         c for c in todo
         if c["endpoint"] not in rows
         or (rows[c["endpoint"]]["excluded"] and rows[c["endpoint"]].get("attempts", 1) < MAX_ATTEMPTS)
     ]
+
+
+def due_for_price(results: dict, candidates: list[dict], key_id: str, *, now: datetime) -> list[dict]:
+    """Passers, best first, whose price is missing, from another key, or over ``REPRICE_DAYS`` old."""
+    def stale(row: dict) -> bool:
+        bill = row.get("billing")
+        if not bill or bill["key_id"] != key_id:
+            return True
+        age = now - datetime.strptime(bill["finished_at"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
+        return age > timedelta(days=REPRICE_DAYS)
+    return [row for row in passers(results, candidates) if stale(row)]
+
+
+def reprice_row(row: dict, still_url: str, *, fal_key: str) -> dict:
+    """One clip (the first still and line) on the board key: a fresh ``billing`` window."""
+    spec = items()
+    started = _now()
+    payload = {"prompt": prompt_for(spec["lines"][0]), **fal_inputs(model_inputs(row["endpoint"]), spec["seconds"], still_url)}
+    url = video_url(fal_run(fal_key, row["endpoint"], payload))
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "clip.mp4"
+        path.write_bytes(_retry(lambda: _fetch(url)))
+        seconds = probe(path)["seconds"] or float(payload.get("duration") or spec["seconds"])
+    return {**row, "billing": billing(fal_key, started, [{"delivered": True, "video_seconds": seconds}])}
 
 
 def attempts(results: dict, row: dict) -> int:
@@ -615,27 +761,21 @@ def main(argv: list[str] | None = None) -> int:
     run.add_argument("--models", default="", help="comma-separated fal endpoints; default: every unscored candidate")
     run.add_argument("--rescore", action="store_true")
     run.add_argument("--max-models", type=int, default=0, help="score at most this many models (the weekly cost cap)")
+    run.add_argument("--above-best", action="store_true", help="only models the arena ranks above the best passer")
     run.add_argument("--keep-board", action="store_true", help="refuse instead of starting a new board when the prompt, items or panel changed")
     run.add_argument("--concurrency", type=int, default=8, help="clips in flight per model")
     run.add_argument("--workers", type=int, default=2, help="models scored in parallel")
     cal = sub.add_parser("calibrate")
     cal.add_argument("--sample", type=Path, required=True)
     sub.add_parser("candidates")
+    rep = sub.add_parser("reprice", help="re-measure passers' prices with one clip each")
+    rep.add_argument("--results", type=Path, required=True)
+    rep.add_argument("--max-models", type=int, default=1, help="0 = every passer that is due")
     args = parser.parse_args(argv)
 
     if args.command == "candidates":
-        live = {}
-        for category in ("image-to-video",):
-            cursor = ""
-            while True:  # fal pages at 100; reading one page missed newer models once
-                url = f"{FAL_API}/models?category={category}&limit=100" + (f"&cursor={cursor}" if cursor else "")
-                body = json.loads(_retry(lambda url=url: _fetch(url)))
-                live.update({m["endpoint_id"]: (m.get("metadata") or {}).get("status") for m in body.get("models", [])})
-                if not body.get("has_more"):
-                    break
-                cursor = body["next_cursor"]
         for row in candidates():
-            print(f"{row['endpoint']}\t{row['arena_name']}\t{live.get(row['endpoint'], 'not_listed')}")
+            print(f"{row['arena_rank']}\t{row['endpoint']}\t{row['arena_name']}")
         return 0
 
     fal_key = os.environ.get("FAL_API_KEY", "")
@@ -653,11 +793,31 @@ def main(argv: list[str] | None = None) -> int:
             print(f"error: {still['file']} does not match its pinned sha256", file=sys.stderr)
             return 2
     results = load_results(args.results)
+    found = candidates()
+    if args.command == "reprice":
+        due = due_for_price(results, found, fal_key.split(":", 1)[0], now=datetime.now(UTC))
+        due = due[: args.max_models] if args.max_models else due
+        if not due:
+            print("no prices due", file=sys.stderr)
+            return 0
+        first = items()["stills"][0]
+        still_url = upload(fal_key, (HERE / first["file"]).read_bytes(), first["content_type"], Path(first["file"]).name)
+        for row in due:
+            try:
+                merge(results, [reprice_row(row, still_url, fal_key=fal_key)])
+            except Exception as exc:  # noqa: BLE001 - one model's failure never stops the run
+                print(f"{row['endpoint']}: reprice failed ({type(exc).__name__}: {exc})", file=sys.stderr)
+                continue
+            tmp = args.results.with_suffix(".json.tmp")
+            tmp.write_text(json.dumps(results, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+            tmp.replace(args.results)
+            print(f"{row['endpoint']}: repriced", file=sys.stderr)
+        return 0
     if args.keep_board and args.results.exists() and not results["models"] and json.loads(args.results.read_text(encoding="utf-8"))["models"]:
         print("error: the board's prompt, items or panel changed; rescoring every model is a manual run", file=sys.stderr)
         return 3
     wanted = {name for name in args.models.split(",") if name}
-    todo = pick(results, candidates(), wanted, rescore=args.rescore)
+    todo = pick(results, found, wanted, rescore=args.rescore, above_best=args.above_best)
     if args.max_models:
         todo = todo[: args.max_models]
     if not todo:

@@ -1,0 +1,997 @@
+{
+ "source": "LMArena image_to_video latest (2026-11-09) and fal /v1/models image-to-video active, read 2026-11-14",
+ "arena": [
+  {
+   "model_name": "Gemini Omni 1.2 Flash",
+   "organization": "google",
+   "rank": 1
+  },
+  {
+   "model_name": "Dreamina Seedance 2.5 (720p)",
+   "organization": "bytedance",
+   "rank": 2
+  },
+  {
+   "model_name": "MiniMax H3",
+   "organization": "minimax",
+   "rank": 3
+  },
+  {
+   "model_name": "Gemini Omni 1.1 Flash",
+   "organization": "google",
+   "rank": 4
+  },
+  {
+   "model_name": "Wan 3.0",
+   "organization": "alibaba",
+   "rank": 5
+  },
+  {
+   "model_name": "Dreamina Seedance 2.0 (720p)",
+   "organization": "bytedance",
+   "rank": 6
+  },
+  {
+   "model_name": "SkyReels V4",
+   "organization": "skyreel",
+   "rank": 7
+  },
+  {
+   "model_name": "gemini-omni-flash",
+   "organization": "google",
+   "rank": 8
+  },
+  {
+   "model_name": "HiDream-O1-Video-1.0",
+   "organization": "hidream",
+   "rank": 9
+  },
+  {
+   "model_name": "Grok Imagine Video 1.5 (720p)",
+   "organization": "xai",
+   "rank": 10
+  },
+  {
+   "model_name": "FLUX 3 Video (20260811)",
+   "organization": "bfl",
+   "rank": 11
+  },
+  {
+   "model_name": "HappyHorse 1.0",
+   "organization": "aorizon",
+   "rank": 12
+  },
+  {
+   "model_name": "Wan 2.7",
+   "organization": "alibaba",
+   "rank": 13
+  },
+  {
+   "model_name": "Grok Imagine Video (720p)",
+   "organization": "xai",
+   "rank": 14
+  },
+  {
+   "model_name": "Veo 3.1 (Audio)",
+   "organization": "google",
+   "rank": 15
+  },
+  {
+   "model_name": "Veo 3.1 (Audio, 1080p)",
+   "organization": "google",
+   "rank": 16
+  },
+  {
+   "model_name": "Veo 3.1 Fast (Audio)",
+   "organization": "google",
+   "rank": 17
+  },
+  {
+   "model_name": "Grok Imagine Video (480p)",
+   "organization": "xai",
+   "rank": 18
+  },
+  {
+   "model_name": "Veo 3.1 Fast (Audio, 1080p)",
+   "organization": "google",
+   "rank": 19
+  },
+  {
+   "model_name": "Vidu Q3 Pro",
+   "organization": "shengshu",
+   "rank": 20
+  },
+  {
+   "model_name": "Kling 3.0 Pro",
+   "organization": "kling",
+   "rank": 21
+  },
+  {
+   "model_name": "Veo 3 (Audio)",
+   "organization": "google",
+   "rank": 22
+  },
+  {
+   "model_name": "Veo 3 Fast (Audio)",
+   "organization": "google",
+   "rank": 23
+  },
+  {
+   "model_name": "Wan 2.5 Preview",
+   "organization": "alibaba",
+   "rank": 24
+  },
+  {
+   "model_name": "Wan 2.6",
+   "organization": "alibaba",
+   "rank": 25
+  },
+  {
+   "model_name": "Seedance 1.5 Pro",
+   "organization": "bytedance",
+   "rank": 26
+  },
+  {
+   "model_name": "PixVerse V5.6",
+   "organization": "",
+   "rank": 27
+  },
+  {
+   "model_name": "Kling 2.6 Pro",
+   "organization": "kling",
+   "rank": 28
+  },
+  {
+   "model_name": "Kling 2.5 Turbo (1080p)",
+   "organization": "kling",
+   "rank": 29
+  },
+  {
+   "model_name": "Seedance 1.0 Pro",
+   "organization": "bytedance",
+   "rank": 30
+  },
+  {
+   "model_name": "Hailuo 2.3",
+   "organization": "minimax",
+   "rank": 31
+  },
+  {
+   "model_name": "Veo 3",
+   "organization": "google",
+   "rank": 32
+  },
+  {
+   "model_name": "Veo 3 Fast",
+   "organization": "google",
+   "rank": 33
+  },
+  {
+   "model_name": "Vidu Q2 Turbo",
+   "organization": "shengshu",
+   "rank": 34
+  },
+  {
+   "model_name": "P-Video",
+   "organization": "",
+   "rank": 35
+  },
+  {
+   "model_name": "Kling 2.1 Master",
+   "organization": "kling",
+   "rank": 36
+  },
+  {
+   "model_name": "Hailuo 02 Pro",
+   "organization": "minimax",
+   "rank": 37
+  },
+  {
+   "model_name": "Kling 2.1 Standard",
+   "organization": "kling",
+   "rank": 38
+  },
+  {
+   "model_name": "Luma Ray3",
+   "organization": "luma-ai",
+   "rank": 39
+  },
+  {
+   "model_name": "Hailuo 02 Standard",
+   "organization": "minimax",
+   "rank": 40
+  },
+  {
+   "model_name": "Vidu Q2 Pro",
+   "organization": "shengshu",
+   "rank": 41
+  },
+  {
+   "model_name": "HunyuanVideo 1.5",
+   "organization": "tencent",
+   "rank": 42
+  },
+  {
+   "model_name": "Hailuo 02 Fast",
+   "organization": "minimax",
+   "rank": 43
+  },
+  {
+   "model_name": "Seedance 1.0 Lite",
+   "organization": "bytedance",
+   "rank": 44
+  },
+  {
+   "model_name": "Wan 2.2 A14B",
+   "organization": "alibaba",
+   "rank": 45
+  },
+  {
+   "model_name": "Veo 2",
+   "organization": "google",
+   "rank": 46
+  },
+  {
+   "model_name": "LTX-2 19B",
+   "organization": "",
+   "rank": 47
+  },
+  {
+   "model_name": "Luma Ray2",
+   "organization": "luma-ai",
+   "rank": 48
+  },
+  {
+   "model_name": "Runway Gen-4 Turbo",
+   "organization": "runway",
+   "rank": 49
+  },
+  {
+   "model_name": "Pika 2.2",
+   "organization": "pika",
+   "rank": 50
+  }
+ ],
+ "fal": [
+  {
+   "endpoint": "fal-ai/kling-video/v3/pro/image-to-video",
+   "name": "Kling Video v3 Image to Video [Pro]"
+  },
+  {
+   "endpoint": "minimax/h3-max/image-to-video",
+   "name": "H3 Max Image to Video"
+  },
+  {
+   "endpoint": "minimax/h3-max-turbo/image-to-video",
+   "name": "H3 Max Turbo Image to Video"
+  },
+  {
+   "endpoint": "kling/v4/image-to-video",
+   "name": "Kling 4.0 Image to Video"
+  },
+  {
+   "endpoint": "minimax/h3-max/reference-to-video",
+   "name": "H3 Max Reference to Video"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+   "name": "Kling Video"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/v3/standard/image-to-video",
+   "name": "Kling Video v3 Image to Video [Standard]"
+  },
+  {
+   "endpoint": "bytedance/seedance-2.5/us/reference-to-video",
+   "name": "Seedance 2.5 US Reference to Video"
+  },
+  {
+   "endpoint": "blackforestlabs/flux-3-max/image-to-video",
+   "name": "FLUX 3 Max Image to Video"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/v2.6/pro/image-to-video",
+   "name": "Kling Video v2.6 Image to Video"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/ai-avatar/v2/standard",
+   "name": "Kling AI Avatar v2 Standard"
+  },
+  {
+   "endpoint": "alibaba/wan-3.0/image-to-video",
+   "name": "Wan 3.0"
+  },
+  {
+   "endpoint": "minimax/h3/image-to-video",
+   "name": "MiniMax H3 Image to Video"
+  },
+  {
+   "endpoint": "minimax/h3-max/lip-sync/image-to-video",
+   "name": "H3 Max Lip Sync Image to Video"
+  },
+  {
+   "endpoint": "alibaba/wan-3.0-prime/image-to-video",
+   "name": "Wan 3.0 Prime"
+  },
+  {
+   "endpoint": "bytedance/seedance-2.5/us/image-to-video",
+   "name": "Seedance 2.5 US Image to Video"
+  },
+  {
+   "endpoint": "google/gemini-omni-flash/v1.2/image-to-video",
+   "name": "Gemini Omni Flash 1.2 Image to Video"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/ai-avatar/v2/pro",
+   "name": "Kling AI Avatar v2 Pro"
+  },
+  {
+   "endpoint": "minimax/h3/reference-to-video",
+   "name": "MiniMax H3 Reference to Video"
+  },
+  {
+   "endpoint": "fal-ai/bytedance/omnihuman/v1.5",
+   "name": "Bytedance Omnihuman V1.5"
+  },
+  {
+   "endpoint": "google/gemini-omni-flash/v1.2/reference-to-video",
+   "name": "Gemini Omni Flash 1.2 Reference to Video"
+  },
+  {
+   "endpoint": "google/gemini-omni-flash/v1.1/image-to-video",
+   "name": "Gemini Omni Flash 1.1 Image to Video"
+  },
+  {
+   "endpoint": "bytedance/seedance-2.0/fast/image-to-video",
+   "name": "Seedance 2.0 Fast Image to Video"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/o3/pro/image-to-video",
+   "name": "Kling O3 Image to Video [Pro]"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/v2.5-turbo/standard/image-to-video",
+   "name": "Kling Video"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/o3/pro/reference-to-video",
+   "name": "Kling O3 Reference to Video [Pro]"
+  },
+  {
+   "endpoint": "xai/grok-imagine-video/image-to-video",
+   "name": "Grok Imagine Video"
+  },
+  {
+   "endpoint": "xai/grok-imagine-video/v1.5/image-to-video",
+   "name": "Grok Imagine Video 1.5"
+  },
+  {
+   "endpoint": "fal-ai/bytedance/seedance/v1/pro/fast/image-to-video",
+   "name": "Bytedance Seedance V1 Pro Fast Image To Video"
+  },
+  {
+   "endpoint": "bytedance/omnihuman/v2",
+   "name": "Bytedance Omnihuman V2"
+  },
+  {
+   "endpoint": "xai/grok-imagine-video/v1.5/lite/image-to-video",
+   "name": "Grok Imagine Video 1.5 Lite Image to Video"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/o3/standard/image-to-video",
+   "name": "Kling O3 Image to Video [Pro]"
+  },
+  {
+   "endpoint": "fal-ai/bytedance/seedance/v1/pro/image-to-video",
+   "name": "Seedance 1.0 Pro"
+  },
+  {
+   "endpoint": "bytedance/seedance-2.0/fast/reference-to-video",
+   "name": "Seedance 2.0 Fast Reference to Video"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v6/image-to-video",
+   "name": "PixVerse V6 Image To Video"
+  },
+  {
+   "endpoint": "veed/fabric-1.0",
+   "name": "Fabric 1.0"
+  },
+  {
+   "endpoint": "google/gemini-omni-flash/v1.1/reference-to-video",
+   "name": "Gemini Omni Flash 1.1 Reference to Video"
+  },
+  {
+   "endpoint": "lightricks/ltx-2.5/image-to-video/pro",
+   "name": "LTX 2.5 Image to Video Pro"
+  },
+  {
+   "endpoint": "fal-ai/minimax/hailuo-02/standard/image-to-video",
+   "name": "MiniMax Hailuo 02 [Standard] (Image to Video)"
+  },
+  {
+   "endpoint": "kling/v4/flash/image-to-video",
+   "name": "Kling 4.0 Flash Image to Video"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/o3/standard/reference-to-video",
+   "name": "Kling O3 Reference to Video [Standard]"
+  },
+  {
+   "endpoint": "minimax/h3-max-turbo/reference-to-video",
+   "name": "H3 Max Turbo Reference to Video"
+  },
+  {
+   "endpoint": "fal-ai/heygen/avatar4/image-to-video",
+   "name": "Heygen"
+  },
+  {
+   "endpoint": "fal-ai/wan/v2.7/image-to-video",
+   "name": "Wan"
+  },
+  {
+   "endpoint": "heygen/heygen-video/image-to-video",
+   "name": "HeyGen Video Image to Video"
+  },
+  {
+   "endpoint": "bytedance/seedance-2.0/mini/image-to-video",
+   "name": "Seedance 2.0 Mini Image to Video"
+  },
+  {
+   "endpoint": "blackforestlabs/flux-3-max/keyframes-to-video",
+   "name": "FLUX 3 Max Keyframes to Video"
+  },
+  {
+   "endpoint": "bytedance/seedance-2.0/mini/reference-to-video",
+   "name": "Seedance 2.0 Mini"
+  },
+  {
+   "endpoint": "blackforestlabs/flux-3/image-to-video",
+   "name": "FLUX 3 Image to Video"
+  },
+  {
+   "endpoint": "google/gemini-omni-flash/image-to-video",
+   "name": "Gemini Omni Flash"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/v3/turbo/pro/image-to-video",
+   "name": "Kling Video V3 Turbo Pro Image to Video"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/v3/turbo/standard/image-to-video",
+   "name": "Kling Video V3 Standard Turbo Image to Video"
+  },
+  {
+   "endpoint": "minimax/h3-max/camera-controls",
+   "name": "H3 Max Camera Controls"
+  },
+  {
+   "endpoint": "fal-ai/wan-25-preview/image-to-video",
+   "name": "Wan 2.5 Image to Video"
+  },
+  {
+   "endpoint": "heygen/heygen-video/reference-to-video",
+   "name": "HeyGen Video Reference to Video"
+  },
+  {
+   "endpoint": "fal-ai/minimax/hailuo-2.3-fast/standard/image-to-video",
+   "name": "MiniMax Hailuo 2.3 Fast [Standard] (Image to Video)"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/v3/4k/image-to-video",
+   "name": "Kling Video"
+  },
+  {
+   "endpoint": "xai/grok-imagine-video/v1.5/reference-to-video",
+   "name": "Grok Imagine Video 1.5 Reference to Video"
+  },
+  {
+   "endpoint": "fal-ai/ltx-2.3/image-to-video/fast",
+   "name": "LTX 2.3 Video Fast"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/o1/image-to-video",
+   "name": "Kling O1 First Frame Last Frame to Video [Pro]"
+  },
+  {
+   "endpoint": "lightricks/ltx-2.5/image-to-video/fast",
+   "name": "LTX 2.5 Image to Video Fast"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/swap",
+   "name": "PixVerse Swap"
+  },
+  {
+   "endpoint": "xai/grok-imagine-video/reference-to-video",
+   "name": "Grok Imagine Reference to Video"
+  },
+  {
+   "endpoint": "fal-ai/minimax/hailuo-2.3/standard/image-to-video",
+   "name": "MiniMax Hailuo 2.3 [Standard] (Image to Video)"
+  },
+  {
+   "endpoint": "luma/agent/ray/v3.2/image-to-video",
+   "name": "Luma Ray 3.2 Image to Video"
+  },
+  {
+   "endpoint": "fal-ai/ffmpeg-api/images-to-video",
+   "name": "Ffmpeg Api Images to Video"
+  },
+  {
+   "endpoint": "fal-ai/creatify/aurora",
+   "name": "Creatify Aurora"
+  },
+  {
+   "endpoint": "wan/v2.6/image-to-video",
+   "name": "Wan v2.6 Image to Video"
+  },
+  {
+   "endpoint": "fal-ai/sync-lipsync/v3/image-to-video",
+   "name": "sync-3 Avatar Image to Video"
+  },
+  {
+   "endpoint": "bytedance/seedance-2.0/us/reference-to-video",
+   "name": "Seedance 2.0 US Reference to Video"
+  },
+  {
+   "endpoint": "google/gemini-omni-flash/reference-to-video",
+   "name": "Gemini Omni Flash"
+  },
+  {
+   "endpoint": "bytedance/seedance-2.0/us/image-to-video",
+   "name": "Seedance 2.0 US Image to Video"
+  },
+  {
+   "endpoint": "wan/v2.6/image-to-video/flash",
+   "name": "V2.6"
+  },
+  {
+   "endpoint": "fal-ai/minimax/hailuo-02/pro/image-to-video",
+   "name": "MiniMax Hailuo 02 [Pro] (Image to Video)"
+  },
+  {
+   "endpoint": "fal-ai/vidu/q4/image-to-video",
+   "name": "Vidu Q4"
+  },
+  {
+   "endpoint": "tbc/mischief-1/image-to-video",
+   "name": "Mischief 1"
+  },
+  {
+   "endpoint": "fal-ai/minimax/hailuo-02-fast/image-to-video",
+   "name": "Minimax"
+  },
+  {
+   "endpoint": "fal-ai/minimax/hailuo-2.3/pro/image-to-video",
+   "name": "MiniMax Hailuo 2.3 [Pro] (Image to Video)"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v6/transition",
+   "name": "PixVerse V6 Transition"
+  },
+  {
+   "endpoint": "fal-ai/ltx-2.3/image-to-video",
+   "name": "LTX 2.3 Video Pro"
+  },
+  {
+   "endpoint": "fal-ai/vidu/q4/reference-to-video",
+   "name": "Vidu Q4 Reference to Video"
+  },
+  {
+   "endpoint": "alibaba/happy-horse/image-to-video",
+   "name": "Happy Horse"
+  },
+  {
+   "endpoint": "blackforestlabs/flux-3/first-last-frame-to-video",
+   "name": "Flux 3 First Last Frame to Video"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/o3/4k/image-to-video",
+   "name": "Kling Video"
+  },
+  {
+   "endpoint": "fal-ai/wan/v2.7/reference-to-video",
+   "name": "Wan 2.7 Reference to Video"
+  },
+  {
+   "endpoint": "alibaba/happy-horse/v1.1/image-to-video",
+   "name": "Happy Horse 1.1 Image to Video"
+  },
+  {
+   "endpoint": "fal-ai/vidu/q3/image-to-video",
+   "name": "Vidu"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/o1/standard/image-to-video",
+   "name": "Kling O1 First Frame Last Frame to Video [Standard]"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/o3/4k/reference-to-video",
+   "name": "Kling Video"
+  },
+  {
+   "endpoint": "fal-ai/bytedance/omnihuman",
+   "name": "OmniHuman"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/o1/reference-to-video",
+   "name": "Kling O1 Reference Image to Video [Pro]"
+  },
+  {
+   "endpoint": "fal-ai/vidu/q3/image-to-video/turbo",
+   "name": "Vidu"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/c1/image-to-video",
+   "name": "PixVerse C1 Image To Video"
+  },
+  {
+   "endpoint": "alibaba/happy-horse/v1.1/reference-to-video",
+   "name": "Happy Horse 1.1 Reference to Video"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/v1/standard/ai-avatar",
+   "name": "Kling AI Avatar"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v5.5/image-to-video",
+   "name": "PixVerse V5.5 Image To Video"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v5/image-to-video",
+   "name": "PixVerse V5 Image To Video"
+  },
+  {
+   "endpoint": "alibaba/happy-horse/reference-to-video",
+   "name": "Happy Horse"
+  },
+  {
+   "endpoint": "pixverse/v6/max/image-to-video",
+   "name": "PixVerse V6 Max Image To Video"
+  },
+  {
+   "endpoint": "veed/fabric-1.0/fast",
+   "name": "Fabric 1.0 Fast"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v5.5/effects",
+   "name": "PixVerse V5.5 Effects"
+  },
+  {
+   "endpoint": "fal-ai/live-portrait",
+   "name": "Live Portrait"
+  },
+  {
+   "endpoint": "fal-ai/ltx-video-13b-distilled/image-to-video",
+   "name": "LTX Video-0.9.7 13B Distilled"
+  },
+  {
+   "endpoint": "blackforestlabs/flux-3/image-to-video/draft",
+   "name": "Flux 3 Image To Video Draft"
+  },
+  {
+   "endpoint": "fal-ai/minimax/hailuo-2.3-fast/pro/image-to-video",
+   "name": "MiniMax Hailuo 2.3 Fast [Pro] (Image to Video)"
+  },
+  {
+   "endpoint": "blackforestlabs/flux-3/keyframes-to-video",
+   "name": "Flux 3 Image to Video"
+  },
+  {
+   "endpoint": "fal-ai/minimax/video-01/image-to-video",
+   "name": "MiniMax (Hailuo AI) Video 01"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/c1/reference-to-video",
+   "name": "PixVerse C1 Reference To Video"
+  },
+  {
+   "endpoint": "fal-ai/ltx-2.3-22b/distilled/image-to-video",
+   "name": "LTX-2.3 22B Distilled"
+  },
+  {
+   "endpoint": "fal-ai/ltxv-13b-098-distilled/image-to-video",
+   "name": "LTX-Video 13B 0.9.8 Distilled"
+  },
+  {
+   "endpoint": "minimax/h3/image-to-video/lora",
+   "name": "MiniMax H3 Image to Video LoRA"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/v1/pro/ai-avatar",
+   "name": "Kling AI Avatar Pro"
+  },
+  {
+   "endpoint": "fal-ai/ltx-video/image-to-video",
+   "name": "LTX Video (preview)"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v5/transition",
+   "name": "PixVerse V5 Transition"
+  },
+  {
+   "endpoint": "pixelcut/looping-video",
+   "name": "Pixelcut Looping Video"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v4.5/image-to-video",
+   "name": "PixVerse V4.5 Image To Video"
+  },
+  {
+   "endpoint": "fal-ai/sadtalker",
+   "name": "Sad Talker"
+  },
+  {
+   "endpoint": "fal-ai/longcat-video/distilled/image-to-video/720p",
+   "name": "LongCat Video Distilled"
+  },
+  {
+   "endpoint": "fal-ai/longcat-video/distilled/image-to-video/480p",
+   "name": "LongCat Video Distilled"
+  },
+  {
+   "endpoint": "fal-ai/vidu/q2/image-to-video/turbo",
+   "name": "Vidu"
+  },
+  {
+   "endpoint": "fal-ai/ltx-2.3-quality/image-to-video",
+   "name": "Ltx 2.3 Quality"
+  },
+  {
+   "endpoint": "fal-ai/ltx-2.3-22b/image-to-video",
+   "name": "LTX-2.3 22B"
+  },
+  {
+   "endpoint": "fal-ai/vidu/q3/reference-to-video/mix",
+   "name": "Vidu"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v5.5/transition",
+   "name": "PixVerse V5.5 Transition"
+  },
+  {
+   "endpoint": "fal-ai/kling-video/o1/standard/reference-to-video",
+   "name": "Kling O1 Reference Image to Video [Standard]"
+  },
+  {
+   "endpoint": "blackforestlabs/flux-3/first-last-frame-to-video/draft",
+   "name": "Flux 3 First Last Frame to Video Draft"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/c1/transition",
+   "name": "PixVerse C1 Transition"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v4.5/effects",
+   "name": "PixVerse V4.5 Effects"
+  },
+  {
+   "endpoint": "fal-ai/ovi/image-to-video",
+   "name": "Ovi"
+  },
+  {
+   "endpoint": "fal-ai/hunyuan-video-v1.5/image-to-video",
+   "name": "Hunyuan Video V1.5"
+  },
+  {
+   "endpoint": "fal-ai/vidu/q2/image-to-video/pro",
+   "name": "Vidu"
+  },
+  {
+   "endpoint": "fal-ai/ai-avatar/multi",
+   "name": "AI Avatar Multi"
+  },
+  {
+   "endpoint": "fal-ai/vidu/q2/reference-to-video/pro",
+   "name": "Vidu"
+  },
+  {
+   "endpoint": "fal-ai/framepack",
+   "name": "Framepack"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v5/effects",
+   "name": "PixVerse V5 Effects"
+  },
+  {
+   "endpoint": "nvidia/cosmos-3-super/image-to-video",
+   "name": "Cosmos 3 Super Image to Video"
+  },
+  {
+   "endpoint": "fal-ai/minimax/video-01-live/image-to-video",
+   "name": "MiniMax (Hailuo AI) Video 01"
+  },
+  {
+   "endpoint": "fal-ai/vidu/q1/image-to-video",
+   "name": "Vidu Image to Video"
+  },
+  {
+   "endpoint": "fal-ai/longcat-video/image-to-video/720p",
+   "name": "LongCat Video"
+  },
+  {
+   "endpoint": "blackforestlabs/flux-3/keyframes-to-video/draft",
+   "name": "Flux 3 Keyframes To Video Draft"
+  },
+  {
+   "endpoint": "fal-ai/kandinsky6-lite/image-to-video",
+   "name": "Kandinsky 6.0 Lite"
+  },
+  {
+   "endpoint": "fal-ai/framepack/flf2v",
+   "name": "Framepack"
+  },
+  {
+   "endpoint": "fal-ai/vidu/image-to-video",
+   "name": "Vidu Image to Video"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v5.6/image-to-video",
+   "name": "PixVerse V5.6 Image To Video"
+  },
+  {
+   "endpoint": "fal-ai/vidu/q1/reference-to-video",
+   "name": "Vidu"
+  },
+  {
+   "endpoint": "fal-ai/flashhead",
+   "name": "Flashhead"
+  },
+  {
+   "endpoint": "moonvalley/marey/i2v",
+   "name": "Marey Realism V1.5"
+  },
+  {
+   "endpoint": "fal-ai/kandinsky6-pro/image-to-video",
+   "name": "Kandinsky 6.0 Pro"
+  },
+  {
+   "endpoint": "fal-ai/vidu/start-end-to-video",
+   "name": "Vidu Start-End to Video"
+  },
+  {
+   "endpoint": "fal-ai/vidu/template-to-video",
+   "name": "Vidu Template to Video"
+  },
+  {
+   "endpoint": "fal-ai/vidu/q1/start-end-to-video",
+   "name": "Vidu Start End to Video"
+  },
+  {
+   "endpoint": "fal-ai/framepack/f1",
+   "name": "Framepack F1"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v4/effects",
+   "name": "PixVerse V4 Effects"
+  },
+  {
+   "endpoint": "fal-ai/longcat-video/image-to-video/480p",
+   "name": "LongCat Video"
+  },
+  {
+   "endpoint": "fal-ai/davinci-magihuman",
+   "name": "Davinci Magihuman"
+  },
+  {
+   "endpoint": "fal-ai/ltx-2.3-22b/image-to-video/lora",
+   "name": "LTX-2.3 22B"
+  },
+  {
+   "endpoint": "fal-ai/hunyuan-video-image-to-video",
+   "name": "Hunyuan Video Image-to-Video Inference"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v5.6/transition",
+   "name": "PixVerse V5.6 Transition"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v4/image-to-video",
+   "name": "PixVerse V4 Image To Video"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v4.5/transition",
+   "name": "PixVerse V4.5 Transition"
+  },
+  {
+   "endpoint": "fal-ai/kandinsky5-pro/image-to-video",
+   "name": "Kandinsky5 Pro"
+  },
+  {
+   "endpoint": "fal-ai/vidu/reference-to-video",
+   "name": "Vidu Reference to Video"
+  },
+  {
+   "endpoint": "fal-ai/ai-avatar/single-text",
+   "name": "AI Avatar Single Text"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v3.5/effects",
+   "name": "PixVerse V3.5 Effects"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v3.5/image-to-video",
+   "name": "PixVerse V3.5 Image To Video"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v4/image-to-video/fast",
+   "name": "PixVerse V4 Image To Video Fast"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v4.5/image-to-video/fast",
+   "name": "PixVerse V4.5 Image To Video Fast"
+  },
+  {
+   "endpoint": "fal-ai/minimax/video-01-director/image-to-video",
+   "name": "MiniMax (Hailuo AI) Video 01 Director - Image to Video"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v3.5/image-to-video/fast",
+   "name": "PixVerse V3.5 Image To Video Fast"
+  },
+  {
+   "endpoint": "fal-ai/minimax/video-01-subject-reference",
+   "name": "MiniMax (Hailuo AI) Video 01 Subject Reference"
+  },
+  {
+   "endpoint": "fal-ai/ltx-2.3-quality/ingredient",
+   "name": "Ltx 2.3 Quality"
+  },
+  {
+   "endpoint": "fal-ai/pixverse/v3.5/transition",
+   "name": "PixVerse V3.5 Transition"
+  },
+  {
+   "endpoint": "fal-ai/ai-avatar/multi-text",
+   "name": "AI Avatar Multi Text"
+  },
+  {
+   "endpoint": "fal-ai/ltx-2.3-quality/image-to-video/lora",
+   "name": "Ltx 2.3 Quality"
+  },
+  {
+   "endpoint": "fal-ai/ltx-2.3-22b/distilled/image-to-video/lora",
+   "name": "LTX-2.3 22B Distilled"
+  },
+  {
+   "endpoint": "fal-ai/sadtalker/reference",
+   "name": "Sad Talker"
+  },
+  {
+   "endpoint": "fal-ai/decart/lucy-5b/image-to-video",
+   "name": "Decart"
+  },
+  {
+   "endpoint": "fal-ai/magi-distilled/image-to-video",
+   "name": "MAGI-1 (Distilled)"
+  },
+  {
+   "endpoint": "fal-ai/wan/v2.2-a14b/image-to-video/lora",
+   "name": "Wan v2.2 A14B Image-to-Video A14B with LoRAs"
+  },
+  {
+   "endpoint": "fal-ai/wan/v2.2-a14b/image-to-video/turbo",
+   "name": "Wan"
+  },
+  {
+   "endpoint": "fal-ai/wan/v2.2-5b/image-to-video",
+   "name": "Wan v2.2 5B"
+  },
+  {
+   "endpoint": "fal-ai/wan/v2.2-a14b/image-to-video",
+   "name": "Wan v2.2 A14B"
+  },
+  {
+   "endpoint": "fal-ai/wan-pro/image-to-video",
+   "name": "Wan-2.1 Pro Image-to-Video"
+  },
+  {
+   "endpoint": "fal-ai/wan-i2v-lora",
+   "name": "Wan-2.1 Image-to-Video with LoRAs"
+  },
+  {
+   "endpoint": "fal-ai/wan-i2v",
+   "name": "Wan-2.1 Image-to-Video"
+  }
+ ]
+}

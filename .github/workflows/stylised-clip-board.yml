@@ -37,9 +37,18 @@ jobs:
           FAL_API_KEY: ${{ secrets.FAL_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         working-directory: boards/stylised-clip
-        # A scheduled run scores at most 2 models (~$10 worst case) and never restarts the board;
-        # with nothing new it spends $0. A manual run has no cap.
-        run: python3 harness.py run --results results.json --workers 2 --concurrency 8 ${{ github.event_name == 'schedule' && '--max-models 2 --keep-board' || '' }}
+        # A scheduled run scores only models the arena ranks above the best passer (nothing
+        # else can become the pick), at most 2, and never restarts the board: a quiet week is
+        # $0. A manual run scores every unscored discovered model.
+        run: python3 harness.py run --results results.json --workers 2 --concurrency 8 ${{ github.event_name == 'schedule' && '--above-best --max-models 2 --keep-board' || '' }}
+      - name: Re-measure prices
+        env:
+          FAL_API_KEY: ${{ secrets.FAL_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        working-directory: boards/stylised-clip
+        # One clip per passer whose fal bill is missing or over 28 days old (best first); the
+        # scheduled run re-measures one (~$1), a manual run every one that is due.
+        run: python3 harness.py reprice --results results.json --max-models ${{ github.event_name == 'schedule' && '1' || '0' }}
       - name: Test the board
         run: python3 -m unittest tests.test_stylised_clip_board
       - name: Commit the board

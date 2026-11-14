@@ -119,13 +119,80 @@ class ItemTests(unittest.TestCase):
         for still in harness.items()["stills"]:
             self.assertEqual(still["sha256"], hashlib.sha256((BOARD / still["file"]).read_bytes()).hexdigest())
 
-    def test_candidates_are_unique_fal_endpoints_with_arena_names(self):
-        rows = harness.candidates()
+
+
+DISCOVERY = json.loads((ROOT / "tests" / "fixtures" / "stylised_clip_discovery.json").read_text(encoding="utf-8"))
+#: The hand-reviewed name map this matcher replaced (2026-11-14): every pair must still join.
+REVIEWED = {
+    "Gemini Omni 1.2 Flash": "google/gemini-omni-flash/v1.2/image-to-video",
+    "MiniMax H3": "minimax/h3/image-to-video",
+    "Dreamina Seedance 2.5 (720p)": "bytedance/seedance-2.5/us/image-to-video",
+    "Gemini Omni 1.1 Flash": "google/gemini-omni-flash/v1.1/image-to-video",
+    "Wan 3.0": "alibaba/wan-3.0/image-to-video",
+    "Dreamina Seedance 2.0 (720p)": "bytedance/seedance-2.0/us/image-to-video",
+    "gemini-omni-flash": "google/gemini-omni-flash/image-to-video",
+    "Grok Imagine Video 1.5 (720p)": "xai/grok-imagine-video/v1.5/image-to-video",
+    "FLUX 3 Video (20260811)": "blackforestlabs/flux-3/image-to-video",
+    "HappyHorse 1.0": "alibaba/happy-horse/image-to-video",
+    "Wan 2.7": "fal-ai/wan/v2.7/image-to-video",
+    "Grok Imagine Video (720p)": "xai/grok-imagine-video/image-to-video",
+    "Vidu Q3 Pro": "fal-ai/vidu/q3/image-to-video",
+    "Kling 3.0 Pro": "fal-ai/kling-video/v3/pro/image-to-video",
+    "Wan 2.6": "wan/v2.6/image-to-video",
+    "PixVerse V5.6": "fal-ai/pixverse/v5.6/image-to-video",
+    "Hailuo 2.3": "fal-ai/minimax/hailuo-2.3/pro/image-to-video",
+}
+
+
+class DiscoveryTests(unittest.TestCase):
+    def _match(self, name):
+        org = next(r["organization"] for r in DISCOVERY["arena"] if r["model_name"] == name)
+        return harness.match_endpoint(name, org, DISCOVERY["fal"])
+
+    def test_every_reviewed_pair_joins(self):
+        for name, endpoint in REVIEWED.items():
+            self.assertEqual(endpoint, self._match(name), name)
+
+    def test_lookalikes_do_not_join(self):
+        # Each was a wrong join in the prototype: one model would take another's arena rank.
+        for name in ("SkyReels V4", "Veo 3", "Veo 3 (Audio)", "Veo 2", "Seedance 1.5 Pro", "Seedance 1.0 Lite", "HunyuanVideo 1.5", "P-Video"):
+            self.assertIsNone(self._match(name), name)
+
+    def test_join_is_best_ranked_first_and_one_name_per_endpoint(self):
+        rows = harness.join(DISCOVERY["arena"], DISCOVERY["fal"])
+        self.assertEqual([r["arena_rank"] for r in rows], sorted(r["arena_rank"] for r in rows))
         self.assertEqual(len(rows), len({r["endpoint"] for r in rows}))
-        self.assertEqual(len(rows), len({r["arena_name"] for r in rows}))
-        for row in rows:
-            self.assertRegex(row["endpoint"], r"^[a-z0-9-]+(/[a-z0-9.-]+)+$")
-            self.assertTrue(row["arena_name"].strip())
+        grok = [r["arena_name"] for r in rows if r["endpoint"] == "xai/grok-imagine-video/image-to-video"]
+        self.assertEqual(["Grok Imagine Video (720p)"], grok)
+
+
+class PriceTests(unittest.TestCase):
+    CANDIDATES = [{"endpoint": e, "arena_name": e, "arena_rank": r} for r, e in enumerate(("top", "pick", "low", "fail"), 1)]
+
+    def _results(self, billing=None):
+        row = lambda e, score: {"endpoint": e, "excluded": False, "score": score, "billing": billing}
+        return {"models": [row("pick", 0.875), row("low", 1.0), row("fail", 0.5)]}
+
+    def test_a_scheduled_run_scores_only_models_above_the_best_passer(self):
+        todo = harness.pick(self._results(), self.CANDIDATES, set(), rescore=False, above_best=True)
+        self.assertEqual(["top"], [c["endpoint"] for c in todo])
+
+    def test_billing_is_the_board_key_window_over_delivered_seconds(self):
+        bill = harness.billing("fal_sk_board:secret", "2026-11-14T19:00:00Z", [
+            {"delivered": True, "video_seconds": 5.04}, {"delivered": False, "video_seconds": 5}, {"delivered": True, "video_seconds": 4.96},
+        ])
+        self.assertEqual("fal_sk_board", bill["key_id"])
+        self.assertEqual(10.0, bill["video_seconds"])
+        self.assertLess(bill["started_at"], bill["finished_at"])
+
+    def test_prices_are_due_when_missing_from_another_key_or_old(self):
+        from datetime import UTC, datetime
+        now = datetime(2026, 12, 30, tzinfo=UTC)
+        fresh = {"key_id": "board", "finished_at": "2026-12-20T00:00:00Z"}
+        self.assertEqual(["pick", "low"], [r["endpoint"] for r in harness.due_for_price(self._results(), self.CANDIDATES, "board", now=now)])
+        self.assertEqual([], harness.due_for_price(self._results(fresh), self.CANDIDATES, "board", now=now))
+        self.assertEqual(2, len(harness.due_for_price(self._results(fresh), self.CANDIDATES, "other", now=now)))
+        self.assertEqual(2, len(harness.due_for_price(self._results({**fresh, "finished_at": "2026-11-01T00:00:00Z"}), self.CANDIDATES, "board", now=now)))
 
 
 class PickTests(unittest.TestCase):
@@ -157,10 +224,9 @@ class BoardFileTests(unittest.TestCase):
         board = json.loads((BOARD / "results.json").read_text(encoding="utf-8"))
         self.assertEqual("evalrank_stylised_clip_board", board["object"])
         self.assertEqual("clip_pass_rate", board["metric"])
-        endpoints = {c["endpoint"]: c["arena_name"] for c in harness.candidates()}
         for row in board["models"]:
-            if row["endpoint"] in endpoints:  # a dropped candidate keeps its last published row
-                self.assertEqual(endpoints[row["endpoint"]], row["model"])
+            if row["endpoint"] in REVIEWED.values():
+                self.assertIn(row["model"], REVIEWED)
             judged = [c for c in row["clip_results"] if not c["error"]]
             self.assertEqual(row["passed"], sum(c["passed"] for c in judged))
             self.assertEqual(row["score"], round(row["passed"] / len(judged), 4) if judged else 0.0)

@@ -2,7 +2,7 @@
   "$schema": "../schemas/benchmark-research-provenance.schema.json",
   "object": "benchmark_research_provenance",
   "schema_version": "1",
-  "manifest_version": "2026-11-14.3",
+  "manifest_version": "2026-11-14.4",
   "families": [
     {
       "benchmark_family_id": "livecodebench",
@@ -11803,6 +11803,168 @@
           "source_ids": [
             "license",
             "results"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "music-arena-instrumental",
+      "checked_on": "2026-11-14",
+      "sources": [
+        {
+          "source_id": "release",
+          "kind": "official_site",
+          "url": "https://music-arena.org"
+        },
+        {
+          "source_id": "repository",
+          "kind": "official_repository",
+          "url": "https://github.com/gclef-cmu/music-arena"
+        },
+        {
+          "source_id": "leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://github.com/gclef-cmu/music-arena/tree/main/components/frontend/ma_frontend/leaderboard"
+        },
+        {
+          "source_id": "dataset",
+          "kind": "official_dataset",
+          "url": "https://huggingface.co/datasets/music-arena/music-arena-dataset"
+        },
+        {
+          "source_id": "paper",
+          "kind": "primary_paper",
+          "url": "https://arxiv.org/abs/2507.20900"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "harness_code_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The Music Arena code repository (gclef-cmu/music-arena), which holds the leaderboard snapshots and the scoring code components/leaderboard/ma_leaderboard/scoring.py, is MIT-licensed.",
+          "source_ids": [
+            "repository"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The music-arena/music-arena-dataset card declares the CC-BY-4.0 license, covering the arena battles (prompts, generated audio and votes) behind the published leaderboard.",
+          "source_ids": [
+            "dataset"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "MIT and CC-BY-4.0 both grant use and distribution rights without a noncommercial restriction.",
+          "source_ids": [
+            "repository",
+            "dataset"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The leaderboard TSV snapshots ship in the MIT-licensed repository and derive from the CC-BY-4.0 battle dataset, so ingested result records may be redistributed with attribution.",
+          "source_ids": [
+            "leaderboard",
+            "repository",
+            "dataset"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The battles (prompts, generated audio and votes) are published under CC-BY-4.0, which permits redistribution with attribution.",
+          "source_ids": [
+            "dataset"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Ingesting the published MIT-licensed leaderboard snapshots involves no execution environment and imposes no additional environment terms.",
+          "source_ids": [
+            "leaderboard",
+            "repository"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "MIT and CC-BY-4.0 grant reproduction rights, permitting retained copies of the fetched TSV bytes with attribution.",
+          "source_ids": [
+            "repository",
+            "dataset"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "MIT and CC-BY-4.0 grant public display and distribution rights for the data and derivative material, permitting publication of independently derived scores with attribution.",
+          "source_ids": [
+            "repository",
+            "dataset"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Music Arena (music-arena.org) is a crowd pairwise arena for text-to-music models run by Carnegie Mellon's G-CLef lab with LMArena's assistance and funded by Sony AI, described in arXiv 2507.20900 (NeurIPS 2025 Creative AI track). Its leaderboard is published as TSV snapshots in the code repository at components/frontend/ma_frontend/leaderboard/<YYYYMMDD>/instrumental_leaderboard_20250728_to_<YYYYMMDD>.tsv, with a separate vocal board. The newest snapshot (20260731, checked 2026-11-14) lists 15 models with columns Rank, Model, Arena Score, 95% CI, # Votes, Generation Speed (RTF), organization, training_data, supports_lyrics and access. The battles behind it are on Hugging Face as music-arena/music-arena-dataset in monthly configs 2025_07-08 through 2026_07.",
+          "source_ids": [
+            "release",
+            "leaderboard",
+            "dataset",
+            "paper"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Arena Score is a Bradley-Terry score on the Elo scale, higher is better, computed by components/leaderboard/ma_leaderboard/scoring.py; only models with at least 30 votes are listed.",
+          "source_ids": [
+            "repository",
+            "leaderboard"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The feed ingests the instrumental board only: an instrumental battle compares two generations from one text prompt in a blind side-by-side vote, which matches the music-generation cell (instrumental music such as background beds under video). The vocal board judges songs with lyrics, a different task, and is deliberately not added. Music Arena's votes are a pool separate from every LMArena arena, so the family declares its own correlated_family_group music-arena-instrumental. It is the cell's only family, so the group publishes at most an explorer view: the top-set and single-winner floors (3 and 4 families) are not met and no winner is claimed.",
+          "source_ids": [
+            "leaderboard",
+            "release"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "Snapshots are published monthly with a lag: on 2026-11-14 the newest covers votes through 2026-07-31 and August to October 2026 are not yet published. The feed's cadence therefore marks it stale after 60 days and stops recommending it after 180 days rather than the 14/90-day windows of the LMArena arena feeds.",
+          "source_ids": [
+            "leaderboard",
+            "dataset"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "Rejected sources (checked 2026-11-14): Artificial Analysis's Music Arena (its free API allows internal use only, no redistribution); LMArena's leaderboard-dataset (no music or audio configuration); fal and OpenRouter model catalogues (no quality signal).",
+          "source_ids": [
+            "release"
           ]
         }
       ]

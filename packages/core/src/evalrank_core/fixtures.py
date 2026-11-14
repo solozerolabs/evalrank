@@ -103,6 +103,7 @@ _USE_CASE_ROWS = (
     ("image-generation", "Image generation", "Generate images from a text prompt", ("model",)),
     ("video-generation", "Video generation", "Generate video from a text prompt or a still image", ("model",)),
     ("talking-avatar", "Talking avatar", "Lip-sync a still image to a recorded voice line", ("model",)),
+    ("music-generation", "Music generation", "Generate instrumental music from a text prompt", ("model",)),
 )
 
 

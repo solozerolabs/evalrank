@@ -1,0 +1,54 @@
+name: Stylised-clip board
+
+on:
+  schedule:
+    - cron: "23 8 * * 2"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: stylised-clip-board
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+      - name: Require the fal and OpenRouter keys
+        env:
+          FAL_API_KEY: ${{ secrets.FAL_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          if [ -z "$FAL_API_KEY" ] || [ -z "$OPENROUTER_API_KEY" ]; then
+            echo "::error::FAL_API_KEY or OPENROUTER_API_KEY is not set; the board cannot refresh and will go stale"
+            exit 1
+          fi
+      - name: Install ffmpeg
+        run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - name: Score new candidates
+        env:
+          FAL_API_KEY: ${{ secrets.FAL_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        working-directory: boards/stylised-clip
+        run: python3 harness.py run --results results.json --workers 2 --concurrency 8
+      - name: Test the board
+        run: python3 -m unittest tests.test_stylised_clip_board
+      - name: Commit the board
+        run: |
+          if git diff --quiet -- boards/stylised-clip/results.json; then
+            echo "no new candidates"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add boards/stylised-clip/results.json
+          git commit -m "chore(boards): refresh the stylised-clip board"
+          git pull --rebase origin main
+          git push

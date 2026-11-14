@@ -1,0 +1,15 @@
+{
+  "license": "Apache-2.0",
+  "attribution": "EvalRank stylised-clip board stills and lines (solozerolabs/evalrank)",
+  "seconds": 5,
+  "stills": [
+    {"id": "felt", "file": "stills/felt.png", "content_type": "image/png", "sha256": "8e3b572d65238a42cab2aee3d1bd3dcd6597f981414347da3bba2ce324f8c46a"},
+    {"id": "gouache", "file": "stills/gouache.jpg", "content_type": "image/jpeg", "sha256": "7a4a105dd7c6726da9b6df5013f61960b8adaa75f3b7926691d950063e5c7887"},
+    {"id": "clay", "file": "stills/clay.png", "content_type": "image/png", "sha256": "0d2604608adb1f8f5d7193d728727100d27eabcd9153152263542766c7bf271f"},
+    {"id": "paper", "file": "stills/paper.png", "content_type": "image/png", "sha256": "ebe025f175d41549b93cba055d583f9601ad82c24317ea4946f5f724757ef9ab"}
+  ],
+  "lines": [
+    {"id": "calm", "direction": "Slow push-in. The character leans back and looks at the camera, unimpressed.", "line": "Wait. It wrote the tests too?"},
+    {"id": "exclaim", "direction": "Static shot. The character throws both hands up in delight, then laughs.", "line": "Three customers signed up while I was asleep!"}
+  ]
+}

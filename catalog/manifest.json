@@ -2,7 +2,7 @@
   "$schema": "../schemas/evalrank-manifest.schema.json",
   "object": "evalrank_manifest",
   "schema_version": "1",
-  "manifest_version": "2026-11-14.1",
+  "manifest_version": "2026-11-14.2",
   "ranking_group_dimensions": [
     "cell_id",
     "entity_kind",
@@ -2137,6 +2137,48 @@
       "quarantine_reason": null
     },
     {
+      "ranking_group_id": "rg-video-generation-model-configuration-direct-prompt-model-configuration-v1",
+      "cell_id": "video-generation",
+      "entity_kind": "model_configuration",
+      "interaction_policy": "direct_prompt",
+      "configuration_passport_class": "model-configuration-v1",
+      "state": "active",
+      "rank_eligible_count": null,
+      "claim_ceiling": "single_winner",
+      "eligibility": {
+        "calibration_status": "unvalidated",
+        "explorer": {
+          "minimum_families": 1,
+          "minimum_overlap": 1
+        },
+        "top_set": {
+          "minimum_families": 3,
+          "minimum_overlap": 2
+        },
+        "single_winner": {
+          "minimum_families": 4,
+          "minimum_overlap": 3
+        },
+        "native_effect_policy": "family-native-likelihoods-only",
+        "missing_configuration_policy": "exclude-from-ranking-group-and-disclose",
+        "block_bootstrap": {
+          "replicates": 10000,
+          "seed_derivation": "uint64be(sha256(restricted_jcs({aggregation_input_digest,methodology_version}))[0:8])&9007199254740991"
+        },
+        "bootstrap_coverage_target": 0.95,
+        "superiority_threshold": 0.95,
+        "practical_effect_floor": {
+          "mode": "native-metric-calibrated",
+          "status": "unvalidated"
+        },
+        "leave_one_family_out": {
+          "required_for_single_winner": true,
+          "stable_top_set_required": true
+        }
+      },
+      "quarantine_reason": null
+    },
+    {
       "ranking_group_id": "rg-factuality-arena-system-crowd-pairwise-arena-system-v1",
       "cell_id": "factuality",
       "entity_kind": "arena_system",
@@ -4111,6 +4153,22 @@
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "lmarena-image-to-video",
+      "research_flags": [],
+      "quarantine_reason": null
+    },
+    {
+      "benchmark_family_id": "evalrank-stylised-clip",
+      "display_name": "Stylised-clip board (EvalRank)",
+      "candidate_cells": [
+        "video-generation"
+      ],
+      "entity_kinds": [
+        "model_configuration"
+      ],
+      "state": "active",
+      "rank_eligible_count": null,
+      "correlation_status": "unknown",
+      "correlated_family_group": null,
       "research_flags": [],
       "quarantine_reason": null
     },
@@ -10596,6 +10654,55 @@
       },
       "ranking_group_ids": [
         "rg-video-generation-arena-system-crowd-pairwise-arena-system-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "evalrank-stylised-clip-board-discovery",
+      "benchmark_family_id": "evalrank-stylised-clip",
+      "adapter_id": "evalrank-stylised-clip-board-json-v1",
+      "metric_direction": "higher",
+      "candidate_cells": [
+        "video-generation"
+      ],
+      "entity_kind": "model_configuration",
+      "interaction_policy": "direct_prompt",
+      "configuration_passport_class": "model-configuration-v1",
+      "state": "active",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": "Apache-2.0",
+        "task_data_license": "Apache-2.0",
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "validated",
+        "mode": "periodic",
+        "stale_after_seconds": 1209600,
+        "stop_recommending_after_seconds": 7776000,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": true,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "declared",
+        "task_lineage_id": "evalrank-stylised-clip-tasks",
+        "environment_lineage_id": "evalrank-stylised-clip-environments",
+        "grader_lineage_id": "evalrank-stylised-clip-graders",
+        "correlation_status": "unknown",
+        "correlated_family_group": null
+      },
+      "ranking_group_ids": [
+        "rg-video-generation-model-configuration-direct-prompt-model-configuration-v1"
       ],
       "quarantine_reason": null
     },

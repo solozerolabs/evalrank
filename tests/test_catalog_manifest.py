@@ -164,6 +164,7 @@ EXPECTED_FAMILY_IDS = (
     "lmarena-text-to-image",
     "lmarena-text-to-video",
     "lmarena-image-to-video",
+    "evalrank-stylised-clip",
     "lmarena-text-factuality",
     "evalrank-site-translation",
     "aa-intelligence-index-cost-per-task",
@@ -224,6 +225,7 @@ EXPECTED_FEED_IDS = tuple(
         ),
         "evalrank-content-safety": ("evalrank-content-safety-board-discovery",),
         "evalrank-site-translation": ("evalrank-site-translation-board-discovery",),
+        "evalrank-stylised-clip": ("evalrank-stylised-clip-board-discovery",),
         "core-bench-reproducibility": (
             "core-bench-v1-1-mainline-discovery",
             "core-bench-v1-1-ood-discovery",
@@ -465,7 +467,7 @@ class CatalogManifestTests(unittest.TestCase):
 
         self.assertEqual("evalrank_manifest", payload["object"])
         self.assertEqual("1", payload["schema_version"])
-        self.assertEqual("2026-11-14.1", payload["manifest_version"])
+        self.assertEqual("2026-11-14.2", payload["manifest_version"])
         for key, id_key in (
             ("cells", "cell_id"),
             ("ranking_groups", "ranking_group_id"),
@@ -1214,6 +1216,35 @@ class CatalogManifestTests(unittest.TestCase):
             self.assertEqual(safety[key], feed[key])
         self.assertEqual("evalrank-site-translation-tasks", feed["lineage"]["task_lineage_id"])
 
+    def test_video_generation_model_configurations_rank_on_evalranks_own_clip_board(self):
+        payload = manifest()
+        families = {row["benchmark_family_id"]: row for row in payload["benchmark_families"]}
+        feeds = {row["feed_id"]: row for row in payload["feeds"]}
+        groups = {row["ranking_group_id"]: row for row in payload["ranking_groups"]}
+        group_id = "rg-video-generation-model-configuration-direct-prompt-model-configuration-v1"
+        feed = feeds["evalrank-stylised-clip-board-discovery"]
+        self.assertEqual("active", families["evalrank-stylised-clip"]["state"])
+        self.assertEqual("video-generation", groups[group_id]["cell_id"])
+        self.assertEqual(
+            groups["rg-multilingual-model-configuration-direct-prompt-model-configuration-v1"]["eligibility"],
+            groups[group_id]["eligibility"],
+        )
+        bound = {
+            row["benchmark_family_id"]
+            for row in payload["feeds"]
+            if row["state"] == "active" and "video-generation" in row["candidate_cells"]
+        }
+        self.assertEqual({"evalrank-stylised-clip", "lmarena-text-to-video", "lmarena-image-to-video"}, bound)
+        self.assertEqual("evalrank-stylised-clip-board-json-v1", feed["adapter_id"])
+        self.assertEqual("higher", feed["metric_direction"])
+        self.assertEqual([group_id], feed["ranking_group_ids"])
+        self.assertEqual("approved", feed["rights"]["status"])
+        self.assertEqual("Apache-2.0", feed["rights"]["task_data_license"])
+        translation = feeds["evalrank-site-translation-board-discovery"]
+        for key in ("cadence", "retention"):
+            self.assertEqual(translation[key], feed[key])
+        self.assertEqual("evalrank-stylised-clip-tasks", feed["lineage"]["task_lineage_id"])
+
     def test_manifest_is_the_exact_public_taxonomy(self):
         payload = manifest()
         cells = payload["cells"]
@@ -1309,7 +1340,7 @@ class CatalogManifestTests(unittest.TestCase):
     def test_every_cell_has_explicit_ordered_ranking_group_eligibility(self):
         payload = manifest()
         cell_ids = {cell["cell_id"] for cell in payload["cells"]}
-        self.assertEqual(47, len(payload["ranking_groups"]))
+        self.assertEqual(48, len(payload["ranking_groups"]))
         group_keys = set()
         covered_cells = set()
 
@@ -1382,14 +1413,10 @@ class CatalogManifestTests(unittest.TestCase):
         # (2026-10-30) and video-generation (2026-11-14) are checked below and by the
         # general eligibility loop above.
         self.assertEqual(set(EXPECTED_CELL_IDS[-9:-4]), set(new_groups))
-        groups_by_cell = {group["cell_id"]: group for group in payload["ranking_groups"]}
+        groups_by_id = {group["ranking_group_id"]: group for group in payload["ranking_groups"]}
         self.assertEqual(
-            groups_by_cell["image-generation"]["eligibility"],
-            groups_by_cell["video-generation"]["eligibility"],
-        )
-        self.assertEqual(
-            "rg-video-generation-arena-system-crowd-pairwise-arena-system-v1",
-            groups_by_cell["video-generation"]["ranking_group_id"],
+            groups_by_id["rg-image-generation-arena-system-crowd-pairwise-arena-system-v1"]["eligibility"],
+            groups_by_id["rg-video-generation-arena-system-crowd-pairwise-arena-system-v1"]["eligibility"],
         )
         self.assertEqual(
             {
@@ -1607,6 +1634,8 @@ class CatalogManifestTests(unittest.TestCase):
                 # 2026-11-14: the video-generation cell's families, LMArena t2v and i2v.
                 "lmarena-text-to-video",
                 "lmarena-image-to-video",
+                # 2026-11-14: EvalRank's own stylised-clip board (video-generation).
+                "evalrank-stylised-clip",
                 # 2026-10-29: the multilingual model-configuration group's family, EvalRank's
                 # own open site-translation board (covers ar/he/hi/th, reasoning off).
                 "evalrank-site-translation",
@@ -1616,7 +1645,7 @@ class CatalogManifestTests(unittest.TestCase):
             },
             active,
         )
-        self.assertEqual(121, len(families))
+        self.assertEqual(122, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -1705,7 +1734,7 @@ class CatalogManifestTests(unittest.TestCase):
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(134, len(feeds))
+        self.assertEqual(135, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_itbench_is_not_executable_without_exact_configuration_identity(self):
@@ -2189,6 +2218,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "lmarena-text-to-image-discovery": "higher",
                 "lmarena-text-to-video-discovery": "higher",
                 "lmarena-image-to-video-discovery": "higher",
+                "evalrank-stylised-clip-board-discovery": "higher",
                 "lmarena-text-factuality-discovery": "higher",
                 "evalrank-site-translation-board-discovery": "higher",
                 "aa-intelligence-index-cost-per-task-benchmarkheaven-discovery": "lower",

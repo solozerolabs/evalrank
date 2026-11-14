@@ -1,0 +1,22 @@
+{
+  "checked_on": "2026-11-14",
+  "source": "LMArena image_to_video latest (2026-11-09) x fal /v1/models (image-to-video, active)",
+  "note": "Reviewed rows: arena model name -> the fal endpoint that serves it. Arena models not on fal on 2026-11-14: Gemini Omni 1.2 Flash, MiniMax H3, SkyReels V4, HiDream-O1-Video-1.0, every Veo, Luma, Runway, LTX-2.",
+  "candidates": [
+    {"arena_name": "Dreamina Seedance 2.5 (720p)", "endpoint": "bytedance/seedance-2.5/us/image-to-video"},
+    {"arena_name": "Gemini Omni 1.1 Flash", "endpoint": "google/gemini-omni-flash/v1.1/image-to-video"},
+    {"arena_name": "Wan 3.0", "endpoint": "alibaba/wan-3.0/image-to-video"},
+    {"arena_name": "Dreamina Seedance 2.0 (720p)", "endpoint": "bytedance/seedance-2.0/us/image-to-video"},
+    {"arena_name": "gemini-omni-flash", "endpoint": "google/gemini-omni-flash/image-to-video"},
+    {"arena_name": "Grok Imagine Video 1.5 (720p)", "endpoint": "xai/grok-imagine-video/v1.5/image-to-video"},
+    {"arena_name": "FLUX 3 Video (20260811)", "endpoint": "blackforestlabs/flux-3/image-to-video"},
+    {"arena_name": "HappyHorse 1.0", "endpoint": "alibaba/happy-horse/image-to-video"},
+    {"arena_name": "Wan 2.7", "endpoint": "fal-ai/wan/v2.7/image-to-video"},
+    {"arena_name": "Grok Imagine Video (720p)", "endpoint": "xai/grok-imagine-video/image-to-video"},
+    {"arena_name": "Vidu Q3 Pro", "endpoint": "fal-ai/vidu/q3/image-to-video"},
+    {"arena_name": "Kling 3.0 Pro", "endpoint": "fal-ai/kling-video/v3/pro/image-to-video"},
+    {"arena_name": "Wan 2.6", "endpoint": "wan/v2.6/image-to-video"},
+    {"arena_name": "PixVerse V5.6", "endpoint": "fal-ai/pixverse/v5.6/image-to-video"},
+    {"arena_name": "Hailuo 2.3", "endpoint": "fal-ai/minimax/hailuo-2.3/pro/image-to-video"}
+  ]
+}

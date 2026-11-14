@@ -46,6 +46,7 @@ EXPECTED_CELL_IDS = (
     "talking-avatar",
     "music-generation",
     "speech-to-speech",
+    "text-to-speech",
 )
 
 EXPECTED_FAMILY_IDS = (
@@ -173,6 +174,7 @@ EXPECTED_FAMILY_IDS = (
     "artificialanalysis-big-bench-audio",
     "artificialanalysis-full-duplex-bench",
     "artificialanalysis-tau-voice",
+    "artificialanalysis-speech-arena",
     "lmarena-text-factuality",
     "evalrank-site-translation",
     "aa-intelligence-index-cost-per-task",
@@ -480,7 +482,7 @@ class CatalogManifestTests(unittest.TestCase):
 
         self.assertEqual("evalrank_manifest", payload["object"])
         self.assertEqual("1", payload["schema_version"])
-        self.assertEqual("2026-11-14.5", payload["manifest_version"])
+        self.assertEqual("2026-11-14.6", payload["manifest_version"])
         for key, id_key in (
             ("cells", "cell_id"),
             ("ranking_groups", "ranking_group_id"),
@@ -1394,6 +1396,44 @@ class CatalogManifestTests(unittest.TestCase):
                 self.assertEqual(feeds["cwe-bench-aa-discovery"]["cadence"], feed["cadence"])
                 self.assertEqual(f"{family_id}-tasks", feed["lineage"]["task_lineage_id"])
 
+    def test_text_to_speech_ranks_on_the_artificial_analysis_speech_arena(self):
+        payload = manifest()
+        families = {row["benchmark_family_id"]: row for row in payload["benchmark_families"]}
+        feeds = {row["feed_id"]: row for row in payload["feeds"]}
+        groups = {row["ranking_group_id"]: row for row in payload["ranking_groups"]}
+        group_id = "rg-text-to-speech-arena-system-crowd-pairwise-arena-system-v1"
+        feed = feeds["artificialanalysis-speech-arena-discovery"]
+        family = families["artificialanalysis-speech-arena"]
+        self.assertEqual("active", family["state"])
+        self.assertEqual(["text-to-speech"], family["candidate_cells"])
+        self.assertEqual(["arena_system"], family["entity_kinds"])
+        self.assertEqual("artificialanalysis-speech-arena", family["correlated_family_group"])
+        self.assertEqual(
+            [group_id],
+            [row["ranking_group_id"] for row in payload["ranking_groups"] if row["cell_id"] == "text-to-speech"],
+        )
+        self.assertEqual(
+            groups["rg-image-generation-arena-system-crowd-pairwise-arena-system-v1"]["eligibility"],
+            groups[group_id]["eligibility"],
+        )
+        bound = {
+            row["benchmark_family_id"]
+            for row in payload["feeds"]
+            if row["state"] == "active" and "text-to-speech" in row["candidate_cells"]
+        }
+        self.assertEqual({"artificialanalysis-speech-arena"}, bound)
+        self.assertEqual("artificialanalysis-speech-arena-flight-v1", feed["adapter_id"])
+        self.assertEqual("higher", feed["metric_direction"])
+        self.assertEqual("arena_system", feed["entity_kind"])
+        self.assertEqual("crowd_pairwise", feed["interaction_policy"])
+        self.assertEqual([group_id], feed["ranking_group_ids"])
+        # Same grant, same rights block as the Artificial Analysis cyber boards.
+        self.assertEqual(feeds["cwe-bench-aa-discovery"]["rights"], feed["rights"])
+        video = feeds["lmarena-text-to-video-discovery"]
+        for key in ("cadence", "retention"):
+            self.assertEqual(video[key], feed[key])
+        self.assertEqual("artificialanalysis-speech-arena-tasks", feed["lineage"]["task_lineage_id"])
+
     def test_manifest_is_the_exact_public_taxonomy(self):
         payload = manifest()
         cells = payload["cells"]
@@ -1405,7 +1445,7 @@ class CatalogManifestTests(unittest.TestCase):
         self.assertTrue(all("rank_eligible_count" not in row for row in cells))
         self.assertTrue(all("eligibility" not in row for row in cells))
         self.assertNotIn("safety-robustness", EXPECTED_CELL_IDS)
-        new_cells = {row["cell_id"]: row for row in cells[-12:]}
+        new_cells = {row["cell_id"]: row for row in cells[-13:]}
         self.assertEqual(
             {
                 "professional-deliverable-creation": {
@@ -1490,6 +1530,11 @@ class CatalogManifestTests(unittest.TestCase):
                     "definition": "Hold a real-time spoken conversation, speech in and speech out",
                     "entity_kinds": ["model"],
                 },
+                "text-to-speech": {
+                    "name": "Text to speech",
+                    "definition": "Speak a line of text in a natural voice",
+                    "entity_kinds": ["model"],
+                },
             },
             {
                 cell_id: {
@@ -1504,7 +1549,7 @@ class CatalogManifestTests(unittest.TestCase):
     def test_every_cell_has_explicit_ordered_ranking_group_eligibility(self):
         payload = manifest()
         cell_ids = {cell["cell_id"] for cell in payload["cells"]}
-        self.assertEqual(51, len(payload["ranking_groups"]))
+        self.assertEqual(52, len(payload["ranking_groups"]))
         group_keys = set()
         covered_cells = set()
 
@@ -1571,12 +1616,12 @@ class CatalogManifestTests(unittest.TestCase):
         new_groups = {
             group["cell_id"]: group
             for group in payload["ranking_groups"]
-            if group["cell_id"] in set(EXPECTED_CELL_IDS[-12:-7])
+            if group["cell_id"] in set(EXPECTED_CELL_IDS[-13:-8])
         }
         # instruction-following, content-safety-classification (2026-10-21), image-generation
         # (2026-10-30), video-generation, talking-avatar and music-generation (2026-11-14) are
         # checked below and by the general eligibility loop above.
-        self.assertEqual(set(EXPECTED_CELL_IDS[-12:-7]), set(new_groups))
+        self.assertEqual(set(EXPECTED_CELL_IDS[-13:-8]), set(new_groups))
         groups_by_id = {group["ranking_group_id"]: group for group in payload["ranking_groups"]}
         self.assertEqual(
             groups_by_id["rg-image-generation-arena-system-crowd-pairwise-arena-system-v1"]["eligibility"],
@@ -1808,6 +1853,9 @@ class CatalogManifestTests(unittest.TestCase):
                 "artificialanalysis-big-bench-audio",
                 "artificialanalysis-full-duplex-bench",
                 "artificialanalysis-tau-voice",
+                # 2026-11-14: the text-to-speech cell's family, the Artificial Analysis
+                # Speech Arena (AA's 2026-09-30 fetch-and-republish grant).
+                "artificialanalysis-speech-arena",
                 # 2026-10-29: the multilingual model-configuration group's family, EvalRank's
                 # own open site-translation board (covers ar/he/hi/th, reasoning off).
                 "evalrank-site-translation",
@@ -1817,7 +1865,7 @@ class CatalogManifestTests(unittest.TestCase):
             },
             active,
         )
-        self.assertEqual(127, len(families))
+        self.assertEqual(128, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -1904,11 +1952,12 @@ class CatalogManifestTests(unittest.TestCase):
                 "lmarena-text-factuality": "lmarena-text-factuality",
                 # Music Arena's votes are their own pool, separate from every LMArena arena.
                 "music-arena-instrumental": "music-arena-instrumental",
+                "artificialanalysis-speech-arena": "artificialanalysis-speech-arena",
             },
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(140, len(feeds))
+        self.assertEqual(141, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_itbench_is_not_executable_without_exact_configuration_identity(self):
@@ -2398,6 +2447,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "artificialanalysis-big-bench-audio-discovery": "higher",
                 "artificialanalysis-full-duplex-bench-discovery": "higher",
                 "artificialanalysis-tau-voice-discovery": "higher",
+                "artificialanalysis-speech-arena-discovery": "higher",
                 "lmarena-text-factuality-discovery": "higher",
                 "evalrank-site-translation-board-discovery": "higher",
                 "aa-intelligence-index-cost-per-task-benchmarkheaven-discovery": "lower",

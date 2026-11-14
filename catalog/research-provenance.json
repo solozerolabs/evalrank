@@ -2,7 +2,7 @@
   "$schema": "../schemas/benchmark-research-provenance.schema.json",
   "object": "benchmark_research_provenance",
   "schema_version": "1",
-  "manifest_version": "2026-11-14.5",
+  "manifest_version": "2026-11-14.6",
   "families": [
     {
       "benchmark_family_id": "livecodebench",
@@ -12274,6 +12274,133 @@
           "statement": "Direct source-owner permission authorizes publication of rankings derived from this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
           "source_ids": [
             "aa_speech_to_speech"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "artificialanalysis-speech-arena",
+      "checked_on": "2026-11-14",
+      "sources": [
+        {
+          "source_id": "aa_leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://artificialanalysis.ai/text-to-speech/leaderboard/provider-voice"
+        },
+        {
+          "source_id": "aa_arena",
+          "kind": "official_site",
+          "url": "https://artificialanalysis.ai/text-to-speech/arena"
+        },
+        {
+          "source_id": "tts_arena_v2",
+          "kind": "official_leaderboard",
+          "url": "https://huggingface.co/spaces/TTS-AGI/TTS-Arena-V2"
+        },
+        {
+          "source_id": "lmarena_dataset",
+          "kind": "official_dataset",
+          "url": "https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset"
+        },
+        {
+          "source_id": "open_tts_leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://huggingface.co/spaces/hf-audio/open_tts_leaderboard"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The Artificial Analysis Speech Arena ranks text-to-speech models by an Elo rating fitted to blind pairwise votes: a listener hears the same line spoken by two anonymous models and picks the better one. The leaderboard's default Provider Voice view (each provider's own chosen voices; /text-to-speech/leaderboard redirects to it) is refreshed continuously as votes arrive, and on 2026-11-14 its overall table listed 105 models with Elo, a 95% interval, the appearance count, the creator, the voice count and the release date. Models with few appearances (the smallest had 236) are on the page too, with wider intervals.",
+          "source_ids": [
+            "aa_leaderboard",
+            "aa_arena"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The page server-renders every table into its Next.js data stream: one map from use-case category (null = overall, then knowledge-sharing, assistants, entertainment, customer-service) to a map from accent (null = all, en-us, en-gb) to rows. The feed reads only the overall category's all-accent table (105 rows on 2026-11-14); the four category tables (97 to 104 rows) are slices of the same votes and are not separate families.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "A row is an arena system (the provider's TTS model behind the arena's fixed prompt set, scored in its own vote pool), the same entity kind as the LMArena image and video arenas, so the family declares its own correlated_family_group artificialanalysis-speech-arena. Sources checked and rejected on 2026-11-14: TTS Arena V2 (fresh, 45 models, JSON at /api/leaderboard) is not a feed because its Terms (effective 2026-10-31) forbid automated access except through interfaces expressly made available for that purpose and its docs offer only a Provider API, not a leaderboard API, so it needs the operator's written permission before it can be a second family; LMArena's leaderboard-dataset has no speech config; hf-audio's open_tts_leaderboard scores open-weights models only, with automated metrics rather than listener votes.",
+          "source_ids": [
+            "aa_leaderboard",
+            "tts_arena_v2",
+            "lmarena_dataset",
+            "open_tts_leaderboard"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank has direct source-owner permission to ingest and use this source data independently of any separately published license metadata. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes commercial use of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The leaderboard page data view involves no execution environment; direct source-owner permission authorizes automated fetching of the page for this feed. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes retention of the fetched page bytes. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes publication of rankings derived from this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
           ]
         }
       ]

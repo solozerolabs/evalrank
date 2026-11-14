@@ -626,8 +626,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "candidates":
         live = {}
         for category in ("image-to-video",):
-            body = json.loads(_retry(lambda: _fetch(f"{FAL_API}/models?category={category}&limit=500")))
-            live.update({m["endpoint_id"]: (m.get("metadata") or {}).get("status") for m in body.get("models", [])})
+            cursor = ""
+            while True:  # fal pages at 100; reading one page missed newer models once
+                url = f"{FAL_API}/models?category={category}&limit=100" + (f"&cursor={cursor}" if cursor else "")
+                body = json.loads(_retry(lambda url=url: _fetch(url)))
+                live.update({m["endpoint_id"]: (m.get("metadata") or {}).get("status") for m in body.get("models", [])})
+                if not body.get("has_more"):
+                    break
+                cursor = body["next_cursor"]
         for row in candidates():
             print(f"{row['endpoint']}\t{row['arena_name']}\t{live.get(row['endpoint'], 'not_listed')}")
         return 0

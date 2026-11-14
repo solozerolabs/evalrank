@@ -104,6 +104,7 @@ _USE_CASE_ROWS = (
     ("video-generation", "Video generation", "Generate video from a text prompt or a still image", ("model",)),
     ("talking-avatar", "Talking avatar", "Lip-sync a still image to a recorded voice line", ("model",)),
     ("music-generation", "Music generation", "Generate instrumental music from a text prompt", ("model",)),
+    ("speech-to-speech", "Speech to speech", "Hold a real-time spoken conversation, speech in and speech out", ("model",)),
 )
 
 

@@ -208,9 +208,9 @@ class PythonSdkTests(unittest.TestCase):
         self.assertIs(UseCaseCatalog, CoreUseCaseCatalog)
         self.assertIsInstance(catalog, CoreUseCaseCatalog)
         self.assertEqual("use_case_catalog", catalog.to_dict()["object"])
-        self.assertEqual(32, len(catalog.to_dict()["use_cases"]))
+        self.assertEqual(33, len(catalog.to_dict()["use_cases"]))
         self.assertEqual(
-            "music-generation",
+            "speech-to-speech",
             catalog.to_dict()["use_cases"][-1]["id"],
         )
         self.assertTrue(all(row["rank_policy"] == "ranked" for row in catalog.to_dict()["use_cases"]))

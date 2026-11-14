@@ -2,7 +2,7 @@
   "$schema": "../schemas/benchmark-research-provenance.schema.json",
   "object": "benchmark_research_provenance",
   "schema_version": "1",
-  "manifest_version": "2026-11-14.4",
+  "manifest_version": "2026-11-14.5",
   "families": [
     {
       "benchmark_family_id": "livecodebench",
@@ -11965,6 +11965,315 @@
           "statement": "Rejected sources (checked 2026-11-14): Artificial Analysis's Music Arena (its free API allows internal use only, no redistribution); LMArena's leaderboard-dataset (no music or audio configuration); fal and OpenRouter model catalogues (no quality signal).",
           "source_ids": [
             "release"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "artificialanalysis-big-bench-audio",
+      "checked_on": "2026-11-14",
+      "sources": [
+        {
+          "source_id": "aa_speech_to_speech",
+          "kind": "official_leaderboard",
+          "url": "https://artificialanalysis.ai/speech-to-speech"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Big Bench Audio is Artificial Analysis' spoken adaptation of a subset of BIG-Bench Hard reasoning questions: the question is posed as audio and the model must answer correctly in speech. The page's bbaScore is accuracy as a 0-1 fraction, higher is better; 44 host-model rows carried a score on 2026-11-14.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The Artificial Analysis Speech to Speech page server-renders its host-model rows into the page's Next.js data stream as the props of one chart component; charts that repeat a row reference it by flight path. Each row carries an id, a name (some suffixed with the host), the host, the underlying model, and the bbaScore, fdbScore and tauVoiceAggScore columns, each null when that benchmark has not scored the row. This family reads bbaScore; a row with a null bbaScore is absent from it. 48 host-model rows were listed on 2026-11-14.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The three Artificial Analysis speech-to-speech families (Big Bench Audio, Full-Duplex-Bench, tau-voice) are one publisher's runs of three different public benchmarks over the same host-model rows. Their task correlation is undeclared, as for the Artificial Analysis cyber families. The speech-to-speech ranking group's claim ceiling is explorer, so no top set or single winner is claimed. Price, cost and latency columns on the same rows are not ingested.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank has direct source-owner permission to ingest and use this source data independently of any separately published license metadata. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes commercial use of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The page data view involves no execution environment; direct source-owner permission authorizes automated fetching of the page for this feed. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes retention of the fetched page bytes. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes publication of rankings derived from this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "artificialanalysis-full-duplex-bench",
+      "checked_on": "2026-11-14",
+      "sources": [
+        {
+          "source_id": "aa_speech_to_speech",
+          "kind": "official_leaderboard",
+          "url": "https://artificialanalysis.ai/speech-to-speech"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Full-Duplex-Bench measures conversational dynamics of a speech-to-speech system in live two-way audio: turn taking, backchanneling, pause handling and user interruption. The page's fdbScore is the aggregate as a 0-1 fraction, higher is better, with the four component scores alongside; 37 host-model rows carried a score on 2026-11-14.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The Artificial Analysis Speech to Speech page server-renders its host-model rows into the page's Next.js data stream as the props of one chart component; charts that repeat a row reference it by flight path. Each row carries an id, a name (some suffixed with the host), the host, the underlying model, and the bbaScore, fdbScore and tauVoiceAggScore columns, each null when that benchmark has not scored the row. This family reads fdbScore; a row with a null fdbScore is absent from it. 48 host-model rows were listed on 2026-11-14.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The three Artificial Analysis speech-to-speech families (Big Bench Audio, Full-Duplex-Bench, tau-voice) are one publisher's runs of three different public benchmarks over the same host-model rows. Their task correlation is undeclared, as for the Artificial Analysis cyber families. The speech-to-speech ranking group's claim ceiling is explorer, so no top set or single winner is claimed. Price, cost and latency columns on the same rows are not ingested.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank has direct source-owner permission to ingest and use this source data independently of any separately published license metadata. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes commercial use of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The page data view involves no execution environment; direct source-owner permission authorizes automated fetching of the page for this feed. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes retention of the fetched page bytes. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes publication of rankings derived from this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "artificialanalysis-tau-voice",
+      "checked_on": "2026-11-14",
+      "sources": [
+        {
+          "source_id": "aa_speech_to_speech",
+          "kind": "official_leaderboard",
+          "url": "https://artificialanalysis.ai/speech-to-speech"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "tau-voice runs the tau-bench airline, retail and telecom customer-service tasks over voice: a simulated caller speaks, the model converses and calls domain tools, and a task passes when the final database state is correct. The page's tauVoiceAggScore is pass^1 over three trials as a 0-1 fraction, higher is better; 29 host-model rows carried a score on 2026-11-14.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The Artificial Analysis Speech to Speech page server-renders its host-model rows into the page's Next.js data stream as the props of one chart component; charts that repeat a row reference it by flight path. Each row carries an id, a name (some suffixed with the host), the host, the underlying model, and the bbaScore, fdbScore and tauVoiceAggScore columns, each null when that benchmark has not scored the row. This family reads tauVoiceAggScore; a row with a null tauVoiceAggScore is absent from it. 48 host-model rows were listed on 2026-11-14.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The three Artificial Analysis speech-to-speech families (Big Bench Audio, Full-Duplex-Bench, tau-voice) are one publisher's runs of three different public benchmarks over the same host-model rows. Their task correlation is undeclared, as for the Artificial Analysis cyber families. The speech-to-speech ranking group's claim ceiling is explorer, so no top set or single winner is claimed. Price, cost and latency columns on the same rows are not ingested.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank has direct source-owner permission to ingest and use this source data independently of any separately published license metadata. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes commercial use of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The page data view involves no execution environment; direct source-owner permission authorizes automated fetching of the page for this feed. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes retention of the fetched page bytes. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes publication of rankings derived from this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_speech_to_speech"
           ]
         }
       ]

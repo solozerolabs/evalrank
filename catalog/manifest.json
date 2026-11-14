@@ -2,7 +2,7 @@
   "$schema": "../schemas/evalrank-manifest.schema.json",
   "object": "evalrank_manifest",
   "schema_version": "1",
-  "manifest_version": "2026-11-14.4",
+  "manifest_version": "2026-11-14.5",
   "ranking_group_dimensions": [
     "cell_id",
     "entity_kind",
@@ -323,6 +323,15 @@
       "cell_id": "music-generation",
       "name": "Music generation",
       "definition": "Generate instrumental music from a text prompt",
+      "entity_kinds": [
+        "model"
+      ],
+      "state": "active"
+    },
+    {
+      "cell_id": "speech-to-speech",
+      "name": "Speech to speech",
+      "definition": "Hold a real-time spoken conversation, speech in and speech out",
       "entity_kinds": [
         "model"
       ],
@@ -2277,6 +2286,36 @@
           "required_for_single_winner": true,
           "stable_top_set_required": true
         }
+      },
+      "quarantine_reason": null
+    },
+    {
+      "ranking_group_id": "rg-speech-to-speech-model-configuration-direct-prompt-model-configuration-v1",
+      "cell_id": "speech-to-speech",
+      "entity_kind": "model_configuration",
+      "interaction_policy": "direct_prompt",
+      "configuration_passport_class": "model-configuration-v1",
+      "state": "active",
+      "rank_eligible_count": null,
+      "claim_ceiling": "explorer",
+      "eligibility": {
+        "calibration_status": "unvalidated",
+        "explorer": {
+          "minimum_families": 1,
+          "minimum_overlap": 1
+        },
+        "top_set": null,
+        "single_winner": null,
+        "native_effect_policy": "family-native-likelihoods-only",
+        "missing_configuration_policy": "exclude-from-ranking-group-and-disclose",
+        "block_bootstrap": {
+          "replicates": 10000,
+          "seed_derivation": "uint64be(sha256(restricted_jcs({aggregation_input_digest,methodology_version}))[0:8])&9007199254740991"
+        },
+        "bootstrap_coverage_target": 0.95,
+        "superiority_threshold": null,
+        "practical_effect_floor": null,
+        "leave_one_family_out": null
       },
       "quarantine_reason": null
     },
@@ -4303,6 +4342,54 @@
       "rank_eligible_count": null,
       "correlation_status": "declared",
       "correlated_family_group": "music-arena-instrumental",
+      "research_flags": [],
+      "quarantine_reason": null
+    },
+    {
+      "benchmark_family_id": "artificialanalysis-big-bench-audio",
+      "display_name": "Big Bench Audio (Artificial Analysis)",
+      "candidate_cells": [
+        "speech-to-speech"
+      ],
+      "entity_kinds": [
+        "model_configuration"
+      ],
+      "state": "active",
+      "rank_eligible_count": null,
+      "correlation_status": "unknown",
+      "correlated_family_group": null,
+      "research_flags": [],
+      "quarantine_reason": null
+    },
+    {
+      "benchmark_family_id": "artificialanalysis-full-duplex-bench",
+      "display_name": "Full-Duplex-Bench (Artificial Analysis)",
+      "candidate_cells": [
+        "speech-to-speech"
+      ],
+      "entity_kinds": [
+        "model_configuration"
+      ],
+      "state": "active",
+      "rank_eligible_count": null,
+      "correlation_status": "unknown",
+      "correlated_family_group": null,
+      "research_flags": [],
+      "quarantine_reason": null
+    },
+    {
+      "benchmark_family_id": "artificialanalysis-tau-voice",
+      "display_name": "tau-voice (Artificial Analysis)",
+      "candidate_cells": [
+        "speech-to-speech"
+      ],
+      "entity_kinds": [
+        "model_configuration"
+      ],
+      "state": "active",
+      "rank_eligible_count": null,
+      "correlation_status": "unknown",
+      "correlated_family_group": null,
       "research_flags": [],
       "quarantine_reason": null
     },
@@ -10935,6 +11022,153 @@
       },
       "ranking_group_ids": [
         "rg-music-generation-arena-system-crowd-pairwise-arena-system-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "artificialanalysis-big-bench-audio-discovery",
+      "benchmark_family_id": "artificialanalysis-big-bench-audio",
+      "adapter_id": "artificialanalysis-speech-to-speech-flight-v1",
+      "metric_direction": "higher",
+      "candidate_cells": [
+        "speech-to-speech"
+      ],
+      "entity_kind": "model_configuration",
+      "interaction_policy": "direct_prompt",
+      "configuration_passport_class": "model-configuration-v1",
+      "state": "active",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": null,
+        "task_data_license": null,
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "validated",
+        "mode": "periodic",
+        "stale_after_seconds": 1209600,
+        "stop_recommending_after_seconds": 7776000,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": true,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "declared",
+        "task_lineage_id": "artificialanalysis-big-bench-audio-tasks",
+        "environment_lineage_id": "artificialanalysis-big-bench-audio-environments",
+        "grader_lineage_id": "artificialanalysis-big-bench-audio-graders",
+        "correlation_status": "unknown",
+        "correlated_family_group": null
+      },
+      "ranking_group_ids": [
+        "rg-speech-to-speech-model-configuration-direct-prompt-model-configuration-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "artificialanalysis-full-duplex-bench-discovery",
+      "benchmark_family_id": "artificialanalysis-full-duplex-bench",
+      "adapter_id": "artificialanalysis-speech-to-speech-flight-v1",
+      "metric_direction": "higher",
+      "candidate_cells": [
+        "speech-to-speech"
+      ],
+      "entity_kind": "model_configuration",
+      "interaction_policy": "direct_prompt",
+      "configuration_passport_class": "model-configuration-v1",
+      "state": "active",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": null,
+        "task_data_license": null,
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "validated",
+        "mode": "periodic",
+        "stale_after_seconds": 1209600,
+        "stop_recommending_after_seconds": 7776000,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": true,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "declared",
+        "task_lineage_id": "artificialanalysis-full-duplex-bench-tasks",
+        "environment_lineage_id": "artificialanalysis-full-duplex-bench-environments",
+        "grader_lineage_id": "artificialanalysis-full-duplex-bench-graders",
+        "correlation_status": "unknown",
+        "correlated_family_group": null
+      },
+      "ranking_group_ids": [
+        "rg-speech-to-speech-model-configuration-direct-prompt-model-configuration-v1"
+      ],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "artificialanalysis-tau-voice-discovery",
+      "benchmark_family_id": "artificialanalysis-tau-voice",
+      "adapter_id": "artificialanalysis-speech-to-speech-flight-v1",
+      "metric_direction": "higher",
+      "candidate_cells": [
+        "speech-to-speech"
+      ],
+      "entity_kind": "model_configuration",
+      "interaction_policy": "direct_prompt",
+      "configuration_passport_class": "model-configuration-v1",
+      "state": "active",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": null,
+        "task_data_license": null,
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "validated",
+        "mode": "periodic",
+        "stale_after_seconds": 1209600,
+        "stop_recommending_after_seconds": 7776000,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": true,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "declared",
+        "task_lineage_id": "artificialanalysis-tau-voice-tasks",
+        "environment_lineage_id": "artificialanalysis-tau-voice-environments",
+        "grader_lineage_id": "artificialanalysis-tau-voice-graders",
+        "correlation_status": "unknown",
+        "correlated_family_group": null
+      },
+      "ranking_group_ids": [
+        "rg-speech-to-speech-model-configuration-direct-prompt-model-configuration-v1"
       ],
       "quarantine_reason": null
     },

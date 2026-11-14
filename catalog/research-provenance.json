@@ -2,7 +2,7 @@
   "$schema": "../schemas/benchmark-research-provenance.schema.json",
   "object": "benchmark_research_provenance",
   "schema_version": "1",
-  "manifest_version": "2026-11-14.2",
+  "manifest_version": "2026-11-14.3",
   "families": [
     {
       "benchmark_family_id": "livecodebench",
@@ -11597,6 +11597,151 @@
           "research_flag": null,
           "basis": "direct_source",
           "statement": "The stills and lines (items.json, stills/) are EvalRank's own data, Apache-2.0.",
+          "source_ids": [
+            "items",
+            "license"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license. The item set is EvalRank's own Apache-2.0 data, which permits commercial use with attribution.",
+          "source_ids": [
+            "license"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license.",
+          "source_ids": [
+            "license",
+            "results"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license. Generated clips are not published; a clip republished from a rerun carries the same attribution.",
+          "source_ids": [
+            "license"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The harness calls models through fal's public queue API and judges through the public OpenRouter chat API with the operator's own keys; no third-party environment terms restrict the published scores. The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license.",
+          "source_ids": [
+            "board",
+            "license"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license. Retaining the fetched results.json bytes is permitted by the license.",
+          "source_ids": [
+            "license",
+            "results"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license.",
+          "source_ids": [
+            "license",
+            "results"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "evalrank-talking-avatar",
+      "checked_on": "2026-11-14",
+      "sources": [
+        {
+          "source_id": "board",
+          "kind": "official_repository",
+          "url": "https://github.com/solozerolabs/evalrank/tree/main/boards/talking-avatar"
+        },
+        {
+          "source_id": "results",
+          "kind": "official_dataset",
+          "url": "https://github.com/solozerolabs/evalrank/blob/main/boards/talking-avatar/results.json"
+        },
+        {
+          "source_id": "items",
+          "kind": "official_dataset",
+          "url": "https://github.com/solozerolabs/evalrank/blob/main/boards/talking-avatar/items.json"
+        },
+        {
+          "source_id": "license",
+          "kind": "official_repository",
+          "url": "https://github.com/solozerolabs/evalrank/blob/main/LICENSE"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The board runs every active fal image-to-video endpoint whose input schema takes one still and one audio file, discovered each run with no hand list. Each endpoint lip-syncs 4 stylised stills (felt puppet, gouache, clay, paper cut-out; the stylised-clip board's sha256-pinned stills) to 2 of EvalRank's own recorded lines (one calm, one exclaimed; sha256-pinned with measured speech spans) into 8 clips, with input shaped from the endpoint's own fal input schema (9:16, up to 1080p, duration rounded up to cover the line, captions off).",
+          "source_ids": [
+            "board",
+            "items"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "A clip passes only if it was delivered (a refusal fails it), is portrait with an audio track and at least as long as the line, fal-ai/whisper hears the recorded line within 20% word error, and a three-vendor vision panel (majority over the still and frames labelled speaking or silent from the line's speech spans) finds no new text, no change of clothing, hair, art style or realism, and a mouth that moves while the line is spoken and not while silent. The panel also rates the performance 1 to 5. The board metric is avatar_score: the mean over the 8 clips of quality/5 for a passing clip and 0 otherwise, a unit interval, higher is better; each row also publishes pass_rate. A row with more than one unjudged clip is published but excluded. results.json records the item-set and prompt digests, the transcriber, the word-error ceiling and the panel.",
+          "source_ids": [
+            "board",
+            "results"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "Each row is one fal endpoint under a fixed request shape, so it resolves to a model configuration and ranks the talking-avatar cell's model-configuration group; its entity name is fal's display name for the endpoint. It shares its stills with the stylised-clip board but not its lines, task or cell, so its correlation stays unknown. It is the cell's only family, so the group publishes at most an explorer view: the top-set and single-winner floors (3 and 4 families) are not met and no winner is claimed.",
+          "source_ids": [
+            "board",
+            "results"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "No public source fits this cell (checked 2026-11-14; do not re-research without a new source): OpenArt Arena's lip-sync board ranks only 5 prompt-driven native-audio video models, no audio-driven avatar model, as HTML only with no feed (snapshot 2026-09-24); Artificial Analysis's video arena has no lip-sync board and its free API forbids redistribution; LMArena has no lip-sync or avatar configuration; Everypixel's blind test is a one-off comparison of 4 models by a 2-3 person panel, not a leaderboard. EvalRank therefore runs this board itself.",
+          "source_ids": [
+            "board"
+          ]
+        },
+        {
+          "topic": "harness_code_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The harness is boards/talking-avatar/harness.py in this repository, Apache-2.0.",
+          "source_ids": [
+            "board",
+            "license"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The lines (items.json, audio/) and the stylised-clip board's stills are EvalRank's own data, Apache-2.0.",
           "source_ids": [
             "items",
             "license"

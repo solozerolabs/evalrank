@@ -1,0 +1,70 @@
+{
+  "license": "Apache-2.0",
+  "attribution": "EvalRank talking-avatar board lines and the stylised-clip board stills (solozerolabs/evalrank)",
+  "stills": [
+    {
+      "id": "felt",
+      "file": "stills/felt.png",
+      "content_type": "image/png",
+      "sha256": "8e3b572d65238a42cab2aee3d1bd3dcd6597f981414347da3bba2ce324f8c46a"
+    },
+    {
+      "id": "gouache",
+      "file": "stills/gouache.jpg",
+      "content_type": "image/jpeg",
+      "sha256": "7a4a105dd7c6726da9b6df5013f61960b8adaa75f3b7926691d950063e5c7887"
+    },
+    {
+      "id": "clay",
+      "file": "stills/clay.png",
+      "content_type": "image/png",
+      "sha256": "0d2604608adb1f8f5d7193d728727100d27eabcd9153152263542766c7bf271f"
+    },
+    {
+      "id": "paper",
+      "file": "stills/paper.png",
+      "content_type": "image/png",
+      "sha256": "ebe025f175d41549b93cba055d583f9601ad82c24317ea4946f5f724757ef9ab"
+    }
+  ],
+  "lines": [
+    {
+      "id": "calm",
+      "file": "audio/calm.mp3",
+      "sha256": "f42ec186ad500ac815d5625075a3c252f4b0ada6b46e9e1750fed3c716e9e29d",
+      "seconds": 6.8,
+      "speech": [
+        [
+          0.0,
+          0.79
+        ],
+        [
+          1.39,
+          3.54
+        ],
+        [
+          4.23,
+          6.54
+        ]
+      ],
+      "line": "Wait. It wrote the tests too? I only asked for the button."
+    },
+    {
+      "id": "exclaim",
+      "file": "audio/exclaim.mp3",
+      "sha256": "ef445318d6b440f03b4f4da0ee5092dcc3e43b8ff0de550c4d82663ced6d1369",
+      "seconds": 4.35,
+      "speech": [
+        [
+          0.0,
+          3.15
+        ],
+        [
+          3.33,
+          3.97
+        ]
+      ],
+      "line": "Three customers signed up while I was asleep! Three!"
+    }
+  ]
+}

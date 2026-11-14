@@ -43,6 +43,7 @@ EXPECTED_CELL_IDS = (
     "content-safety-classification",
     "image-generation",
     "video-generation",
+    "talking-avatar",
 )
 
 EXPECTED_FAMILY_IDS = (
@@ -165,6 +166,7 @@ EXPECTED_FAMILY_IDS = (
     "lmarena-text-to-video",
     "lmarena-image-to-video",
     "evalrank-stylised-clip",
+    "evalrank-talking-avatar",
     "lmarena-text-factuality",
     "evalrank-site-translation",
     "aa-intelligence-index-cost-per-task",
@@ -226,6 +228,7 @@ EXPECTED_FEED_IDS = tuple(
         "evalrank-content-safety": ("evalrank-content-safety-board-discovery",),
         "evalrank-site-translation": ("evalrank-site-translation-board-discovery",),
         "evalrank-stylised-clip": ("evalrank-stylised-clip-board-discovery",),
+        "evalrank-talking-avatar": ("evalrank-talking-avatar-board-discovery",),
         "core-bench-reproducibility": (
             "core-bench-v1-1-mainline-discovery",
             "core-bench-v1-1-ood-discovery",
@@ -467,7 +470,7 @@ class CatalogManifestTests(unittest.TestCase):
 
         self.assertEqual("evalrank_manifest", payload["object"])
         self.assertEqual("1", payload["schema_version"])
-        self.assertEqual("2026-11-14.2", payload["manifest_version"])
+        self.assertEqual("2026-11-14.3", payload["manifest_version"])
         for key, id_key in (
             ("cells", "cell_id"),
             ("ranking_groups", "ranking_group_id"),
@@ -1245,6 +1248,45 @@ class CatalogManifestTests(unittest.TestCase):
             self.assertEqual(translation[key], feed[key])
         self.assertEqual("evalrank-stylised-clip-tasks", feed["lineage"]["task_lineage_id"])
 
+    def test_talking_avatar_ranks_only_on_evalranks_own_board(self):
+        payload = manifest()
+        families = {row["benchmark_family_id"]: row for row in payload["benchmark_families"]}
+        feeds = {row["feed_id"]: row for row in payload["feeds"]}
+        groups = {row["ranking_group_id"]: row for row in payload["ranking_groups"]}
+        group_id = "rg-talking-avatar-model-configuration-direct-prompt-model-configuration-v1"
+        feed = feeds["evalrank-talking-avatar-board-discovery"]
+        self.assertEqual("active", families["evalrank-talking-avatar"]["state"])
+        self.assertEqual("talking-avatar", groups[group_id]["cell_id"])
+        self.assertEqual(
+            [group_id],
+            [row["ranking_group_id"] for row in payload["ranking_groups"] if row["cell_id"] == "talking-avatar"],
+        )
+        # One family, like content-safety-classification: the shared eligibility's top-set and
+        # single-winner floors (3 and 4 families) cannot be met, so it publishes explorer only.
+        self.assertEqual(
+            groups[
+                "rg-content-safety-classification-model-configuration-direct-prompt-"
+                "model-configuration-v1"
+            ]["eligibility"],
+            groups[group_id]["eligibility"],
+        )
+        self.assertLess(1, groups[group_id]["eligibility"]["top_set"]["minimum_families"])
+        bound = {
+            row["benchmark_family_id"]
+            for row in payload["feeds"]
+            if row["state"] == "active" and "talking-avatar" in row["candidate_cells"]
+        }
+        self.assertEqual({"evalrank-talking-avatar"}, bound)
+        self.assertEqual("evalrank-talking-avatar-board-json-v1", feed["adapter_id"])
+        self.assertEqual("higher", feed["metric_direction"])
+        self.assertEqual([group_id], feed["ranking_group_ids"])
+        self.assertEqual("approved", feed["rights"]["status"])
+        self.assertEqual("Apache-2.0", feed["rights"]["task_data_license"])
+        clip = feeds["evalrank-stylised-clip-board-discovery"]
+        for key in ("cadence", "retention"):
+            self.assertEqual(clip[key], feed[key])
+        self.assertEqual("evalrank-talking-avatar-tasks", feed["lineage"]["task_lineage_id"])
+
     def test_manifest_is_the_exact_public_taxonomy(self):
         payload = manifest()
         cells = payload["cells"]
@@ -1256,7 +1298,7 @@ class CatalogManifestTests(unittest.TestCase):
         self.assertTrue(all("rank_eligible_count" not in row for row in cells))
         self.assertTrue(all("eligibility" not in row for row in cells))
         self.assertNotIn("safety-robustness", EXPECTED_CELL_IDS)
-        new_cells = {row["cell_id"]: row for row in cells[-9:]}
+        new_cells = {row["cell_id"]: row for row in cells[-10:]}
         self.assertEqual(
             {
                 "professional-deliverable-creation": {
@@ -1326,6 +1368,11 @@ class CatalogManifestTests(unittest.TestCase):
                     "definition": "Generate video from a text prompt or a still image",
                     "entity_kinds": ["model"],
                 },
+                "talking-avatar": {
+                    "name": "Talking avatar",
+                    "definition": "Lip-sync a still image to a recorded voice line",
+                    "entity_kinds": ["model"],
+                },
             },
             {
                 cell_id: {
@@ -1340,7 +1387,7 @@ class CatalogManifestTests(unittest.TestCase):
     def test_every_cell_has_explicit_ordered_ranking_group_eligibility(self):
         payload = manifest()
         cell_ids = {cell["cell_id"] for cell in payload["cells"]}
-        self.assertEqual(48, len(payload["ranking_groups"]))
+        self.assertEqual(49, len(payload["ranking_groups"]))
         group_keys = set()
         covered_cells = set()
 
@@ -1407,12 +1454,12 @@ class CatalogManifestTests(unittest.TestCase):
         new_groups = {
             group["cell_id"]: group
             for group in payload["ranking_groups"]
-            if group["cell_id"] in set(EXPECTED_CELL_IDS[-9:-4])
+            if group["cell_id"] in set(EXPECTED_CELL_IDS[-10:-5])
         }
         # instruction-following, content-safety-classification (2026-10-21), image-generation
-        # (2026-10-30) and video-generation (2026-11-14) are checked below and by the
-        # general eligibility loop above.
-        self.assertEqual(set(EXPECTED_CELL_IDS[-9:-4]), set(new_groups))
+        # (2026-10-30), video-generation and talking-avatar (2026-11-14) are checked below and
+        # by the general eligibility loop above.
+        self.assertEqual(set(EXPECTED_CELL_IDS[-10:-5]), set(new_groups))
         groups_by_id = {group["ranking_group_id"]: group for group in payload["ranking_groups"]}
         self.assertEqual(
             groups_by_id["rg-image-generation-arena-system-crowd-pairwise-arena-system-v1"]["eligibility"],
@@ -1636,6 +1683,8 @@ class CatalogManifestTests(unittest.TestCase):
                 "lmarena-image-to-video",
                 # 2026-11-14: EvalRank's own stylised-clip board (video-generation).
                 "evalrank-stylised-clip",
+                # 2026-11-14: the talking-avatar cell's one family, EvalRank's own board.
+                "evalrank-talking-avatar",
                 # 2026-10-29: the multilingual model-configuration group's family, EvalRank's
                 # own open site-translation board (covers ar/he/hi/th, reasoning off).
                 "evalrank-site-translation",
@@ -1645,7 +1694,7 @@ class CatalogManifestTests(unittest.TestCase):
             },
             active,
         )
-        self.assertEqual(122, len(families))
+        self.assertEqual(123, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -1734,7 +1783,7 @@ class CatalogManifestTests(unittest.TestCase):
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(135, len(feeds))
+        self.assertEqual(136, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_itbench_is_not_executable_without_exact_configuration_identity(self):
@@ -2219,6 +2268,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "lmarena-text-to-video-discovery": "higher",
                 "lmarena-image-to-video-discovery": "higher",
                 "evalrank-stylised-clip-board-discovery": "higher",
+                "evalrank-talking-avatar-board-discovery": "higher",
                 "lmarena-text-factuality-discovery": "higher",
                 "evalrank-site-translation-board-discovery": "higher",
                 "aa-intelligence-index-cost-per-task-benchmarkheaven-discovery": "lower",

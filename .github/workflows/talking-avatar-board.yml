@@ -1,0 +1,65 @@
+name: Talking-avatar board
+
+on:
+  schedule:
+    - cron: "41 9 * * 2"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: talking-avatar-board
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+      - name: Require the fal and OpenRouter keys
+        env:
+          FAL_API_KEY: ${{ secrets.FAL_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          if [ -z "$FAL_API_KEY" ] || [ -z "$OPENROUTER_API_KEY" ]; then
+            echo "::error::FAL_API_KEY or OPENROUTER_API_KEY is not set; the board cannot refresh and will go stale"
+            exit 1
+          fi
+      - name: Install ffmpeg
+        run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - name: Score new candidates
+        env:
+          FAL_API_KEY: ${{ secrets.FAL_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        working-directory: boards/talking-avatar
+        # A scheduled run scores only endpoints fal added since the last run (and retries an
+        # excluded row), at most 2, and never restarts the board: a quiet week is $0. A manual
+        # run scores every unscored discovered endpoint.
+        run: python3 harness.py run --results results.json --workers 2 --concurrency 8 ${{ github.event_name == 'schedule' && '--max-models 2 --keep-board' || '' }}
+      - name: Re-measure prices
+        env:
+          FAL_API_KEY: ${{ secrets.FAL_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        working-directory: boards/talking-avatar
+        # One clip per passer whose fal bill is missing or over 28 days old (best first); the
+        # scheduled run re-measures one (~$1), a manual run every one that is due.
+        run: python3 harness.py reprice --results results.json --max-models ${{ github.event_name == 'schedule' && '1' || '0' }}
+      - name: Test the board
+        run: python3 -m unittest tests.test_talking_avatar_board
+      - name: Commit the board
+        run: |
+          if git diff --quiet -- boards/talking-avatar/results.json; then
+            echo "no new candidates"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add boards/talking-avatar/results.json
+          git commit -m "chore(boards): refresh the talking-avatar board"
+          git pull --rebase origin main
+          git push

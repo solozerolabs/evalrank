@@ -24,7 +24,7 @@
       "items": 8
     }
   ],
-  "updated_at": "2026-11-14T19:12:42Z",
+  "updated_at": "2026-11-14T19:17:07Z",
   "models": [
     {
       "model": "HappyHorse 1.0",
@@ -1689,6 +1689,284 @@
           "transcript": " Three customers signed up while I was asleep."
         }
       ]
+    },
+    {
+      "model": "Gemini Omni 1.2 Flash",
+      "endpoint": "google/gemini-omni-flash/v1.2/image-to-video",
+      "score": 1.0,
+      "clips": 8,
+      "passed": 8,
+      "errors": 0,
+      "excluded": false,
+      "check_passes": {
+        "delivered": 8,
+        "format": 8,
+        "line": 8,
+        "no_text": 8,
+        "identity": 8
+      },
+      "refusals": [],
+      "seconds_to_video_p50": 73.0,
+      "list_price": {
+        "unit_price": 0.0273,
+        "unit": "seconds",
+        "currency": "USD"
+      },
+      "scored_at": "2026-11-14T19:17:07Z",
+      "clip_results": [
+        {
+          "still_id": "felt",
+          "line_id": "calm",
+          "passed": true,
+          "error": false,
+          "code": null,
+          "delivered": true,
+          "format": true,
+          "line": true,
+          "no_text": true,
+          "identity": true,
+          "wer": 0.0,
+          "transcript": " Wait, it wrote the tests too?"
+        },
+        {
+          "still_id": "felt",
+          "line_id": "exclaim",
+          "passed": true,
+          "error": false,
+          "code": null,
+          "delivered": true,
+          "format": true,
+          "line": true,
+          "no_text": true,
+          "identity": true,
+          "wer": 0.0,
+          "transcript": " Three customers signed up while I was asleep."
+        },
+        {
+          "still_id": "gouache",
+          "line_id": "calm",
+          "passed": true,
+          "error": false,
+          "code": null,
+          "delivered": true,
+          "format": true,
+          "line": true,
+          "no_text": true,
+          "identity": true,
+          "wer": 0.0,
+          "transcript": " Wait, it wrote the tests too?"
+        },
+        {
+          "still_id": "gouache",
+          "line_id": "exclaim",
+          "passed": true,
+          "error": false,
+          "code": null,
+          "delivered": true,
+          "format": true,
+          "line": true,
+          "no_text": true,
+          "identity": true,
+          "wer": 0.0,
+          "transcript": " Three customers signed up while I was asleep."
+        },
+        {
+          "still_id": "clay",
+          "line_id": "calm",
+          "passed": true,
+          "error": false,
+          "code": null,
+          "delivered": true,
+          "format": true,
+          "line": true,
+          "no_text": true,
+          "identity": true,
+          "wer": 0.0,
+          "transcript": " Wait, it wrote the tests too?"
+        },
+        {
+          "still_id": "clay",
+          "line_id": "exclaim",
+          "passed": true,
+          "error": false,
+          "code": null,
+          "delivered": true,
+          "format": true,
+          "line": true,
+          "no_text": true,
+          "identity": true,
+          "wer": 0.125,
+          "transcript": " Haha, three customers signed up while I was asleep!"
+        },
+        {
+          "still_id": "paper",
+          "line_id": "calm",
+          "passed": true,
+          "error": false,
+          "code": null,
+          "delivered": true,
+          "format": true,
+          "line": true,
+          "no_text": true,
+          "identity": true,
+          "wer": 0.0,
+          "transcript": " Wait, it wrote the tests too?"
+        },
+        {
+          "still_id": "paper",
+          "line_id": "exclaim",
+          "passed": true,
+          "error": false,
+          "code": null,
+          "delivered": true,
+          "format": true,
+          "line": true,
+          "no_text": true,
+          "identity": true,
+          "wer": 0.0,
+          "transcript": " Three customers signed up while I was asleep!"
+        }
+      ],
+      "attempts": 1
+    },
+    {
+      "model": "MiniMax H3",
+      "endpoint": "minimax/h3/image-to-video",
+      "score": 1.0,
+      "clips": 8,
+      "passed": 8,
+      "errors": 0,
+      "excluded": false,
+      "check_passes": {
+        "delivered": 8,
+        "format": 8,
+        "line": 8,
+        "no_text": 8,
+        "identity": 8
+      },
+      "refusals": [],
+      "seconds_to_video_p50": 70.7,
+      "list_price": {
+        "unit_price": 0.05,
+        "unit": "seconds",
+        "currency": "USD"
+      },
+      "scored_at": "2026-11-14T19:17:05Z",
+      "clip_results": [
+        {
+          "still_id": "felt",
+          "line_id": "calm",
+          "passed": true,
+          "error": false,
+          "code": null,
+          "delivered": true,
+          "format": true,
+          "line": true,
+          "no_text": true,
+          "identity": true,
+          "wer": 0.0,
+          "transcript": " Wait, it wrote the tests too?"
+        },
+        {
+          "still_id": "felt",
+          "line_id": "exclaim",
+          "passed": true,
+          "error": false,
+          "code": null,
+          "delivered": true,
+          "format": true,
+          "line": true,
+          "no_text": true,
+          "identity": true,
+          "wer": 0.0,
+          "transcript": " Three customers signed up while I was asleep!"
+        },
+        {
+          "still_id": "gouache",
+          "line_id": "calm",
+          "passed": true,
+          "error": false,
+          "code": null,
+          "delivered": true,
+          "format": true,
+          "line": true,
+          "no_text": true,
+          "identity": true,
+          "wer": 0.0,
+          "transcript": " Wait, it wrote the tests too?"
+        },
+        {
+          "still_id": "gouache",
+          "line_id": "exclaim",
+          "passed": true,
+          "error": false,
+          "code": null,
+          "delivered": true,
+          "format": true,
+          "line": true,
+          "no_text": true,
+          "identity": true,
+          "wer": 0.0,
+          "transcript": " Three customers signed up while I was asleep!"
+        },
+        {
+          "still_id": "clay",
+          "line_id": "calm",
+          "passed": true,
+          "error": false,
+          "code": null,
+          "delivered": true,
+          "format": true,
+          "line": true,
+          "no_text": true,
+          "identity": true,
+          "wer": 0.0,
+          "transcript": " Wait, it wrote the tests too?"
+        },
+        {
+          "still_id": "clay",
+          "line_id": "exclaim",
+          "passed": true,
+          "error": false,
+          "code": null,
+          "delivered": true,
+          "format": true,
+          "line": true,
+          "no_text": true,
+          "identity": true,
+          "wer": 0.0,
+          "transcript": " Three customers signed up while I was asleep."
+        },
+        {
+          "still_id": "paper",
+          "line_id": "calm",
+          "passed": true,
+          "error": false,
+          "code": null,
+          "delivered": true,
+          "format": true,
+          "line": true,
+          "no_text": true,
+          "identity": true,
+          "wer": 0.0,
+          "transcript": " Wait, it wrote the tests too?"
+        },
+        {
+          "still_id": "paper",
+          "line_id": "exclaim",
+          "passed": true,
+          "error": false,
+          "code": null,
+          "delivered": true,
+          "format": true,
+          "line": true,
+          "no_text": true,
+          "identity": true,
+          "wer": 0.0,
+          "transcript": " Three customers signed up while I was asleep!"
+        }
+      ],
+      "attempts": 1
     },
     {
       "model": "Wan 2.6",

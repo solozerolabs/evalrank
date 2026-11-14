@@ -10,8 +10,10 @@ ranks five prompt-driven video models that make their own speech, with no audio-
 model and no feed; Artificial Analysis and LMArena have no lip-sync board; one-off blind tests
 are not leaderboards. So EvalRank runs this board itself and publishes every row.
 
-What breaks this use (found on the first run, 2026-11-14): burned-in pseudo-text captions, a
-mouth that barely moves, a character redrawn in another style, and a refusal of a stylised still.
+What breaks this use (first run, 2026-11-14): Kling's avatar models burn pseudo-Chinese captions
+into the frame (3 to 5 of 8 clips each); several models add hair, a scarf or a human face; some
+mouths barely move; HeyGen Avatar 4 refuses every stylised still ("No face detected"); MiniMax
+H3 Max lip-sync refuses a line under 5 s.
 
 ## Method
 
@@ -54,7 +56,20 @@ mouth that barely moves, a character redrawn in another style, and a refusal of 
 
 ## Check validation
 
-CALIBRATION
+`python3 harness.py calibrate --sample <jsonl>` runs the post-generation checks on labelled
+local clips. On 2026-11-14 the sample was 33 clips from the first run, one panel-failed and one
+panel-passed clip per model where it had both, labelled by eye from 2 fps contact sheets:
+
+| Check | Agreed |
+| --- | --- |
+| no text | 33 of 33 (4 clips with burned pseudo-Chinese captions, all Kling) |
+| identity | 33 of 33 (5 changed: added hair, an added scarf, a new top, a human face) |
+| lips | 30 of 33 (2 frozen mouths) |
+
+The three lips misses are clips the panel called frozen that the 2 fps sheets read as moving;
+the panel sees 4 fps and named the mouth "keeping almost the same shape", so it errs strict, on
+the side of never shipping a mouth that does not move. Rerun the calibration whenever the panel
+or a prompt changes.
 
 ## Refresh
 

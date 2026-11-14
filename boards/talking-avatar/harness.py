@@ -60,6 +60,26 @@ sys.modules.setdefault("_stylised_clip_harness", clip)
 _SPEC.loader.exec_module(clip)
 Refused = clip.Refused
 
+
+def model_refusal(exc: urllib.error.HTTPError) -> str | None:
+    """The stylised-clip refusals, plus a 422 rejecting our valid still or line as a whole
+    (``loc == ["body"]``, HeyGen's "No face detected") or on the still or audio field (MiniMax
+    lip-sync's "Audio duration must be between 5 and 900 seconds"): a model that cannot take
+    what a product sends fails the clip. A 422 on any other field is our request's error."""
+    if exc.code != 422:  # noqa: PLR2004
+        return None
+    detail = clip._detail(exc)
+    kind, msg = detail.get("type"), str(detail.get("msg", "")).lower()
+    if kind == "content_policy_violation" or (kind == "invalid_request" and "could not generate" in msg):
+        return f"http_422:{kind}"
+    loc = detail.get("loc") or []
+    if kind in {"input_value_error", "value_error"} and (loc == ["body"] or loc[-1:] in ([k] for k in (*IMAGE_KEYS, *AUDIO_KEYS))):
+        return f"http_422:{kind}"
+    return None
+
+
+clip.model_refusal = model_refusal  # this board's own copy of the plumbing (loaded by path above)
+
 HARNESS_VERSION = f"1+clip{clip.HARNESS_VERSION}"
 ITEMS = HERE / "items.json"
 STILLS = HERE.parent / "stylised-clip"
@@ -76,6 +96,8 @@ SHORTER_OK = 0.25  # seconds a clip may run shorter than the line (encoder paddi
 IMAGE_KEYS = ("image_url", "start_image_url")
 AUDIO_KEYS = ("audio_url", "target_audio_url")
 CAPTION_KEYS = ("caption", "captions", "enable_captions", "add_captions")
+#: Inputs ``avatar_inputs`` can fill; an endpoint that REQUIRES anything else is not a candidate.
+FILLED = {*IMAGE_KEYS, *AUDIO_KEYS, "prompt", "aspect_ratio", "resolution", "duration", *CAPTION_KEYS}
 DIRECTION = "The character speaks to camera, small natural gestures."
 
 LIPS_PROMPT = (
@@ -138,12 +160,22 @@ def request_props(doc: dict) -> dict:
             others = {k: v for k, v in schemas.items() if not k.endswith("Input")}
             marked = {**schema, "properties": {"prompt": {}, **props}}
             out = clip.resolve_props({"components": {"schemas": {**others, name: marked}}})
-            return out if "prompt" in props else {k: v for k, v in out.items() if k != "prompt"}
+            out = out if "prompt" in props else {k: v for k, v in out.items() if k != "prompt"}
+            unfilled = [r for r in schema.get("required", []) if r not in FILLED and "default" not in (out.get(r) or {})]
+            return {**out, REQUIRED: {"unfilled": unfilled}}
     return {}
 
 
+REQUIRED = "__required__"  # request_props' carrier of the schema's required list
+
+
 def takes_still_and_audio(props: dict) -> bool:
-    """One still and one audio file, each a single URL (a list of references is another task)."""
+    """One still and one audio file, each a single URL (a list of references is another task),
+    no required input without a default that the board cannot fill (a LoRA list), and no
+    reference lists (a reference-to-video task reads the still as a start frame)."""
+    if props.get(REQUIRED, {}).get("unfilled") or any(k.startswith("reference_") for k in props):
+        return False
+
     def single(keys: tuple[str, ...]) -> bool:
         return any(k in props and (props[k].get("type") in (None, "string")) for k in keys)
     return single(IMAGE_KEYS) and single(AUDIO_KEYS)

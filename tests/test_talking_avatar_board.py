@@ -29,6 +29,7 @@ class DiscoveryTests(unittest.TestCase):
         self.assertFalse(harness.takes_still_and_audio({"image_url": {}, "audio_url": {"type": "array"}}))
         self.assertFalse(harness.takes_still_and_audio({"image_urls": {}, "audio_url": {}}))
         self.assertFalse(harness.takes_still_and_audio({"image_url": {}, "generate_audio": {"type": "boolean"}}))
+        self.assertFalse(harness.takes_still_and_audio({"image_url": {}, "target_audio_url": {}, "reference_image_urls": {"type": "array"}}))
 
     def test_the_request_schema_need_not_take_a_prompt(self):
         doc = {"components": {"schemas": {
@@ -37,8 +38,29 @@ class DiscoveryTests(unittest.TestCase):
             "Res": {"enum": ["720p", "480p"]},
         }}}
         props = harness.request_props(doc)
-        self.assertEqual({"image_url", "audio_url", "resolution"}, set(props))
+        self.assertEqual({"image_url", "audio_url", "resolution", harness.REQUIRED}, set(props))
         self.assertEqual(["720p", "480p"], props["resolution"]["enum"])
+
+
+    def test_a_required_input_with_no_default_that_the_board_cannot_fill_is_not_a_candidate(self):
+        def doc(required, extra):
+            return {"components": {"schemas": {"XInput": {"required": required, "properties": {"image_url": {}, "target_audio_url": {}, "prompt": {}, **extra}}}}}
+        lora = harness.request_props(doc(["prompt", "loras"], {"loras": {"type": "array"}}))
+        self.assertFalse(harness.takes_still_and_audio(lora))
+        mode = harness.request_props(doc(["prompt", "prompt_expansion_mode"], {"prompt_expansion_mode": {"default": "balanced"}}))
+        self.assertTrue(harness.takes_still_and_audio(mode))
+
+    def test_a_whole_input_422_is_the_models_refusal_a_field_422_is_ours(self):
+        import io
+        import urllib.error
+
+        def err(detail):
+            return urllib.error.HTTPError("u", 422, "x", {}, io.BytesIO(json.dumps({"detail": [detail]}).encode()))
+        self.assertEqual("http_422:input_value_error", harness.model_refusal(err({"loc": ["body"], "type": "input_value_error", "msg": "No face detected in the image."})))
+        self.assertIsNone(harness.model_refusal(err({"loc": ["body", "loras"], "type": "missing", "msg": "Field required"})))
+        self.assertEqual("http_422:value_error", harness.model_refusal(err({"loc": ["body", "audio_url"], "type": "value_error", "msg": "Audio duration must be between 5 and 900 seconds."})))
+        self.assertIsNone(harness.model_refusal(err({"loc": ["body", "resolution"], "type": "value_error", "msg": "bad"})))
+        self.assertEqual("http_422:content_policy_violation", harness.model_refusal(err({"loc": ["body"], "type": "content_policy_violation"})))
 
 
 class InputTests(unittest.TestCase):

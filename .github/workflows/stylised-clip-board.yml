@@ -37,7 +37,9 @@ jobs:
           FAL_API_KEY: ${{ secrets.FAL_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         working-directory: boards/stylised-clip
-        run: python3 harness.py run --results results.json --workers 2 --concurrency 8
+        # A scheduled run scores at most 2 models (~$10 worst case) and never restarts the board;
+        # with nothing new it spends $0. A manual run has no cap.
+        run: python3 harness.py run --results results.json --workers 2 --concurrency 8 ${{ github.event_name == 'schedule' && '--max-models 2 --keep-board' || '' }}
       - name: Test the board
         run: python3 -m unittest tests.test_stylised_clip_board
       - name: Commit the board

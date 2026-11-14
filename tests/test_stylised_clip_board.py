@@ -128,6 +128,30 @@ class ItemTests(unittest.TestCase):
             self.assertTrue(row["arena_name"].strip())
 
 
+class PickTests(unittest.TestCase):
+    CANDIDATES = [{"endpoint": e, "arena_name": e} for e in ("new", "good", "flaky", "stuck")]
+    RESULTS = {"models": [
+        {"endpoint": "good", "excluded": False},
+        {"endpoint": "flaky", "excluded": True, "attempts": 2},
+        {"endpoint": "stuck", "excluded": True, "attempts": 3},
+    ]}
+
+    def _pick(self, **kwargs):
+        return [c["endpoint"] for c in harness.pick(self.RESULTS, self.CANDIDATES, set(), **kwargs)]
+
+    def test_a_weekly_run_scores_only_new_and_retryable_models(self):
+        self.assertEqual(["new", "flaky"], self._pick(rescore=False))
+
+    def test_naming_a_model_or_rescore_spends_on_purpose(self):
+        self.assertEqual(["stuck"], [c["endpoint"] for c in harness.pick(self.RESULTS, self.CANDIDATES, {"stuck"}, rescore=False)])
+        self.assertEqual(4, len(self._pick(rescore=True)))
+
+    def test_attempts_count_only_consecutive_exclusions(self):
+        self.assertEqual(3, harness.attempts(self.RESULTS, {"endpoint": "flaky"}))
+        self.assertEqual(1, harness.attempts(self.RESULTS, {"endpoint": "good"}))
+        self.assertEqual(1, harness.attempts(self.RESULTS, {"endpoint": "new"}))
+
+
 class BoardFileTests(unittest.TestCase):
     def test_every_row_is_consistent_with_its_clips(self):
         board = json.loads((BOARD / "results.json").read_text(encoding="utf-8"))

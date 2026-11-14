@@ -79,7 +79,9 @@ changes.
 ## Refresh
 
 `.github/workflows/stylised-clip-board.yml` runs weekly. It scores candidates not yet on the
-board, retries excluded rows, and commits `results.json`. It needs the repository secrets
+board, retries an excluded row up to 3 runs in all, and commits `results.json`. A scheduled run
+scores at most 2 models (about $10 at worst; $0 when nothing is new) and refuses rather than
+rescoring every model when the prompt, items or judge panel changed; a manual run has no cap. It needs the repository secrets
 `FAL_API_KEY` and `OPENROUTER_API_KEY`; a scheduled run without them fails, so a stale board is
 never silent. A model costs its fal price for 40 s of video (about $2 to $8) plus a few cents
 of judging.

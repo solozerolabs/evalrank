@@ -71,6 +71,7 @@ MIN_JUDGES = 2
 MAX_WER = 0.2
 MIN_SECONDS = 4.5
 MAX_ERRORS = 1
+MAX_ATTEMPTS = 3  # an excluded row is retried this many runs in all, then left for a person
 CLIP_TIMEOUT_SECONDS = 900
 REQUEST_TIMEOUT_SECONDS = 180
 RETRIES = 4
@@ -550,6 +551,27 @@ def load_results(path: Path) -> dict:
     return current if same else fresh  # a changed prompt, item set, harness or panel starts a new board
 
 
+def pick(results: dict, candidates: list[dict], wanted: set[str], *, rescore: bool) -> list[dict]:
+    """Candidates to score: unscored ones, plus excluded ones under ``MAX_ATTEMPTS``.
+
+    Naming endpoints or ``--rescore`` overrides both rules; that is a person deciding to spend.
+    """
+    todo = [c for c in candidates if (c["endpoint"] in wanted if wanted else True)]
+    if rescore or wanted:
+        return todo
+    rows = {row["endpoint"]: row for row in results["models"]}
+    return [
+        c for c in todo
+        if c["endpoint"] not in rows
+        or (rows[c["endpoint"]]["excluded"] and rows[c["endpoint"]].get("attempts", 1) < MAX_ATTEMPTS)
+    ]
+
+
+def attempts(results: dict, row: dict) -> int:
+    prior = next((r for r in results["models"] if r["endpoint"] == row["endpoint"]), None)
+    return prior.get("attempts", 1) + 1 if prior and prior["excluded"] else 1
+
+
 def merge(results: dict, rows: list[dict]) -> dict:
     by_endpoint = {row["endpoint"]: row for row in results["models"]}
     by_endpoint.update({row["endpoint"]: row for row in rows})
@@ -592,7 +614,8 @@ def main(argv: list[str] | None = None) -> int:
     run.add_argument("--results", type=Path, required=True)
     run.add_argument("--models", default="", help="comma-separated fal endpoints; default: every unscored candidate")
     run.add_argument("--rescore", action="store_true")
-    run.add_argument("--max-models", type=int, default=0)
+    run.add_argument("--max-models", type=int, default=0, help="score at most this many models (the weekly cost cap)")
+    run.add_argument("--keep-board", action="store_true", help="refuse instead of starting a new board when the prompt, items or panel changed")
     run.add_argument("--concurrency", type=int, default=8, help="clips in flight per model")
     run.add_argument("--workers", type=int, default=2, help="models scored in parallel")
     cal = sub.add_parser("calibrate")
@@ -624,11 +647,11 @@ def main(argv: list[str] | None = None) -> int:
             print(f"error: {still['file']} does not match its pinned sha256", file=sys.stderr)
             return 2
     results = load_results(args.results)
-    scored = {row["endpoint"] for row in results["models"] if not row["excluded"]}
+    if args.keep_board and args.results.exists() and not results["models"] and json.loads(args.results.read_text(encoding="utf-8"))["models"]:
+        print("error: the board's prompt, items or panel changed; rescoring every model is a manual run", file=sys.stderr)
+        return 3
     wanted = {name for name in args.models.split(",") if name}
-    todo = [c for c in candidates() if (c["endpoint"] in wanted if wanted else True)]
-    if not args.rescore:
-        todo = [c for c in todo if c["endpoint"] not in scored]
+    todo = pick(results, candidates(), wanted, rescore=args.rescore)
     if args.max_models:
         todo = todo[: args.max_models]
     if not todo:
@@ -647,6 +670,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{candidate['endpoint']}: failed ({type(exc).__name__}: {exc}); not recorded", file=sys.stderr)
             return
         with lock:
+            row["attempts"] = attempts(results, row)
             merge(results, [row])
             tmp = args.results.with_suffix(".json.tmp")
             tmp.write_text(json.dumps(results, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

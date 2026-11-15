@@ -2,7 +2,7 @@
   "$schema": "../schemas/benchmark-research-provenance.schema.json",
   "object": "benchmark_research_provenance",
   "schema_version": "1",
-  "manifest_version": "2026-11-14.7",
+  "manifest_version": "2026-11-14.8",
   "families": [
     {
       "benchmark_family_id": "livecodebench",

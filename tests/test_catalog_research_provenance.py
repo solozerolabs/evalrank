@@ -38,7 +38,7 @@ class CatalogResearchProvenanceTests(unittest.TestCase):
 
         self.assertEqual("benchmark_research_provenance", self.provenance["object"])
         self.assertEqual("1", self.provenance["schema_version"])
-        self.assertEqual("2026-11-14.7", self.provenance["manifest_version"])
+        self.assertEqual("2026-11-14.8", self.provenance["manifest_version"])
         self.assertEqual(self.manifest["manifest_version"], self.provenance["manifest_version"])
         self.assertEqual(expected_ids, actual_ids)
         self.assertEqual(129, len(actual_ids))
@@ -247,7 +247,12 @@ class CatalogResearchProvenanceTests(unittest.TestCase):
                 )
                 self.assertIsNone(feed["rights"]["task_data_license"])
                 self.assertEqual("allowed", feed["rights"]["artifact_retention"])
-                self.assertFalse(feed["retention"]["store_artifact_bytes"])
+                # Only the eng-v2 embedder feed is retained (it feeds an embedding-model
+                # selector); the rest stay inventory until a consumer needs them.
+                self.assertEqual(
+                    feed["feed_id"] == "mteb-eng-v2-embedding-discovery",
+                    feed["retention"]["store_artifact_bytes"],
+                )
 
         for family_id, family in provenance.items():
             with self.subTest(family=family_id):

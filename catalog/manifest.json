@@ -2,7 +2,7 @@
   "$schema": "../schemas/evalrank-manifest.schema.json",
   "object": "evalrank_manifest",
   "schema_version": "1",
-  "manifest_version": "2026-11-14.7",
+  "manifest_version": "2026-11-14.8",
   "ranking_group_dimensions": [
     "cell_id",
     "entity_kind",
@@ -9228,7 +9228,7 @@
         "upstream_version": null
       },
       "retention": {
-        "store_artifact_bytes": false,
+        "store_artifact_bytes": true,
         "maximum_days": null
       },
       "lineage": {

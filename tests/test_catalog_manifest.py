@@ -47,6 +47,7 @@ EXPECTED_CELL_IDS = (
     "music-generation",
     "speech-to-speech",
     "text-to-speech",
+    "speech-to-text",
 )
 
 EXPECTED_FAMILY_IDS = (
@@ -175,6 +176,7 @@ EXPECTED_FAMILY_IDS = (
     "artificialanalysis-full-duplex-bench",
     "artificialanalysis-tau-voice",
     "artificialanalysis-speech-arena",
+    "aa-speech-to-text",
     "lmarena-text-factuality",
     "evalrank-site-translation",
     "aa-intelligence-index-cost-per-task",
@@ -482,7 +484,7 @@ class CatalogManifestTests(unittest.TestCase):
 
         self.assertEqual("evalrank_manifest", payload["object"])
         self.assertEqual("1", payload["schema_version"])
-        self.assertEqual("2026-11-14.6", payload["manifest_version"])
+        self.assertEqual("2026-11-14.7", payload["manifest_version"])
         for key, id_key in (
             ("cells", "cell_id"),
             ("ranking_groups", "ranking_group_id"),
@@ -1434,6 +1436,46 @@ class CatalogManifestTests(unittest.TestCase):
             self.assertEqual(video[key], feed[key])
         self.assertEqual("artificialanalysis-speech-arena-tasks", feed["lineage"]["task_lineage_id"])
 
+    def test_speech_to_text_ranks_only_on_artificial_analysis_aa_wer(self):
+        payload = manifest()
+        families = {row["benchmark_family_id"]: row for row in payload["benchmark_families"]}
+        feeds = {row["feed_id"]: row for row in payload["feeds"]}
+        groups = {row["ranking_group_id"]: row for row in payload["ranking_groups"]}
+        group_id = "rg-speech-to-text-model-configuration-direct-prompt-model-configuration-v1"
+        feed = feeds["aa-speech-to-text-discovery"]
+        self.assertEqual("active", families["aa-speech-to-text"]["state"])
+        self.assertEqual("speech-to-text", groups[group_id]["cell_id"])
+        self.assertEqual(
+            [group_id],
+            [row["ranking_group_id"] for row in payload["ranking_groups"] if row["cell_id"] == "speech-to-text"],
+        )
+        # One family, like talking-avatar: the shared eligibility's top-set and single-winner
+        # floors (3 and 4 families) cannot be met, so it publishes explorer only.
+        self.assertEqual(
+            groups[
+                "rg-content-safety-classification-model-configuration-direct-prompt-"
+                "model-configuration-v1"
+            ]["eligibility"],
+            groups[group_id]["eligibility"],
+        )
+        self.assertLess(1, groups[group_id]["eligibility"]["top_set"]["minimum_families"])
+        bound = {
+            row["benchmark_family_id"]
+            for row in payload["feeds"]
+            if row["state"] == "active" and "speech-to-text" in row["candidate_cells"]
+        }
+        self.assertEqual({"aa-speech-to-text"}, bound)
+        self.assertEqual("artificialanalysis-speech-to-text-flight-v1", feed["adapter_id"])
+        # AA-WER is an error rate: lower is better.
+        self.assertEqual("lower", feed["metric_direction"])
+        self.assertEqual("model_configuration", feed["entity_kind"])
+        self.assertEqual([group_id], feed["ranking_group_ids"])
+        # Rights, cadence and retention copy the AA cyber page feeds (same 2026-09-30 grant).
+        cyber = feeds["deepsecbench-aa-discovery"]
+        for key in ("rights", "cadence", "retention"):
+            self.assertEqual(cyber[key], feed[key])
+        self.assertEqual("aa-speech-to-text-tasks", feed["lineage"]["task_lineage_id"])
+
     def test_manifest_is_the_exact_public_taxonomy(self):
         payload = manifest()
         cells = payload["cells"]
@@ -1445,7 +1487,7 @@ class CatalogManifestTests(unittest.TestCase):
         self.assertTrue(all("rank_eligible_count" not in row for row in cells))
         self.assertTrue(all("eligibility" not in row for row in cells))
         self.assertNotIn("safety-robustness", EXPECTED_CELL_IDS)
-        new_cells = {row["cell_id"]: row for row in cells[-13:]}
+        new_cells = {row["cell_id"]: row for row in cells[-14:]}
         self.assertEqual(
             {
                 "professional-deliverable-creation": {
@@ -1535,6 +1577,11 @@ class CatalogManifestTests(unittest.TestCase):
                     "definition": "Speak a line of text in a natural voice",
                     "entity_kinds": ["model"],
                 },
+                "speech-to-text": {
+                    "name": "Speech to text",
+                    "definition": "Transcribe speech in audio to text",
+                    "entity_kinds": ["model"],
+                },
             },
             {
                 cell_id: {
@@ -1549,7 +1596,7 @@ class CatalogManifestTests(unittest.TestCase):
     def test_every_cell_has_explicit_ordered_ranking_group_eligibility(self):
         payload = manifest()
         cell_ids = {cell["cell_id"] for cell in payload["cells"]}
-        self.assertEqual(52, len(payload["ranking_groups"]))
+        self.assertEqual(53, len(payload["ranking_groups"]))
         group_keys = set()
         covered_cells = set()
 
@@ -1616,12 +1663,12 @@ class CatalogManifestTests(unittest.TestCase):
         new_groups = {
             group["cell_id"]: group
             for group in payload["ranking_groups"]
-            if group["cell_id"] in set(EXPECTED_CELL_IDS[-13:-8])
+            if group["cell_id"] in set(EXPECTED_CELL_IDS[-14:-9])
         }
         # instruction-following, content-safety-classification (2026-10-21), image-generation
-        # (2026-10-30), video-generation, talking-avatar and music-generation (2026-11-14) are
-        # checked below and by the general eligibility loop above.
-        self.assertEqual(set(EXPECTED_CELL_IDS[-13:-8]), set(new_groups))
+        # (2026-10-30), video-generation, talking-avatar, music-generation and speech-to-text
+        # (2026-11-14) are checked below and by the general eligibility loop above.
+        self.assertEqual(set(EXPECTED_CELL_IDS[-14:-9]), set(new_groups))
         groups_by_id = {group["ranking_group_id"]: group for group in payload["ranking_groups"]}
         self.assertEqual(
             groups_by_id["rg-image-generation-arena-system-crowd-pairwise-arena-system-v1"]["eligibility"],
@@ -1856,6 +1903,8 @@ class CatalogManifestTests(unittest.TestCase):
                 # 2026-11-14: the text-to-speech cell's family, the Artificial Analysis
                 # Speech Arena (AA's 2026-09-30 fetch-and-republish grant).
                 "artificialanalysis-speech-arena",
+                # 2026-11-14: the speech-to-text cell's one family, Artificial Analysis AA-WER.
+                "aa-speech-to-text",
                 # 2026-10-29: the multilingual model-configuration group's family, EvalRank's
                 # own open site-translation board (covers ar/he/hi/th, reasoning off).
                 "evalrank-site-translation",
@@ -1865,7 +1914,7 @@ class CatalogManifestTests(unittest.TestCase):
             },
             active,
         )
-        self.assertEqual(128, len(families))
+        self.assertEqual(129, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -1957,7 +2006,7 @@ class CatalogManifestTests(unittest.TestCase):
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(141, len(feeds))
+        self.assertEqual(142, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_itbench_is_not_executable_without_exact_configuration_identity(self):
@@ -2448,6 +2497,7 @@ class CatalogManifestTests(unittest.TestCase):
                 "artificialanalysis-full-duplex-bench-discovery": "higher",
                 "artificialanalysis-tau-voice-discovery": "higher",
                 "artificialanalysis-speech-arena-discovery": "higher",
+                "aa-speech-to-text-discovery": "lower",
                 "lmarena-text-factuality-discovery": "higher",
                 "evalrank-site-translation-board-discovery": "higher",
                 "aa-intelligence-index-cost-per-task-benchmarkheaven-discovery": "lower",

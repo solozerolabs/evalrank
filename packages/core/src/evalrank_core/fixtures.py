@@ -106,6 +106,7 @@ _USE_CASE_ROWS = (
     ("music-generation", "Music generation", "Generate instrumental music from a text prompt", ("model",)),
     ("speech-to-speech", "Speech to speech", "Hold a real-time spoken conversation, speech in and speech out", ("model",)),
     ("text-to-speech", "Text to speech", "Speak a line of text in a natural voice", ("model",)),
+    ("speech-to-text", "Speech to text", "Transcribe speech in audio to text", ("model",)),
 )
 
 

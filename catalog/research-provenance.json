@@ -2,7 +2,7 @@
   "$schema": "../schemas/benchmark-research-provenance.schema.json",
   "object": "benchmark_research_provenance",
   "schema_version": "1",
-  "manifest_version": "2026-11-14.6",
+  "manifest_version": "2026-11-14.7",
   "families": [
     {
       "benchmark_family_id": "livecodebench",
@@ -12381,6 +12381,129 @@
           "research_flag": null,
           "basis": "owner_attestation",
           "statement": "The leaderboard page data view involves no execution environment; direct source-owner permission authorizes automated fetching of the page for this feed. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes retention of the fetched page bytes. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes publication of rankings derived from this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "aa-speech-to-text",
+      "checked_on": "2026-11-14",
+      "sources": [
+        {
+          "source_id": "aa_leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://artificialanalysis.ai/speech-to-text"
+        },
+        {
+          "source_id": "aa_methodology",
+          "kind": "official_site",
+          "url": "https://artificialanalysis.ai/methodology/speech-to-text"
+        },
+        {
+          "source_id": "open_asr_leaderboard",
+          "kind": "official_leaderboard",
+          "url": "https://huggingface.co/spaces/hf-audio/open_asr_leaderboard"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Artificial Analysis's speech-to-text leaderboard ranks transcription models by AA-WER v2, the share of words transcribed incorrectly over three datasets (AA-AgentTalk, VoxPopuli-Cleaned-AA and Earnings22-Cleaned-AA), reported as a 0-1 fraction where lower is better. Each model is evaluated through its representative API host; models whose API cannot take full-length audio are chunked (to about 9 minutes, or about 30 seconds). The non-streaming view (/speech-to-text/non-streaming) is the same page.",
+          "source_ids": [
+            "aa_leaderboard",
+            "aa_methodology"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The page server-renders its full model roster into the page's Next.js data stream; every model row carries its id, name, creator, open-weights flag and a representative host model with aaWerIndex. On 2026-11-14 the roster held 83 models, 65 with an AA-WER score (\"65 models evaluated\"); the unscored rows are mostly streaming models. The lowest error rates were Fun-Realtime-ASR-preview (0.0173), ElevenLabs Scribe v3 (0.0195) and MAI-Transcribe-2 (0.0204).",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "Each row is one model configuration called through one representative API host, so it ranks the speech-to-text cell's model-configuration group under Artificial Analysis's own model name (without the trailing creator name). It is the cell's only family, so the group publishes at most an explorer view: the top-set and single-winner floors (3 and 4 families) are not met and no winner is claimed.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "Other sources checked on 2026-11-14 and rejected (do not re-research without a new source): the Hugging Face Open ASR Leaderboard keeps its results CSVs in the private dataset hf-audio/open-asr-leaderboard-results (401 anonymously), exposes only a rendered Gradio config, states no licence for its results and includes CC-BY-NC test sets; LMArena has no audio or speech-to-text board.",
+          "source_ids": [
+            "open_asr_leaderboard"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "EvalRank has direct source-owner permission to ingest and use this source data independently of any separately published license metadata. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes commercial use of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "Direct source-owner permission authorizes redistribution of trajectories associated with this source. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
+          "source_ids": [
+            "aa_leaderboard"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "owner_attestation",
+          "statement": "The page data view involves no execution environment; direct source-owner permission authorizes automated fetching of the page for this feed. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai.",
           "source_ids": [
             "aa_leaderboard"
           ]

@@ -1,0 +1,436 @@
+{
+  "license": "Apache-2.0",
+  "attribution": "EvalRank web-search board queries (solozerolabs/evalrank)",
+  "note": "A result is official when its host equals an entry or is a subdomain of it, or (for host/path entries) its host matches and its path starts with the entry's path.",
+  "items": [
+    {
+      "id": "discovery-github",
+      "kind": "discovery",
+      "query": "github MCP server",
+      "official": [
+        "github.com/github",
+        "docs.github.com",
+        "github.blog"
+      ]
+    },
+    {
+      "id": "discovery-linear",
+      "kind": "discovery",
+      "query": "linear MCP server",
+      "official": [
+        "linear.app"
+      ]
+    },
+    {
+      "id": "discovery-notion",
+      "kind": "discovery",
+      "query": "notion MCP server",
+      "official": [
+        "notion.com",
+        "notion.so"
+      ]
+    },
+    {
+      "id": "discovery-slack",
+      "kind": "discovery",
+      "query": "slack MCP server",
+      "official": [
+        "slack.com"
+      ]
+    },
+    {
+      "id": "discovery-sentry",
+      "kind": "discovery",
+      "query": "sentry MCP server",
+      "official": [
+        "sentry.io"
+      ]
+    },
+    {
+      "id": "discovery-atlassian",
+      "kind": "discovery",
+      "query": "atlassian MCP server",
+      "official": [
+        "atlassian.com"
+      ]
+    },
+    {
+      "id": "discovery-figma",
+      "kind": "discovery",
+      "query": "figma MCP server",
+      "official": [
+        "figma.com"
+      ]
+    },
+    {
+      "id": "discovery-vercel",
+      "kind": "discovery",
+      "query": "vercel MCP server",
+      "official": [
+        "vercel.com"
+      ]
+    },
+    {
+      "id": "discovery-cloudflare",
+      "kind": "discovery",
+      "query": "cloudflare MCP server",
+      "official": [
+        "cloudflare.com"
+      ]
+    },
+    {
+      "id": "discovery-neon",
+      "kind": "discovery",
+      "query": "neon MCP server",
+      "official": [
+        "neon.com",
+        "neon.tech"
+      ]
+    },
+    {
+      "id": "discovery-mongodb",
+      "kind": "discovery",
+      "query": "mongodb MCP server",
+      "official": [
+        "mongodb.com"
+      ]
+    },
+    {
+      "id": "discovery-hubspot",
+      "kind": "discovery",
+      "query": "hubspot MCP server",
+      "official": [
+        "hubspot.com"
+      ]
+    },
+    {
+      "id": "discovery-zapier",
+      "kind": "discovery",
+      "query": "zapier MCP server",
+      "official": [
+        "zapier.com"
+      ]
+    },
+    {
+      "id": "discovery-intercom",
+      "kind": "discovery",
+      "query": "intercom MCP server",
+      "official": [
+        "intercom.com"
+      ]
+    },
+    {
+      "id": "discovery-shopify",
+      "kind": "discovery",
+      "query": "shopify MCP server",
+      "official": [
+        "shopify.com",
+        "shopify.dev"
+      ]
+    },
+    {
+      "id": "discovery-twilio",
+      "kind": "discovery",
+      "query": "twilio MCP server",
+      "official": [
+        "twilio.com"
+      ]
+    },
+    {
+      "id": "discovery-resend",
+      "kind": "discovery",
+      "query": "resend MCP server",
+      "official": [
+        "resend.com"
+      ]
+    },
+    {
+      "id": "discovery-firecrawl",
+      "kind": "discovery",
+      "query": "firecrawl MCP server",
+      "official": [
+        "firecrawl.dev"
+      ]
+    },
+    {
+      "id": "discovery-browserbase",
+      "kind": "discovery",
+      "query": "browserbase MCP server",
+      "official": [
+        "browserbase.com"
+      ]
+    },
+    {
+      "id": "discovery-apify",
+      "kind": "discovery",
+      "query": "apify MCP server",
+      "official": [
+        "apify.com"
+      ]
+    },
+    {
+      "id": "discovery-datadog",
+      "kind": "discovery",
+      "query": "datadog MCP server",
+      "official": [
+        "datadoghq.com"
+      ]
+    },
+    {
+      "id": "discovery-grafana",
+      "kind": "discovery",
+      "query": "grafana MCP server",
+      "official": [
+        "grafana.com"
+      ]
+    },
+    {
+      "id": "discovery-pagerduty",
+      "kind": "discovery",
+      "query": "pagerduty MCP server",
+      "official": [
+        "pagerduty.com"
+      ]
+    },
+    {
+      "id": "discovery-airtable",
+      "kind": "discovery",
+      "query": "airtable MCP server",
+      "official": [
+        "airtable.com"
+      ]
+    },
+    {
+      "id": "discovery-webflow",
+      "kind": "discovery",
+      "query": "webflow MCP server",
+      "official": [
+        "webflow.com"
+      ]
+    },
+    {
+      "id": "discovery-miro",
+      "kind": "discovery",
+      "query": "miro MCP server",
+      "official": [
+        "miro.com"
+      ]
+    },
+    {
+      "id": "discovery-pulumi",
+      "kind": "discovery",
+      "query": "pulumi MCP server",
+      "official": [
+        "pulumi.com"
+      ]
+    },
+    {
+      "id": "discovery-algolia",
+      "kind": "discovery",
+      "query": "algolia MCP server",
+      "official": [
+        "algolia.com"
+      ]
+    },
+    {
+      "id": "discovery-klaviyo",
+      "kind": "discovery",
+      "query": "klaviyo MCP server",
+      "official": [
+        "klaviyo.com"
+      ]
+    },
+    {
+      "id": "discovery-plaid",
+      "kind": "discovery",
+      "query": "plaid MCP server",
+      "official": [
+        "plaid.com"
+      ]
+    },
+    {
+      "id": "discovery-calendly",
+      "kind": "discovery",
+      "query": "calendly MCP server",
+      "official": [
+        "calendly.com"
+      ]
+    },
+    {
+      "id": "discovery-postman",
+      "kind": "discovery",
+      "query": "postman MCP server",
+      "official": [
+        "postman.com"
+      ]
+    },
+    {
+      "id": "discovery-sanity",
+      "kind": "discovery",
+      "query": "sanity MCP server",
+      "official": [
+        "sanity.io"
+      ]
+    },
+    {
+      "id": "discovery-upstash",
+      "kind": "discovery",
+      "query": "upstash MCP server",
+      "official": [
+        "upstash.com"
+      ]
+    },
+    {
+      "id": "discovery-render",
+      "kind": "discovery",
+      "query": "render MCP server",
+      "official": [
+        "render.com"
+      ]
+    },
+    {
+      "id": "discovery-posthog",
+      "kind": "discovery",
+      "query": "posthog MCP server",
+      "official": [
+        "posthog.com"
+      ]
+    },
+    {
+      "id": "discovery-clerk",
+      "kind": "discovery",
+      "query": "clerk MCP server",
+      "official": [
+        "clerk.com"
+      ]
+    },
+    {
+      "id": "discovery-elevenlabs",
+      "kind": "discovery",
+      "query": "elevenlabs MCP server",
+      "official": [
+        "elevenlabs.io"
+      ]
+    },
+    {
+      "id": "research-nextjs-16-middleware-cookies",
+      "kind": "research",
+      "query": "next.js 16 middleware cookies api",
+      "official": [
+        "nextjs.org",
+        "vercel.com",
+        "github.com/vercel"
+      ]
+    },
+    {
+      "id": "research-expo-eas-build-ios",
+      "kind": "research",
+      "query": "expo eas build ios provisioning profile error",
+      "official": [
+        "expo.dev",
+        "github.com/expo"
+      ]
+    },
+    {
+      "id": "research-tailwind-css-v4-dark",
+      "kind": "research",
+      "query": "tailwind css v4 dark mode class strategy",
+      "official": [
+        "tailwindcss.com",
+        "github.com/tailwindlabs"
+      ]
+    },
+    {
+      "id": "research-prisma-migrate-deploy-shadow",
+      "kind": "research",
+      "query": "prisma migrate deploy shadow database error",
+      "official": [
+        "prisma.io",
+        "github.com/prisma"
+      ]
+    },
+    {
+      "id": "research-react-19-useactionstate-form",
+      "kind": "research",
+      "query": "react 19 useActionState form example",
+      "official": [
+        "react.dev",
+        "github.com/facebook"
+      ]
+    },
+    {
+      "id": "research-fastapi-dependency-async-sqlalchemy",
+      "kind": "research",
+      "query": "fastapi dependency async sqlalchemy session",
+      "official": [
+        "fastapi.tiangolo.com",
+        "sqlalchemy.org",
+        "github.com/fastapi"
+      ]
+    },
+    {
+      "id": "research-vite-environment-variables-importmetaenv",
+      "kind": "research",
+      "query": "vite environment variables import.meta.env typescript",
+      "official": [
+        "vite.dev",
+        "vitejs.dev",
+        "github.com/vitejs"
+      ]
+    },
+    {
+      "id": "research-playwright-wait-for-load",
+      "kind": "research",
+      "query": "playwright wait for load state networkidle discouraged",
+      "official": [
+        "playwright.dev",
+        "github.com/microsoft/playwright"
+      ]
+    },
+    {
+      "id": "research-drizzle-orm-postgres-enum",
+      "kind": "research",
+      "query": "drizzle orm postgres enum migration",
+      "official": [
+        "drizzle.team",
+        "github.com/drizzle-team"
+      ]
+    },
+    {
+      "id": "research-cloudflare-workers-durable-objects",
+      "kind": "research",
+      "query": "cloudflare workers durable objects alarms",
+      "official": [
+        "cloudflare.com",
+        "github.com/cloudflare"
+      ]
+    },
+    {
+      "id": "research-pnpm-workspace-catalog-protocol",
+      "kind": "research",
+      "query": "pnpm workspace catalog protocol",
+      "official": [
+        "pnpm.io",
+        "github.com/pnpm"
+      ]
+    },
+    {
+      "id": "research-github-actions-setup-node-cache",
+      "kind": "research",
+      "query": "github actions setup-node cache pnpm",
+      "official": [
+        "docs.github.com",
+        "github.com/actions"
+      ]
+    },
+    {
+      "id": "research-uv-export-requirementstxt-from",
+      "kind": "research",
+      "query": "uv export requirements.txt from lockfile",
+      "official": [
+        "astral.sh",
+        "github.com/astral-sh"
+      ]
+    }
+  ]
+}

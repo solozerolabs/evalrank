@@ -2,7 +2,7 @@
   "$schema": "../schemas/benchmark-research-provenance.schema.json",
   "object": "benchmark_research_provenance",
   "schema_version": "1",
-  "manifest_version": "2026-11-14.8",
+  "manifest_version": "2026-11-14.9",
   "families": [
     {
       "benchmark_family_id": "livecodebench",
@@ -12524,6 +12524,151 @@
           "statement": "Direct source-owner permission authorizes publication of rankings derived from this source data. EvalRank's owner reported direct permission from Artificial Analysis, granted on 2026-09-30, for (1) automated fetching of the Artificial Analysis evaluation pages and (2) public republication of their results on the EvalRank leaderboard, with attribution by a link to artificialanalysis.ai. Every published or redistributed result credits Artificial Analysis with a \"Source: Artificial Analysis\" link to artificialanalysis.ai.",
           "source_ids": [
             "aa_leaderboard"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "evalrank-web-search",
+      "checked_on": "2026-11-14",
+      "sources": [
+        {
+          "source_id": "board",
+          "kind": "official_repository",
+          "url": "https://github.com/solozerolabs/evalrank/tree/main/boards/web-search"
+        },
+        {
+          "source_id": "results",
+          "kind": "official_dataset",
+          "url": "https://github.com/solozerolabs/evalrank/blob/main/boards/web-search/results.json"
+        },
+        {
+          "source_id": "items",
+          "kind": "official_dataset",
+          "url": "https://github.com/solozerolabs/evalrank/blob/main/boards/web-search/items.json"
+        },
+        {
+          "source_id": "license",
+          "kind": "official_repository",
+          "url": "https://github.com/solozerolabs/evalrank/blob/main/LICENSE"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The board runs every general web search API sold through Monid's pay-per-call gateway, discovered each run with no hand list (Monid's discover endpoint, then its inspect endpoint for the input schema; news, image, local, scholar and AI-answer verticals and any endpoint listed above $0.01 a call (or billed above it on its first query) are out). The request is shaped from the endpoint's own input schema: the query in its required or query field and 5 results where it takes a count; every other input keeps the vendor's default. Each endpoint answers EvalRank's 51 queries (38 '<vendor> MCP server' discovery queries, 13 coding research questions), each labelled with its official hosts.",
+          "source_ids": [
+            "board",
+            "items"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "A query scores the reciprocal rank of the first official result in the top 5 (1, 1/2, ... 1/5, else 0). The board metric is search_score, the mean over answered queries (MRR@5), a unit interval, higher is better; hit_at_1 is published beside it. A failed call is an error, not a miss; a row with more than 3 errors is published but excluded. Each row also publishes the request it sent, the p50 latency, and usd_per_call, the mean of what the gateway billed per call.",
+          "source_ids": [
+            "board",
+            "results"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "Each row is one search API endpoint under a fixed request shape, so it resolves to a model configuration and ranks the web-search cell's model-configuration group; its entity name is the gateway's provider and endpoint path. It is the cell's only family, so the group publishes at most an explorer view: the top-set and single-winner floors (3 and 4 families) are not met and no winner is claimed.",
+          "source_ids": [
+            "board",
+            "results"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "No public source fits this cell (checked 2026-11-14; do not re-research without a new source): LMArena's Search Arena ranks search-augmented LLM systems, not search APIs; the published search-API comparisons (openbenchmarks.com, cloro.dev, arlenkumar.com, AIMultiple) are one-off posts, several vendor-run, with no feed and no redistribution grant. EvalRank therefore runs this board itself.",
+          "source_ids": [
+            "board"
+          ]
+        },
+        {
+          "topic": "harness_code_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The harness is boards/web-search/harness.py in this repository, Apache-2.0.",
+          "source_ids": [
+            "board",
+            "license"
+          ]
+        },
+        {
+          "topic": "task_data_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The 55 queries and their official hosts (items.json) are EvalRank's own data, Apache-2.0.",
+          "source_ids": [
+            "items",
+            "license"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license. The item set is EvalRank's own Apache-2.0 data, which permits commercial use with attribution.",
+          "source_ids": [
+            "license"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license.",
+          "source_ids": [
+            "license",
+            "results"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license. Each row publishes the reciprocal rank, result count and latency per query, never the vendors' result text.",
+          "source_ids": [
+            "license"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The harness calls each search API through Monid's public pay-per-call gateway with the operator's own key; no third-party environment terms restrict the published scores. The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license.",
+          "source_ids": [
+            "board",
+            "license"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license. Retaining the fetched results.json bytes is permitted by the license.",
+          "source_ids": [
+            "license",
+            "results"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The scores are EvalRank's own results, produced by the board's public harness and published in this repository under its Apache-2.0 license.",
+          "source_ids": [
+            "license",
+            "results"
           ]
         }
       ]

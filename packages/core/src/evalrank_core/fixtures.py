@@ -107,6 +107,7 @@ _USE_CASE_ROWS = (
     ("speech-to-speech", "Speech to speech", "Hold a real-time spoken conversation, speech in and speech out", ("model",)),
     ("text-to-speech", "Text to speech", "Speak a line of text in a natural voice", ("model",)),
     ("speech-to-text", "Speech to text", "Transcribe speech in audio to text", ("model",)),
+    ("web-search", "Web search", "Find the official web page for a query through a search API", ("model",)),
 )
 
 

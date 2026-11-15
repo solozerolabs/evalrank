@@ -20,7 +20,7 @@ import {
   type UseCaseCatalog,
 } from "./index.ts";
 
-test("the public catalog manifest owns the exact 35-cell taxonomy", () => {
+test("the public catalog manifest owns the exact 36-cell taxonomy", () => {
   const manifest = catalogManifest();
   const expected = [
     "coding-general",
@@ -58,6 +58,7 @@ test("the public catalog manifest owns the exact 35-cell taxonomy", () => {
     "speech-to-speech",
     "text-to-speech",
     "speech-to-text",
+    "web-search",
   ];
 
   assert.deepEqual(manifest.cells.map((cell) => cell.cell_id), expected);

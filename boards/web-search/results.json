@@ -1,0 +1,8276 @@
+{
+ "object": "evalrank_web_search_board",
+ "schema_version": "1",
+ "harness_version": "2",
+ "metric": "search_score",
+ "metric_direction": "higher",
+ "limit": 5,
+ "item_set_sha256": "2152dae11a4a69eb879e76b055a0a65744372842632c1b62a1093020cc5cf355",
+ "datasets": [
+  {
+   "dataset_id": "evalrank-web-search",
+   "url": "boards/web-search/items.json",
+   "sha256": "203ea7eb5eb112bf144860a5dac17e605c563b8415fd8b9f3da6bd006f787ab2",
+   "license": "Apache-2.0",
+   "attribution": "EvalRank web-search board queries (solozerolabs/evalrank)",
+   "items": 51
+  }
+ ],
+ "updated_at": "2026-11-15T01:25:52Z",
+ "models": [
+  {
+   "model": "surf/search/web",
+   "provider": "surf",
+   "endpoint": "/search/web",
+   "request": {
+    "kind": "queryParams",
+    "input": {
+     "q": "{query}",
+     "limit": 5
+    }
+   },
+   "score": 0.9542,
+   "hit_at_1": 0.9216,
+   "queries": 51,
+   "errors": 0,
+   "excluded": false,
+   "seconds_p50": 3.14,
+   "usd_per_call": 0.006,
+   "billed_usd": 0.33,
+   "list_usd": 0.006,
+   "scored_at": "2026-11-15T01:25:28Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 3.32
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 5.04
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.93
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.19
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 3.04
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.18
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.14
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.53
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.93
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.87
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.0
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.2
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.34
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.87
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.93
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.7
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.84
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.46
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.78
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.32
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.7
+    },
+    {
+     "id": "discovery-grafana",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 5.19
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.33
+    },
+    {
+     "id": "discovery-airtable",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.89
+    },
+    {
+     "id": "discovery-webflow",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.9
+    },
+    {
+     "id": "discovery-miro",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.72
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.86
+    },
+    {
+     "id": "discovery-algolia",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.66
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.48
+    },
+    {
+     "id": "discovery-plaid",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.51
+    },
+    {
+     "id": "discovery-calendly",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.08
+    },
+    {
+     "id": "discovery-postman",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.55
+    },
+    {
+     "id": "discovery-sanity",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.7
+    },
+    {
+     "id": "discovery-upstash",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.03
+    },
+    {
+     "id": "discovery-render",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.15
+    },
+    {
+     "id": "discovery-posthog",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.14
+    },
+    {
+     "id": "discovery-clerk",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.21
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.1
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.03
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.94
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.93
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.08
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.95
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 4.11
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.92
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 3.39
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.03
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.89
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.92
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.82
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.77
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "exa/search",
+   "provider": "exa",
+   "endpoint": "/search",
+   "request": {
+    "kind": "body",
+    "input": {
+     "query": "{query}",
+     "numResults": 5
+    }
+   },
+   "score": 0.951,
+   "hit_at_1": 0.902,
+   "queries": 51,
+   "errors": 0,
+   "excluded": false,
+   "seconds_p50": 3.32,
+   "usd_per_call": 0.007,
+   "billed_usd": 0.385,
+   "list_usd": 0.007,
+   "scored_at": "2026-11-15T01:17:58Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.67
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.52
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.39
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 3.12
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.99
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.64
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.64
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.96
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.27
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.3
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.68
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.6
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.49
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.95
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 6.47
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.75
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.94
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.88
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.52
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.42
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.88
+    },
+    {
+     "id": "discovery-grafana",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.39
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.33
+    },
+    {
+     "id": "discovery-airtable",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.57
+    },
+    {
+     "id": "discovery-webflow",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.19
+    },
+    {
+     "id": "discovery-miro",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.78
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.63
+    },
+    {
+     "id": "discovery-algolia",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.32
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.18
+    },
+    {
+     "id": "discovery-plaid",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.2
+    },
+    {
+     "id": "discovery-calendly",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.13
+    },
+    {
+     "id": "discovery-postman",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 5.03
+    },
+    {
+     "id": "discovery-sanity",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.09
+    },
+    {
+     "id": "discovery-upstash",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.02
+    },
+    {
+     "id": "discovery-render",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.3
+    },
+    {
+     "id": "discovery-posthog",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.55
+    },
+    {
+     "id": "discovery-clerk",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.35
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.26
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.28
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.99
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.39
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.76
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 4.13
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.0
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.28
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.28
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.04
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.52
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.73
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.55
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.33
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "octen/broad-search",
+   "provider": "octen",
+   "endpoint": "/broad-search",
+   "request": {
+    "kind": "body",
+    "input": {
+     "query": "{query}"
+    }
+   },
+   "score": 0.9477,
+   "hit_at_1": 0.902,
+   "queries": 51,
+   "errors": 0,
+   "excluded": false,
+   "seconds_p50": 3.44,
+   "usd_per_call": 0.005,
+   "billed_usd": 0.275,
+   "list_usd": 0.001,
+   "scored_at": "2026-11-15T01:23:52Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.83
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.59
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.96
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 4.22
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 3.44
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 3.43
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 5.07
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.79
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.75
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.49
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.64
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.46
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.18
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.47
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.32
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.23
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.3
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.38
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.29
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.42
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.26
+    },
+    {
+     "id": "discovery-grafana",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.82
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.12
+    },
+    {
+     "id": "discovery-airtable",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.55
+    },
+    {
+     "id": "discovery-webflow",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.69
+    },
+    {
+     "id": "discovery-miro",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.62
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.38
+    },
+    {
+     "id": "discovery-algolia",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.61
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.57
+    },
+    {
+     "id": "discovery-plaid",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.26
+    },
+    {
+     "id": "discovery-calendly",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.44
+    },
+    {
+     "id": "discovery-postman",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.3
+    },
+    {
+     "id": "discovery-sanity",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.08
+    },
+    {
+     "id": "discovery-upstash",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.11
+    },
+    {
+     "id": "discovery-render",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.61
+    },
+    {
+     "id": "discovery-posthog",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.8
+    },
+    {
+     "id": "discovery-clerk",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.83
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.95
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.73
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.26
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.35
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.22
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.3
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 3.34
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.26
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.37
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.31
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.25
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.19
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.64
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.32
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "octen/search",
+   "provider": "octen",
+   "endpoint": "/search",
+   "request": {
+    "kind": "body",
+    "input": {
+     "query": "{query}",
+     "count": 5
+    }
+   },
+   "score": 0.9477,
+   "hit_at_1": 0.902,
+   "queries": 51,
+   "errors": 0,
+   "excluded": false,
+   "seconds_p50": 2.17,
+   "usd_per_call": 0.001,
+   "billed_usd": 0.055,
+   "list_usd": 0.001,
+   "scored_at": "2026-11-15T01:24:09Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.2
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.19
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.1
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.17
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.16
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.16
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.15
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 1.95
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.17
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.21
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.26
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.08
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 1.97
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.29
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.14
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.27
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.1
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.12
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.13
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.24
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 1.95
+    },
+    {
+     "id": "discovery-grafana",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.21
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.06
+    },
+    {
+     "id": "discovery-airtable",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.09
+    },
+    {
+     "id": "discovery-webflow",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.17
+    },
+    {
+     "id": "discovery-miro",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.88
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.06
+    },
+    {
+     "id": "discovery-algolia",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.52
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.21
+    },
+    {
+     "id": "discovery-plaid",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 5.78
+    },
+    {
+     "id": "discovery-calendly",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.84
+    },
+    {
+     "id": "discovery-postman",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.63
+    },
+    {
+     "id": "discovery-sanity",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.36
+    },
+    {
+     "id": "discovery-upstash",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.1
+    },
+    {
+     "id": "discovery-render",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.21
+    },
+    {
+     "id": "discovery-posthog",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.46
+    },
+    {
+     "id": "discovery-clerk",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.98
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.0
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.62
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.07
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 1.96
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.12
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.15
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 2.01
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.41
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.04
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.04
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.33
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.26
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.23
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.42
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "firecrawl/search",
+   "provider": "firecrawl",
+   "endpoint": "/search",
+   "request": {
+    "kind": "body",
+    "input": {
+     "query": "{query}",
+     "limit": 5
+    }
+   },
+   "score": 0.9444,
+   "hit_at_1": 0.902,
+   "queries": 51,
+   "errors": 0,
+   "excluded": false,
+   "seconds_p50": 2.34,
+   "usd_per_call": 0.0015,
+   "billed_usd": 0.0825,
+   "list_usd": 0.0002,
+   "scored_at": "2026-11-15T01:18:17Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.48
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.27
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.59
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.6
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 2.73
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 5.44
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.71
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.77
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.28
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.03
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.08
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.56
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.58
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.11
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.38
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.0
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.01
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.62
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.28
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.36
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.31
+    },
+    {
+     "id": "discovery-grafana",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.35
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.25
+    },
+    {
+     "id": "discovery-airtable",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.22
+    },
+    {
+     "id": "discovery-webflow",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.62
+    },
+    {
+     "id": "discovery-miro",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.11
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.17
+    },
+    {
+     "id": "discovery-algolia",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.53
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.34
+    },
+    {
+     "id": "discovery-plaid",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.19
+    },
+    {
+     "id": "discovery-calendly",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.43
+    },
+    {
+     "id": "discovery-postman",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.39
+    },
+    {
+     "id": "discovery-sanity",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.25
+    },
+    {
+     "id": "discovery-upstash",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.18
+    },
+    {
+     "id": "discovery-render",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.41
+    },
+    {
+     "id": "discovery-posthog",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.21
+    },
+    {
+     "id": "discovery-clerk",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.27
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.22
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.1
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.19
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.02
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.06
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.15
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 2.21
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.3
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.12
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.2
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.48
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.27
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.14
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.34
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "anyapi/google.search",
+   "provider": "anyapi",
+   "endpoint": "/google.search",
+   "request": {
+    "kind": "body",
+    "input": {
+     "query": "{query}",
+     "limit": 5
+    }
+   },
+   "score": 0.9346,
+   "hit_at_1": 0.902,
+   "queries": 51,
+   "errors": 0,
+   "excluded": false,
+   "seconds_p50": 3.56,
+   "usd_per_call": 0.0009,
+   "billed_usd": 0.0495,
+   "list_usd": 0.0004,
+   "scored_at": "2026-11-15T01:13:59Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 3.63
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.66
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.6
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.8
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 3.64
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.47
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.56
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.51
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.75
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.49
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.69
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.62
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.71
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.36
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.55
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.53
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.41
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.43
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.56
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.51
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.73
+    },
+    {
+     "id": "discovery-grafana",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.3
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.3
+    },
+    {
+     "id": "discovery-airtable",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.48
+    },
+    {
+     "id": "discovery-webflow",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.66
+    },
+    {
+     "id": "discovery-miro",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.26
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.28
+    },
+    {
+     "id": "discovery-algolia",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.66
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.66
+    },
+    {
+     "id": "discovery-plaid",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.65
+    },
+    {
+     "id": "discovery-calendly",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 5.26
+    },
+    {
+     "id": "discovery-postman",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.4
+    },
+    {
+     "id": "discovery-sanity",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 5.1
+    },
+    {
+     "id": "discovery-upstash",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.35
+    },
+    {
+     "id": "discovery-render",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.55
+    },
+    {
+     "id": "discovery-posthog",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.17
+    },
+    {
+     "id": "discovery-clerk",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.34
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.27
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.85
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.45
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.65
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.58
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.39
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 4.49
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.49
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 3.35
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.29
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.55
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.69
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 3.21
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.57
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "parallel/search",
+   "provider": "parallel",
+   "endpoint": "/search",
+   "request": {
+    "kind": "body",
+    "input": {
+     "search_queries": [
+      "{query}"
+     ]
+    }
+   },
+   "score": 0.9248,
+   "hit_at_1": 0.8824,
+   "queries": 51,
+   "errors": 0,
+   "excluded": false,
+   "seconds_p50": 2.67,
+   "usd_per_call": 0.001,
+   "billed_usd": 0.055,
+   "list_usd": 0.001,
+   "scored_at": "2026-11-15T01:24:30Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 3.97
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 0.3333,
+     "results": 10,
+     "seconds": 2.68
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.81
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 0.0,
+     "results": 10,
+     "seconds": 2.71
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 0.3333,
+     "results": 10,
+     "seconds": 2.67
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.92
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.76
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.66
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.79
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.97
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.81
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.65
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.72
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 3.29
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.93
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.51
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.64
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.58
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 4.42
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.57
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.53
+    },
+    {
+     "id": "discovery-grafana",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.64
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.59
+    },
+    {
+     "id": "discovery-airtable",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.87
+    },
+    {
+     "id": "discovery-webflow",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.31
+    },
+    {
+     "id": "discovery-miro",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.75
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.54
+    },
+    {
+     "id": "discovery-algolia",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.8
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.7
+    },
+    {
+     "id": "discovery-plaid",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.67
+    },
+    {
+     "id": "discovery-calendly",
+     "error": false,
+     "rr": 0.5,
+     "results": 10,
+     "seconds": 3.32
+    },
+    {
+     "id": "discovery-postman",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.58
+    },
+    {
+     "id": "discovery-sanity",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.43
+    },
+    {
+     "id": "discovery-upstash",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.56
+    },
+    {
+     "id": "discovery-render",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.47
+    },
+    {
+     "id": "discovery-posthog",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.78
+    },
+    {
+     "id": "discovery-clerk",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.51
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.67
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.68
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": false,
+     "rr": 0.5,
+     "results": 10,
+     "seconds": 2.69
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.67
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.74
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.67
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": false,
+     "rr": 0.5,
+     "results": 10,
+     "seconds": 3.26
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.65
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.5
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.53
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.59
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.66
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.33
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.49
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "search1api/search",
+   "provider": "search1api",
+   "endpoint": "/search",
+   "request": {
+    "kind": "body",
+    "input": {
+     "query": "{query}",
+     "max_results": 5
+    }
+   },
+   "score": 0.9026,
+   "hit_at_1": 0.8627,
+   "queries": 51,
+   "errors": 0,
+   "excluded": false,
+   "seconds_p50": 3.62,
+   "usd_per_call": 0.001,
+   "billed_usd": 0.055,
+   "list_usd": 0.001,
+   "scored_at": "2026-11-15T01:25:03Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 7.22
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.13
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.78
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 6.17
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 4.82
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.7
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.07
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.54
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.23
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.72
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.45
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.68
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.73
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 6.38
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.11
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.06
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.01
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.97
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.99
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.97
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.15
+    },
+    {
+     "id": "discovery-grafana",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.91
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.1
+    },
+    {
+     "id": "discovery-airtable",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.99
+    },
+    {
+     "id": "discovery-webflow",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.98
+    },
+    {
+     "id": "discovery-miro",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.97
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.71
+    },
+    {
+     "id": "discovery-algolia",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.43
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.06
+    },
+    {
+     "id": "discovery-plaid",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 7.02
+    },
+    {
+     "id": "discovery-calendly",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.69
+    },
+    {
+     "id": "discovery-postman",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.62
+    },
+    {
+     "id": "discovery-sanity",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.05
+    },
+    {
+     "id": "discovery-upstash",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.33
+    },
+    {
+     "id": "discovery-render",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.1
+    },
+    {
+     "id": "discovery-posthog",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.01
+    },
+    {
+     "id": "discovery-clerk",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.62
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.05
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.58
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": false,
+     "rr": 0.2,
+     "results": 5,
+     "seconds": 6.68
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 7.01
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.98
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 12.9
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 3.93
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.12
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.75
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 7.61
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.67
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.83
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 3.0
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 7.46
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "litescrape/yahoo/search",
+   "provider": "litescrape",
+   "endpoint": "/yahoo/search",
+   "request": {
+    "kind": "queryParams",
+    "input": {
+     "p": "{query}"
+    }
+   },
+   "score": 0.8536,
+   "hit_at_1": 0.7843,
+   "queries": 51,
+   "errors": 0,
+   "excluded": false,
+   "seconds_p50": 3.59,
+   "usd_per_call": 0.00015,
+   "billed_usd": 0.00825,
+   "list_usd": 0.00015,
+   "scored_at": "2026-11-15T01:21:27Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.83
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 4.54
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 4.2
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 0.3333,
+     "results": 7,
+     "seconds": 3.65
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 0.5,
+     "results": 7,
+     "seconds": 3.83
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 0.5,
+     "results": 7,
+     "seconds": 3.92
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.18
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 5.13
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.6
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.69
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.14
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 4.91
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 4.14
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 0.0,
+     "results": 7,
+     "seconds": 2.95
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.42
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 4.03
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 2.95
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.9
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.74
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 2.99
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.75
+    },
+    {
+     "id": "discovery-grafana",
+     "error": false,
+     "rr": 0.5,
+     "results": 7,
+     "seconds": 4.37
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 2.86
+    },
+    {
+     "id": "discovery-airtable",
+     "error": false,
+     "rr": 0.0,
+     "results": 7,
+     "seconds": 4.27
+    },
+    {
+     "id": "discovery-webflow",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.2
+    },
+    {
+     "id": "discovery-miro",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 2.92
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 4.18
+    },
+    {
+     "id": "discovery-algolia",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.1
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 4.09
+    },
+    {
+     "id": "discovery-plaid",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.13
+    },
+    {
+     "id": "discovery-calendly",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.08
+    },
+    {
+     "id": "discovery-postman",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.4
+    },
+    {
+     "id": "discovery-sanity",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.52
+    },
+    {
+     "id": "discovery-upstash",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 4.02
+    },
+    {
+     "id": "discovery-render",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.53
+    },
+    {
+     "id": "discovery-posthog",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.62
+    },
+    {
+     "id": "discovery-clerk",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.36
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 4.97
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 2.95
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": false,
+     "rr": 0.5,
+     "results": 7,
+     "seconds": 3.99
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.81
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 2.72
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": false,
+     "rr": 0.5,
+     "results": 7,
+     "seconds": 3.19
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": false,
+     "rr": 0.0,
+     "results": 7,
+     "seconds": 3.15
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 4.65
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": false,
+     "rr": 0.2,
+     "results": 7,
+     "seconds": 3.03
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.44
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.59
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.54
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": false,
+     "rr": 0.5,
+     "results": 7,
+     "seconds": 2.72
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 3.42
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "keenable/v1/search",
+   "provider": "keenable",
+   "endpoint": "/v1/search",
+   "request": {
+    "kind": "body",
+    "input": {
+     "query": "{query}",
+     "max_results": 5
+    }
+   },
+   "score": 0.8029,
+   "hit_at_1": 0.7451,
+   "queries": 51,
+   "errors": 0,
+   "excluded": false,
+   "seconds_p50": 2.25,
+   "usd_per_call": 0.004,
+   "billed_usd": 0.22,
+   "list_usd": 0.004,
+   "scored_at": "2026-11-15T01:18:33Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.26
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.25
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.26
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 2.34
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.33
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 2.26
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.16
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.37
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.32
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.47
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 0.25,
+     "results": 5,
+     "seconds": 2.13
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.28
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.37
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 2.41
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 2.25
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.12
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 1.98
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 0.2,
+     "results": 5,
+     "seconds": 2.15
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.32
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.24
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.24
+    },
+    {
+     "id": "discovery-grafana",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.12
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.23
+    },
+    {
+     "id": "discovery-airtable",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.15
+    },
+    {
+     "id": "discovery-webflow",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.21
+    },
+    {
+     "id": "discovery-miro",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.02
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.07
+    },
+    {
+     "id": "discovery-algolia",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.36
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 1.99
+    },
+    {
+     "id": "discovery-plaid",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.04
+    },
+    {
+     "id": "discovery-calendly",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.37
+    },
+    {
+     "id": "discovery-postman",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.07
+    },
+    {
+     "id": "discovery-sanity",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.06
+    },
+    {
+     "id": "discovery-upstash",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 2.34
+    },
+    {
+     "id": "discovery-render",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.12
+    },
+    {
+     "id": "discovery-posthog",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.24
+    },
+    {
+     "id": "discovery-clerk",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.55
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.27
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.58
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.01
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.49
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.38
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 2.47
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 2.34
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.49
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.23
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.32
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.17
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.22
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.23
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.44
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "context.dev/web/search",
+   "provider": "context.dev",
+   "endpoint": "/web/search",
+   "request": {
+    "kind": "body",
+    "input": {
+     "query": "{query}",
+     "numResults": 5
+    }
+   },
+   "score": 0.5402,
+   "hit_at_1": 0.3725,
+   "queries": 51,
+   "errors": 0,
+   "excluded": false,
+   "seconds_p50": 3.09,
+   "usd_per_call": 0.002,
+   "billed_usd": 0.11,
+   "list_usd": 0.002,
+   "scored_at": "2026-11-15T01:15:15Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.14
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 0.2,
+     "results": 5,
+     "seconds": 2.95
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 3.01
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 2.75
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 0.2,
+     "results": 5,
+     "seconds": 3.14
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.15
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.99
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.18
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 2.66
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.65
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.75
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 0.25,
+     "results": 5,
+     "seconds": 3.26
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.61
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 3.65
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 3.71
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 3.07
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 0.25,
+     "results": 5,
+     "seconds": 2.88
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 2.75
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.6
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 3.09
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.28
+    },
+    {
+     "id": "discovery-grafana",
+     "error": false,
+     "rr": 1.0,
+     "results": 4,
+     "seconds": 4.2
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": false,
+     "rr": 0.25,
+     "results": 5,
+     "seconds": 3.53
+    },
+    {
+     "id": "discovery-airtable",
+     "error": false,
+     "rr": 0.2,
+     "results": 5,
+     "seconds": 4.46
+    },
+    {
+     "id": "discovery-webflow",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.42
+    },
+    {
+     "id": "discovery-miro",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 4.11
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 4.48
+    },
+    {
+     "id": "discovery-algolia",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 2.86
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 3.06
+    },
+    {
+     "id": "discovery-plaid",
+     "error": false,
+     "rr": 0.2,
+     "results": 5,
+     "seconds": 3.18
+    },
+    {
+     "id": "discovery-calendly",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 3.33
+    },
+    {
+     "id": "discovery-postman",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 2.88
+    },
+    {
+     "id": "discovery-sanity",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.82
+    },
+    {
+     "id": "discovery-upstash",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.14
+    },
+    {
+     "id": "discovery-render",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 4.12
+    },
+    {
+     "id": "discovery-posthog",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.86
+    },
+    {
+     "id": "discovery-clerk",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.92
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": false,
+     "rr": 0.25,
+     "results": 5,
+     "seconds": 4.42
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.96
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 2.97
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 3.14
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.98
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 3.07
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 3.0
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.82
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.85
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.96
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.23
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 3.2
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.19
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": false,
+     "rr": 0.25,
+     "results": 5,
+     "seconds": 3.07
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "tavily/search",
+   "provider": "tavily",
+   "endpoint": "/search",
+   "request": {
+    "kind": "body",
+    "input": {
+     "query": "{query}",
+     "max_results": 5
+    }
+   },
+   "score": 0.5278,
+   "hit_at_1": 0.3137,
+   "queries": 51,
+   "errors": 0,
+   "excluded": false,
+   "seconds_p50": 2.01,
+   "usd_per_call": 0.008,
+   "billed_usd": 0.44,
+   "list_usd": 0.008,
+   "scored_at": "2026-11-15T01:25:44Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 0.2,
+     "results": 5,
+     "seconds": 2.13
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 0.2,
+     "results": 5,
+     "seconds": 2.01
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 2.24
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 0.25,
+     "results": 5,
+     "seconds": 2.02
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 2.18
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 0.25,
+     "results": 5,
+     "seconds": 2.15
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.25
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 1.98
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.0
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 0.2,
+     "results": 5,
+     "seconds": 1.98
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.06
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 1.91
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 2.01
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.0
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 0.25,
+     "results": 5,
+     "seconds": 2.31
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.28
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 2.21
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 0.2,
+     "results": 5,
+     "seconds": 2.45
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 0.2,
+     "results": 5,
+     "seconds": 2.46
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 0.25,
+     "results": 5,
+     "seconds": 2.36
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.36
+    },
+    {
+     "id": "discovery-grafana",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 3.1
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 1.92
+    },
+    {
+     "id": "discovery-airtable",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 1.9
+    },
+    {
+     "id": "discovery-webflow",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 1.83
+    },
+    {
+     "id": "discovery-miro",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.01
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 3.19
+    },
+    {
+     "id": "discovery-algolia",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 1.89
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 1.84
+    },
+    {
+     "id": "discovery-plaid",
+     "error": false,
+     "rr": 0.25,
+     "results": 5,
+     "seconds": 2.07
+    },
+    {
+     "id": "discovery-calendly",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 1.91
+    },
+    {
+     "id": "discovery-postman",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 1.97
+    },
+    {
+     "id": "discovery-sanity",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 2.14
+    },
+    {
+     "id": "discovery-upstash",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 1.76
+    },
+    {
+     "id": "discovery-render",
+     "error": false,
+     "rr": 0.25,
+     "results": 5,
+     "seconds": 1.87
+    },
+    {
+     "id": "discovery-posthog",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 1.99
+    },
+    {
+     "id": "discovery-clerk",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.12
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 2.21
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.01
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 1.88
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": false,
+     "rr": 0.25,
+     "results": 5,
+     "seconds": 1.95
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 3.54
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 2.32
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 2.07
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 1.91
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 2.08
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 1.96
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 2.0
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 1.96
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": false,
+     "rr": 0.25,
+     "results": 5,
+     "seconds": 1.9
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": false,
+     "rr": 0.25,
+     "results": 5,
+     "seconds": 2.02
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "mrscraper/serp/google",
+   "provider": "mrscraper",
+   "endpoint": "/serp/google",
+   "request": {
+    "kind": "body",
+    "input": {
+     "query": "{query}"
+    }
+   },
+   "score": 0.5114,
+   "hit_at_1": 0.451,
+   "queries": 51,
+   "errors": 0,
+   "excluded": false,
+   "seconds_p50": 13.47,
+   "usd_per_call": 0.001,
+   "billed_usd": 0.055,
+   "list_usd": 0.001,
+   "scored_at": "2026-11-15T01:23:26Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 0.0,
+     "results": 8,
+     "seconds": 31.68
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 0.0,
+     "results": 9,
+     "seconds": 19.85
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 1.0,
+     "results": 9,
+     "seconds": 13.53
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 0.0,
+     "results": 9,
+     "seconds": 13.29
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 0.5,
+     "results": 9,
+     "seconds": 13.1
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 0.0,
+     "results": 7,
+     "seconds": 17.85
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 0.0,
+     "results": 6,
+     "seconds": 12.54
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 1.0,
+     "results": 8,
+     "seconds": 13.18
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 1.0,
+     "results": 8,
+     "seconds": 13.83
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 1.0,
+     "results": 8,
+     "seconds": 43.27
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 0.0,
+     "results": 8,
+     "seconds": 15.71
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 0.25,
+     "results": 9,
+     "seconds": 10.22
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 0.0,
+     "results": 8,
+     "seconds": 31.0
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 1.0,
+     "results": 9,
+     "seconds": 17.78
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 0.0,
+     "results": 9,
+     "seconds": 17.75
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 1.0,
+     "results": 8,
+     "seconds": 15.76
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 1.0,
+     "results": 9,
+     "seconds": 15.76
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 13.47
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 1.0,
+     "results": 8,
+     "seconds": 11.19
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 0.25,
+     "results": 8,
+     "seconds": 40.98
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 1.0,
+     "results": 6,
+     "seconds": 10.33
+    },
+    {
+     "id": "discovery-grafana",
+     "error": false,
+     "rr": 1.0,
+     "results": 9,
+     "seconds": 12.44
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": false,
+     "rr": 0.0,
+     "results": 8,
+     "seconds": 17.0
+    },
+    {
+     "id": "discovery-airtable",
+     "error": false,
+     "rr": 1.0,
+     "results": 8,
+     "seconds": 11.58
+    },
+    {
+     "id": "discovery-webflow",
+     "error": false,
+     "rr": 1.0,
+     "results": 6,
+     "seconds": 24.06
+    },
+    {
+     "id": "discovery-miro",
+     "error": false,
+     "rr": 0.5,
+     "results": 7,
+     "seconds": 11.98
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": false,
+     "rr": 1.0,
+     "results": 9,
+     "seconds": 11.0
+    },
+    {
+     "id": "discovery-algolia",
+     "error": false,
+     "rr": 1.0,
+     "results": 8,
+     "seconds": 12.64
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": false,
+     "rr": 1.0,
+     "results": 8,
+     "seconds": 11.33
+    },
+    {
+     "id": "discovery-plaid",
+     "error": false,
+     "rr": 0.0,
+     "results": 9,
+     "seconds": 24.37
+    },
+    {
+     "id": "discovery-calendly",
+     "error": false,
+     "rr": 0.0,
+     "results": 9,
+     "seconds": 11.64
+    },
+    {
+     "id": "discovery-postman",
+     "error": false,
+     "rr": 0.0,
+     "results": 8,
+     "seconds": 13.1
+    },
+    {
+     "id": "discovery-sanity",
+     "error": false,
+     "rr": 0.0,
+     "results": 9,
+     "seconds": 14.3
+    },
+    {
+     "id": "discovery-upstash",
+     "error": false,
+     "rr": 0.0,
+     "results": 9,
+     "seconds": 12.11
+    },
+    {
+     "id": "discovery-render",
+     "error": false,
+     "rr": 0.0,
+     "results": 9,
+     "seconds": 45.42
+    },
+    {
+     "id": "discovery-posthog",
+     "error": false,
+     "rr": 0.0,
+     "results": 9,
+     "seconds": 11.13
+    },
+    {
+     "id": "discovery-clerk",
+     "error": false,
+     "rr": 1.0,
+     "results": 8,
+     "seconds": 14.25
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": false,
+     "rr": 0.0,
+     "results": 8,
+     "seconds": 10.31
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": false,
+     "rr": 1.0,
+     "results": 8,
+     "seconds": 11.66
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": false,
+     "rr": 1.0,
+     "results": 9,
+     "seconds": 21.16
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": false,
+     "rr": 0.5,
+     "results": 8,
+     "seconds": 11.92
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": false,
+     "rr": 0.0,
+     "results": 9,
+     "seconds": 14.29
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": false,
+     "rr": 0.0,
+     "results": 9,
+     "seconds": 11.82
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": false,
+     "rr": 0.3333,
+     "results": 9,
+     "seconds": 16.05
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": false,
+     "rr": 1.0,
+     "results": 9,
+     "seconds": 15.47
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": false,
+     "rr": 0.5,
+     "results": 9,
+     "seconds": 12.35
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": false,
+     "rr": 1.0,
+     "results": 9,
+     "seconds": 14.41
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": false,
+     "rr": 1.0,
+     "results": 8,
+     "seconds": 11.27
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": false,
+     "rr": 1.0,
+     "results": 7,
+     "seconds": 18.36
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": false,
+     "rr": 0.0,
+     "results": 9,
+     "seconds": 11.73
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": false,
+     "rr": 0.25,
+     "results": 9,
+     "seconds": 10.56
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "litescrape/google/search",
+   "provider": "litescrape",
+   "endpoint": "/google/search",
+   "request": {
+    "kind": "queryParams",
+    "input": {
+     "q": "{query}",
+     "num": 5
+    }
+   },
+   "score": 0.1313,
+   "hit_at_1": 0.06,
+   "queries": 51,
+   "errors": 1,
+   "excluded": false,
+   "seconds_p50": 15.38,
+   "usd_per_call": 0.00015,
+   "billed_usd": 0.0081,
+   "list_usd": 0.00015,
+   "scored_at": "2026-11-15T01:20:49Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 0.0,
+     "results": 4,
+     "seconds": 14.55
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 14.54
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 0.2,
+     "results": 5,
+     "seconds": 14.38
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 0.0,
+     "results": 4,
+     "seconds": 14.77
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 14.56
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 0.0,
+     "results": 4,
+     "seconds": 14.75
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 0.0,
+     "results": 3,
+     "seconds": 14.49
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 0.0,
+     "results": 4,
+     "seconds": 29.09
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 0.0,
+     "results": 4,
+     "seconds": 14.23
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 13.53
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 24.09
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 0.25,
+     "results": 5,
+     "seconds": 15.44
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 0.0,
+     "results": 4,
+     "seconds": 15.33
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 15.59
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 16.45
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 10.0
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 7.02
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 7.09
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 6.7
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 16.65
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 16.57
+    },
+    {
+     "id": "discovery-grafana",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 16.58
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": false,
+     "rr": 0.0,
+     "results": 4,
+     "seconds": 4.42
+    },
+    {
+     "id": "discovery-airtable",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 4.84
+    },
+    {
+     "id": "discovery-webflow",
+     "error": false,
+     "rr": 0.0,
+     "results": 4,
+     "seconds": 19.79
+    },
+    {
+     "id": "discovery-miro",
+     "error": false,
+     "rr": 0.3333,
+     "results": 4,
+     "seconds": 49.81
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": false,
+     "rr": 0.5,
+     "results": 3,
+     "seconds": 12.58
+    },
+    {
+     "id": "discovery-algolia",
+     "error": false,
+     "rr": 0.3333,
+     "results": 5,
+     "seconds": 34.74
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 32.87
+    },
+    {
+     "id": "discovery-plaid",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 31.95
+    },
+    {
+     "id": "discovery-calendly",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 27.32
+    },
+    {
+     "id": "discovery-postman",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 29.67
+    },
+    {
+     "id": "discovery-sanity",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 4.49
+    },
+    {
+     "id": "discovery-upstash",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 29.74
+    },
+    {
+     "id": "discovery-render",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 5.3
+    },
+    {
+     "id": "discovery-posthog",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 18.93
+    },
+    {
+     "id": "discovery-clerk",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 8.7
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": false,
+     "rr": 0.0,
+     "results": 4,
+     "seconds": 6.17
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 33.13
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 8.59
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 43.65
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": false,
+     "rr": 0.2,
+     "results": 5,
+     "seconds": 23.27
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": false,
+     "rr": 0.0,
+     "results": 4,
+     "seconds": 11.93
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 21.25
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 24.53
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": false,
+     "rr": 0.0,
+     "results": 5,
+     "seconds": 17.3
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": false,
+     "rr": 0.5,
+     "results": 5,
+     "seconds": 31.96
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 5.95
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": false,
+     "rr": 0.25,
+     "results": 5,
+     "seconds": 21.84
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": false,
+     "rr": 1.0,
+     "results": 5,
+     "seconds": 8.12
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": true,
+     "code": "http_503"
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "dataforseo/serp/baidu-organic",
+   "provider": "dataforseo",
+   "endpoint": "/serp/baidu-organic",
+   "request": {
+    "kind": "body",
+    "input": {
+     "keyword": "{query}"
+    }
+   },
+   "score": 0.0,
+   "hit_at_1": 0.0,
+   "queries": 51,
+   "errors": 0,
+   "excluded": false,
+   "seconds_p50": 2.11,
+   "usd_per_call": 0.0,
+   "billed_usd": 0.0,
+   "list_usd": 0.0012,
+   "scored_at": "2026-11-15T01:15:31Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.21
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.15
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.14
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.18
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.24
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.26
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.24
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.36
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 3.98
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.48
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.6
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.29
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.49
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.48
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.29
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.07
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.11
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.12
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.15
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.04
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.03
+    },
+    {
+     "id": "discovery-grafana",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.03
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.89
+    },
+    {
+     "id": "discovery-airtable",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.11
+    },
+    {
+     "id": "discovery-webflow",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.07
+    },
+    {
+     "id": "discovery-miro",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.01
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.06
+    },
+    {
+     "id": "discovery-algolia",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.01
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.94
+    },
+    {
+     "id": "discovery-plaid",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.85
+    },
+    {
+     "id": "discovery-calendly",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.11
+    },
+    {
+     "id": "discovery-postman",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.11
+    },
+    {
+     "id": "discovery-sanity",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.14
+    },
+    {
+     "id": "discovery-upstash",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.89
+    },
+    {
+     "id": "discovery-render",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.89
+    },
+    {
+     "id": "discovery-posthog",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.06
+    },
+    {
+     "id": "discovery-clerk",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.11
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.98
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.9
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.93
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.93
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 3.16
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.96
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.94
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.15
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.1
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.95
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.94
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.08
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.92
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.93
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "dataforseo/serp/seznam-organic",
+   "provider": "dataforseo",
+   "endpoint": "/serp/seznam-organic",
+   "request": {
+    "kind": "body",
+    "input": {
+     "keyword": "{query}"
+    }
+   },
+   "score": 0.0,
+   "hit_at_1": 0.0,
+   "queries": 51,
+   "errors": 0,
+   "excluded": false,
+   "seconds_p50": 2.11,
+   "usd_per_call": 0.0,
+   "billed_usd": 0.0,
+   "list_usd": 0.0012,
+   "scored_at": "2026-11-15T01:17:20Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.23
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.23
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.17
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 3.37
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.18
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.18
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.41
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.3
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.26
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.29
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 3.07
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.21
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 3.05
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.08
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.21
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.11
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.12
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.17
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.17
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.89
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.07
+    },
+    {
+     "id": "discovery-grafana",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.98
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.13
+    },
+    {
+     "id": "discovery-airtable",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.07
+    },
+    {
+     "id": "discovery-webflow",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.0
+    },
+    {
+     "id": "discovery-miro",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.04
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.02
+    },
+    {
+     "id": "discovery-algolia",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.97
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.13
+    },
+    {
+     "id": "discovery-plaid",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.97
+    },
+    {
+     "id": "discovery-calendly",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.1
+    },
+    {
+     "id": "discovery-postman",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.29
+    },
+    {
+     "id": "discovery-sanity",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.39
+    },
+    {
+     "id": "discovery-upstash",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.18
+    },
+    {
+     "id": "discovery-render",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 3.04
+    },
+    {
+     "id": "discovery-posthog",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.09
+    },
+    {
+     "id": "discovery-clerk",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.95
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.94
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.0
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.04
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.93
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.09
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.96
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.03
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 3.21
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.92
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.98
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.94
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 2.07
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.93
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": false,
+     "rr": 0.0,
+     "results": 0,
+     "seconds": 1.97
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "tinyfish/free/search",
+   "provider": "tinyfish",
+   "endpoint": "/free/search",
+   "request": {
+    "kind": "queryParams",
+    "input": {
+     "query": "{query}"
+    }
+   },
+   "score": 0.8583,
+   "hit_at_1": 0.75,
+   "queries": 51,
+   "errors": 23,
+   "excluded": true,
+   "seconds_p50": 1.9,
+   "usd_per_call": 0.0,
+   "billed_usd": 0.0,
+   "list_usd": 0.0,
+   "scored_at": "2026-11-15T01:25:52Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 1.99
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 1.69
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 1.89
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 0.3333,
+     "results": 10,
+     "seconds": 1.98
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 1.67
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 0.5,
+     "results": 10,
+     "seconds": 1.79
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 1.9
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 1.79
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.2
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.09
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.08
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.01
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 0.5,
+     "results": 10,
+     "seconds": 2.03
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 0.5,
+     "results": 10,
+     "seconds": 1.76
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 2.11
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 1.93
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 1.6
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 0.2,
+     "results": 10,
+     "seconds": 3.03
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 1.75
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 0.5,
+     "results": 10,
+     "seconds": 3.04
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 1.93
+    },
+    {
+     "id": "discovery-grafana",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 1.8
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": false,
+     "rr": 0.5,
+     "results": 10,
+     "seconds": 1.78
+    },
+    {
+     "id": "discovery-airtable",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 1.96
+    },
+    {
+     "id": "discovery-webflow",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 1.88
+    },
+    {
+     "id": "discovery-miro",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 1.81
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 1.58
+    },
+    {
+     "id": "discovery-algolia",
+     "error": false,
+     "rr": 1.0,
+     "results": 10,
+     "seconds": 1.73
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-plaid",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-calendly",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-postman",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-sanity",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-upstash",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-render",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-posthog",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-clerk",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": true,
+     "code": "http_429"
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "apify/johnvc/naver-search-api",
+   "provider": "apify",
+   "endpoint": "/johnvc/naver-search-api",
+   "request": {
+    "kind": "body",
+    "input": {
+     "query": "{query}"
+    }
+   },
+   "score": 0.5621,
+   "hit_at_1": 0.4894,
+   "queries": 51,
+   "errors": 4,
+   "excluded": true,
+   "seconds_p50": 7.06,
+   "usd_per_call": 0.072148,
+   "billed_usd": 3.67957,
+   "list_usd": 0.0,
+   "scored_at": "2026-11-15T01:14:51Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 1.0,
+     "results": 16,
+     "seconds": 7.17
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 1.0,
+     "results": 23,
+     "seconds": 9.62
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 0.3333,
+     "results": 24,
+     "seconds": 8.3
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 0.0,
+     "results": 24,
+     "seconds": 9.53
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 0.3333,
+     "results": 18,
+     "seconds": 7.06
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 1.0,
+     "results": 21,
+     "seconds": 8.31
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 0.3333,
+     "results": 11,
+     "seconds": 9.36
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 1.0,
+     "results": 22,
+     "seconds": 8.15
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 1.0,
+     "results": 13,
+     "seconds": 6.82
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 1.0,
+     "results": 23,
+     "seconds": 8.07
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 1.0,
+     "results": 24,
+     "seconds": 6.81
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 0.0,
+     "results": 21,
+     "seconds": 8.21
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 1.0,
+     "results": 21,
+     "seconds": 9.39
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 0.0,
+     "results": 23,
+     "seconds": 6.9
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 0.0,
+     "results": 22,
+     "seconds": 7.11
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 1.0,
+     "results": 21,
+     "seconds": 6.71
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 0.0,
+     "results": 9,
+     "seconds": 9.14
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 0.0,
+     "results": 22,
+     "seconds": 6.82
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 1.0,
+     "results": 21,
+     "seconds": 6.92
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 1.0,
+     "results": 24,
+     "seconds": 7.18
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 1.0,
+     "results": 20,
+     "seconds": 8.04
+    },
+    {
+     "id": "discovery-grafana",
+     "error": false,
+     "rr": 0.0,
+     "results": 8,
+     "seconds": 6.66
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": false,
+     "rr": 0.0,
+     "results": 23,
+     "seconds": 6.84
+    },
+    {
+     "id": "discovery-airtable",
+     "error": false,
+     "rr": 0.25,
+     "results": 22,
+     "seconds": 7.61
+    },
+    {
+     "id": "discovery-webflow",
+     "error": false,
+     "rr": 0.3333,
+     "results": 21,
+     "seconds": 6.81
+    },
+    {
+     "id": "discovery-miro",
+     "error": false,
+     "rr": 1.0,
+     "results": 21,
+     "seconds": 6.91
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": false,
+     "rr": 0.5,
+     "results": 23,
+     "seconds": 8.03
+    },
+    {
+     "id": "discovery-algolia",
+     "error": false,
+     "rr": 0.5,
+     "results": 24,
+     "seconds": 7.26
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": false,
+     "rr": 1.0,
+     "results": 22,
+     "seconds": 6.95
+    },
+    {
+     "id": "discovery-plaid",
+     "error": false,
+     "rr": 1.0,
+     "results": 22,
+     "seconds": 7.35
+    },
+    {
+     "id": "discovery-calendly",
+     "error": false,
+     "rr": 0.0,
+     "results": 24,
+     "seconds": 6.66
+    },
+    {
+     "id": "discovery-postman",
+     "error": false,
+     "rr": 1.0,
+     "results": 17,
+     "seconds": 7.07
+    },
+    {
+     "id": "discovery-sanity",
+     "error": false,
+     "rr": 1.0,
+     "results": 21,
+     "seconds": 6.82
+    },
+    {
+     "id": "discovery-upstash",
+     "error": false,
+     "rr": 1.0,
+     "results": 23,
+     "seconds": 6.93
+    },
+    {
+     "id": "discovery-render",
+     "error": false,
+     "rr": 1.0,
+     "results": 21,
+     "seconds": 6.79
+    },
+    {
+     "id": "discovery-posthog",
+     "error": false,
+     "rr": 0.25,
+     "results": 24,
+     "seconds": 6.78
+    },
+    {
+     "id": "discovery-clerk",
+     "error": false,
+     "rr": 0.25,
+     "results": 22,
+     "seconds": 6.87
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": false,
+     "rr": 0.0,
+     "results": 21,
+     "seconds": 6.79
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": false,
+     "rr": 0.3333,
+     "results": 13,
+     "seconds": 6.79
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": false,
+     "rr": 1.0,
+     "results": 11,
+     "seconds": 7.09
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": false,
+     "rr": 0.0,
+     "results": 15,
+     "seconds": 7.17
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": false,
+     "rr": 1.0,
+     "results": 15,
+     "seconds": 8.09
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": false,
+     "rr": 0.0,
+     "results": 15,
+     "seconds": 6.8
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": false,
+     "rr": 0.0,
+     "results": 16,
+     "seconds": 6.91
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": false,
+     "rr": 1.0,
+     "results": 13,
+     "seconds": 6.73
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": false,
+     "rr": 0.0,
+     "results": 12,
+     "seconds": 8.26
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": false,
+     "rr": 1.0,
+     "results": 16,
+     "seconds": 6.76
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": true,
+     "code": "http_429"
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "dataforseo/serp/naver-organic",
+   "provider": "dataforseo",
+   "endpoint": "/serp/naver-organic",
+   "request": {
+    "kind": "body",
+    "input": {
+     "keyword": "{query}"
+    }
+   },
+   "score": 0.4674,
+   "hit_at_1": 0.3636,
+   "queries": 51,
+   "errors": 29,
+   "excluded": true,
+   "seconds_p50": 13.18,
+   "usd_per_call": 0.0024,
+   "billed_usd": 0.0576,
+   "list_usd": 0.0012,
+   "scored_at": "2026-11-15T01:17:04Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": false,
+     "rr": 0.25,
+     "results": 21,
+     "seconds": 14.11
+    },
+    {
+     "id": "discovery-linear",
+     "error": false,
+     "rr": 0.5,
+     "results": 20,
+     "seconds": 14.09
+    },
+    {
+     "id": "discovery-notion",
+     "error": false,
+     "rr": 0.2,
+     "results": 19,
+     "seconds": 12.2
+    },
+    {
+     "id": "discovery-slack",
+     "error": false,
+     "rr": 0.0,
+     "results": 19,
+     "seconds": 12.18
+    },
+    {
+     "id": "discovery-sentry",
+     "error": false,
+     "rr": 0.3333,
+     "results": 19,
+     "seconds": 12.2
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": false,
+     "rr": 1.0,
+     "results": 19,
+     "seconds": 13.37
+    },
+    {
+     "id": "discovery-figma",
+     "error": false,
+     "rr": 0.0,
+     "results": 20,
+     "seconds": 13.36
+    },
+    {
+     "id": "discovery-vercel",
+     "error": false,
+     "rr": 1.0,
+     "results": 19,
+     "seconds": 13.14
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": false,
+     "rr": 0.5,
+     "results": 19,
+     "seconds": 12.91
+    },
+    {
+     "id": "discovery-neon",
+     "error": false,
+     "rr": 1.0,
+     "results": 19,
+     "seconds": 12.95
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": false,
+     "rr": 0.5,
+     "results": 21,
+     "seconds": 12.98
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": false,
+     "rr": 0.0,
+     "results": 18,
+     "seconds": 12.94
+    },
+    {
+     "id": "discovery-zapier",
+     "error": false,
+     "rr": 1.0,
+     "results": 18,
+     "seconds": 13.37
+    },
+    {
+     "id": "discovery-intercom",
+     "error": false,
+     "rr": 0.0,
+     "results": 20,
+     "seconds": 14.19
+    },
+    {
+     "id": "discovery-shopify",
+     "error": false,
+     "rr": 0.0,
+     "results": 19,
+     "seconds": 13.05
+    },
+    {
+     "id": "discovery-twilio",
+     "error": false,
+     "rr": 1.0,
+     "results": 18,
+     "seconds": 13.23
+    },
+    {
+     "id": "discovery-resend",
+     "error": false,
+     "rr": 0.0,
+     "results": 1,
+     "seconds": 13.22
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": false,
+     "rr": 0.0,
+     "results": 19,
+     "seconds": 13.3
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": false,
+     "rr": 1.0,
+     "results": 18,
+     "seconds": 12.67
+    },
+    {
+     "id": "discovery-apify",
+     "error": false,
+     "rr": 1.0,
+     "results": 20,
+     "seconds": 14.36
+    },
+    {
+     "id": "discovery-datadog",
+     "error": false,
+     "rr": 1.0,
+     "results": 19,
+     "seconds": 13.65
+    },
+    {
+     "id": "discovery-grafana",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-airtable",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-webflow",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-miro",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-algolia",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-plaid",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-calendly",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-postman",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-sanity",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-upstash",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-render",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-posthog",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-clerk",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": false,
+     "rr": 0.0,
+     "results": 18,
+     "seconds": 13.1
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": true,
+     "code": "http_429"
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": true,
+     "code": "http_429"
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "dataforseo/serp/bing-organic",
+   "provider": "dataforseo",
+   "endpoint": "/serp/bing-organic",
+   "request": {
+    "kind": "body",
+    "input": {
+     "keyword": "{query}"
+    }
+   },
+   "score": 0.0,
+   "hit_at_1": 0.0,
+   "queries": 51,
+   "errors": 51,
+   "excluded": true,
+   "seconds_p50": null,
+   "usd_per_call": null,
+   "billed_usd": 0,
+   "list_usd": 0.002,
+   "scored_at": "2026-11-15T01:15:43Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-linear",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-notion",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-slack",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-sentry",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-figma",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-vercel",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-neon",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-zapier",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-intercom",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-shopify",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-twilio",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-resend",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-apify",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-datadog",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-grafana",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-airtable",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-webflow",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-miro",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-algolia",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-plaid",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-calendly",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-postman",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-sanity",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-upstash",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-render",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-posthog",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-clerk",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": true,
+     "code": "http_400"
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "dataforseo/serp/google-organic",
+   "provider": "dataforseo",
+   "endpoint": "/serp/google-organic",
+   "request": {
+    "kind": "body",
+    "input": {
+     "keyword": "{query}"
+    }
+   },
+   "score": 0.0,
+   "hit_at_1": 0.0,
+   "queries": 51,
+   "errors": 51,
+   "excluded": true,
+   "seconds_p50": null,
+   "usd_per_call": null,
+   "billed_usd": 0,
+   "list_usd": 0.002,
+   "scored_at": "2026-11-15T01:15:55Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-linear",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-notion",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-slack",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-sentry",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-figma",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-vercel",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-neon",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-zapier",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-intercom",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-shopify",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-twilio",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-resend",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-apify",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-datadog",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-grafana",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-airtable",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-webflow",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-miro",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-algolia",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-plaid",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-calendly",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-postman",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-sanity",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-upstash",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-render",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-posthog",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-clerk",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": true,
+     "code": "http_400"
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "dataforseo/serp/yahoo-organic",
+   "provider": "dataforseo",
+   "endpoint": "/serp/yahoo-organic",
+   "request": {
+    "kind": "body",
+    "input": {
+     "keyword": "{query}"
+    }
+   },
+   "score": 0.0,
+   "hit_at_1": 0.0,
+   "queries": 51,
+   "errors": 51,
+   "excluded": true,
+   "seconds_p50": null,
+   "usd_per_call": null,
+   "billed_usd": 0,
+   "list_usd": 0.002,
+   "scored_at": "2026-11-15T01:17:33Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-linear",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-notion",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-slack",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-sentry",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-figma",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-vercel",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-neon",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-zapier",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-intercom",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-shopify",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-twilio",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-resend",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-apify",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-datadog",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-grafana",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-airtable",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-webflow",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-miro",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-algolia",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-plaid",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-calendly",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-postman",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-sanity",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-upstash",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-render",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-posthog",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-clerk",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": true,
+     "code": "http_400"
+    }
+   ],
+   "attempts": 1
+  },
+  {
+   "model": "litescrape/naver/search",
+   "provider": "litescrape",
+   "endpoint": "/naver/search",
+   "request": {
+    "kind": "queryParams",
+    "input": {
+     "query": "{query}",
+     "num": 5
+    }
+   },
+   "score": 0.0,
+   "hit_at_1": 0.0,
+   "queries": 51,
+   "errors": 51,
+   "excluded": true,
+   "seconds_p50": null,
+   "usd_per_call": null,
+   "billed_usd": 0,
+   "list_usd": 0.00015,
+   "scored_at": "2026-11-15T01:21:01Z",
+   "query_results": [
+    {
+     "id": "discovery-github",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-linear",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-notion",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-slack",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-sentry",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-atlassian",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-figma",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-vercel",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-cloudflare",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-neon",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-mongodb",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-hubspot",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-zapier",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-intercom",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-shopify",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-twilio",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-resend",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-firecrawl",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-browserbase",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-apify",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-datadog",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-grafana",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-pagerduty",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-airtable",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-webflow",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-miro",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-pulumi",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-algolia",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-klaviyo",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-plaid",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-calendly",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-postman",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-sanity",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-upstash",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-render",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-posthog",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-clerk",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "discovery-elevenlabs",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-nextjs-16-middleware-cookies",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-expo-eas-build-ios",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-tailwind-css-v4-dark",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-prisma-migrate-deploy-shadow",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-react-19-useactionstate-form",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-fastapi-dependency-async-sqlalchemy",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-vite-environment-variables-importmetaenv",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-playwright-wait-for-load",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-drizzle-orm-postgres-enum",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-cloudflare-workers-durable-objects",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-pnpm-workspace-catalog-protocol",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-github-actions-setup-node-cache",
+     "error": true,
+     "code": "http_400"
+    },
+    {
+     "id": "research-uv-export-requirementstxt-from",
+     "error": true,
+     "code": "http_400"
+    }
+   ],
+   "attempts": 1
+  }
+ ]
+}

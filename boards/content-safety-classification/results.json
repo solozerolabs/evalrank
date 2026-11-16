@@ -26,7 +26,7 @@
       "unsafe_items": 300
     }
   ],
-  "updated_at": "2026-11-09T06:40:22Z",
+  "updated_at": "2026-11-16T07:01:47Z",
   "models": [
     {
       "model": "aion-labs/aion-2.0",
@@ -223,6 +223,39 @@
           "recall": 0.928571,
           "fpr": 0.04878,
           "balanced_accuracy": 0.939895
+        }
+      }
+    },
+    {
+      "model": "baidu/ernie-light-dt-1.0-intl",
+      "created": 1794331260,
+      "mode": "reasoning_off",
+      "scored_at": "2026-11-16T06:53:52Z",
+      "n": 1050,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "balanced_accuracy": 0.771917,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 171,
+          "fn": 129,
+          "fp": 10,
+          "tn": 290,
+          "errors": 0,
+          "recall": 0.57,
+          "fpr": 0.033333,
+          "balanced_accuracy": 0.768333
+        },
+        "xstest-v2": {
+          "tp": 111,
+          "fn": 89,
+          "fp": 1,
+          "tn": 249,
+          "errors": 0,
+          "recall": 0.555,
+          "fpr": 0.004,
+          "balanced_accuracy": 0.7755
         }
       }
     },
@@ -1052,6 +1085,72 @@
       }
     },
     {
+      "model": "google/gemini-4-carbon",
+      "created": 1794326871,
+      "mode": "reasoning_low",
+      "scored_at": "2026-11-16T07:00:57Z",
+      "n": 1050,
+      "errors": 25,
+      "error_rate": 0.02381,
+      "excluded": false,
+      "balanced_accuracy": 0.899435,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 255,
+          "fn": 40,
+          "fp": 35,
+          "tn": 265,
+          "errors": 5,
+          "recall": 0.864407,
+          "fpr": 0.116667,
+          "balanced_accuracy": 0.87387
+        },
+        "xstest-v2": {
+          "tp": 153,
+          "fn": 27,
+          "fp": 0,
+          "tn": 250,
+          "errors": 20,
+          "recall": 0.85,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.925
+        }
+      }
+    },
+    {
+      "model": "google/gemini-4-hydrogen",
+      "created": 1794506460,
+      "mode": "reasoning_low",
+      "scored_at": "2026-11-16T06:50:59Z",
+      "n": 1050,
+      "errors": 14,
+      "error_rate": 0.013333,
+      "excluded": false,
+      "balanced_accuracy": 0.90691,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 249,
+          "fn": 48,
+          "fp": 24,
+          "tn": 274,
+          "errors": 5,
+          "recall": 0.838384,
+          "fpr": 0.080537,
+          "balanced_accuracy": 0.878923
+        },
+        "xstest-v2": {
+          "tp": 167,
+          "fn": 25,
+          "fp": 0,
+          "tn": 249,
+          "errors": 9,
+          "recall": 0.869792,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.934896
+        }
+      }
+    },
+    {
       "model": "google/gemma-4-26b-a4b-it",
       "created": 1775227989,
       "mode": "reasoning_off",
@@ -1448,6 +1547,39 @@
       }
     },
     {
+      "model": "kt/midm-k-3.0-pro",
+      "created": 1793897701,
+      "mode": "reasoning_off",
+      "scored_at": "2026-11-16T06:48:38Z",
+      "n": 1050,
+      "errors": 19,
+      "error_rate": 0.018095,
+      "excluded": false,
+      "balanced_accuracy": 0.803755,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 223,
+          "fn": 68,
+          "fp": 44,
+          "tn": 255,
+          "errors": 10,
+          "recall": 0.766323,
+          "fpr": 0.147157,
+          "balanced_accuracy": 0.809583
+        },
+        "xstest-v2": {
+          "tp": 115,
+          "fn": 78,
+          "fp": 0,
+          "tn": 248,
+          "errors": 9,
+          "recall": 0.595855,
+          "fpr": 0.0,
+          "balanced_accuracy": 0.797927
+        }
+      }
+    },
+    {
       "model": "liquid/lfm-2.5-2.6b",
       "created": 1786470519,
       "mode": "unavailable",
@@ -1543,6 +1675,39 @@
           "recall": 0.0,
           "fpr": 0.0,
           "balanced_accuracy": 0.5
+        }
+      }
+    },
+    {
+      "model": "meta/muse-ember",
+      "created": 1794247648,
+      "mode": "reasoning_low",
+      "scored_at": "2026-11-16T06:51:41Z",
+      "n": 1050,
+      "errors": 4,
+      "error_rate": 0.00381,
+      "excluded": false,
+      "balanced_accuracy": 0.902869,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 261,
+          "fn": 39,
+          "fp": 39,
+          "tn": 260,
+          "errors": 1,
+          "recall": 0.87,
+          "fpr": 0.130435,
+          "balanced_accuracy": 0.869783
+        },
+        "xstest-v2": {
+          "tp": 179,
+          "fn": 19,
+          "fp": 8,
+          "tn": 241,
+          "errors": 3,
+          "recall": 0.90404,
+          "fpr": 0.032129,
+          "balanced_accuracy": 0.935956
         }
       }
     },
@@ -2438,6 +2603,39 @@
       }
     },
     {
+      "model": "motif-technologies/motif-3",
+      "created": 1793655334,
+      "mode": "reasoning_off",
+      "scored_at": "2026-11-16T06:51:54Z",
+      "n": 1050,
+      "errors": 8,
+      "error_rate": 0.007619,
+      "excluded": false,
+      "balanced_accuracy": 0.880745,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 249,
+          "fn": 51,
+          "fp": 59,
+          "tn": 240,
+          "errors": 1,
+          "recall": 0.83,
+          "fpr": 0.197324,
+          "balanced_accuracy": 0.816338
+        },
+        "xstest-v2": {
+          "tp": 185,
+          "fn": 12,
+          "fp": 12,
+          "tn": 234,
+          "errors": 7,
+          "recall": 0.939086,
+          "fpr": 0.04878,
+          "balanced_accuracy": 0.945153
+        }
+      }
+    },
+    {
       "model": "nex-agi/nex-n2.5-mini",
       "created": 1788890061,
       "mode": "unavailable",
@@ -2500,6 +2698,39 @@
           "recall": 0.0,
           "fpr": 0.0,
           "balanced_accuracy": 0.5
+        }
+      }
+    },
+    {
+      "model": "nex-agi/nex-n2.6",
+      "created": 1794282379,
+      "mode": "reasoning_low",
+      "scored_at": "2026-11-16T06:59:56Z",
+      "n": 1050,
+      "errors": 11,
+      "error_rate": 0.010476,
+      "excluded": false,
+      "balanced_accuracy": 0.905325,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 247,
+          "fn": 50,
+          "fp": 27,
+          "tn": 269,
+          "errors": 7,
+          "recall": 0.83165,
+          "fpr": 0.091216,
+          "balanced_accuracy": 0.870217
+        },
+        "xstest-v2": {
+          "tp": 180,
+          "fn": 18,
+          "fp": 7,
+          "tn": 241,
+          "errors": 4,
+          "recall": 0.909091,
+          "fpr": 0.028226,
+          "balanced_accuracy": 0.940433
         }
       }
     },
@@ -4088,6 +4319,39 @@
       }
     },
     {
+      "model": "qwen/qwen4-max",
+      "created": 1794795526,
+      "mode": "reasoning_low",
+      "scored_at": "2026-11-16T06:58:25Z",
+      "n": 1050,
+      "errors": 74,
+      "error_rate": 0.070476,
+      "excluded": true,
+      "balanced_accuracy": 0.865838,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 204,
+          "fn": 33,
+          "fp": 40,
+          "tn": 249,
+          "errors": 74,
+          "recall": 0.860759,
+          "fpr": 0.138408,
+          "balanced_accuracy": 0.861176
+        },
+        "xstest-v2": {
+          "tp": 149,
+          "fn": 51,
+          "fp": 1,
+          "tn": 249,
+          "errors": 0,
+          "recall": 0.745,
+          "fpr": 0.004,
+          "balanced_accuracy": 0.8705
+        }
+      }
+    },
+    {
       "model": "reflection/beam-1.0-501b-a23b",
       "created": 1792160499,
       "mode": "reasoning_low",
@@ -4513,6 +4777,72 @@
           "recall": 0.802721,
           "fpr": 0.023669,
           "balanced_accuracy": 0.889526
+        }
+      }
+    },
+    {
+      "model": "thinkingmachines/inkling-2-small",
+      "created": 1794261847,
+      "mode": "reasoning_low",
+      "scored_at": "2026-11-16T06:56:04Z",
+      "n": 1050,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "balanced_accuracy": 0.903333,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 256,
+          "fn": 44,
+          "fp": 36,
+          "tn": 264,
+          "errors": 0,
+          "recall": 0.853333,
+          "fpr": 0.12,
+          "balanced_accuracy": 0.866667
+        },
+        "xstest-v2": {
+          "tp": 180,
+          "fn": 20,
+          "fp": 5,
+          "tn": 245,
+          "errors": 0,
+          "recall": 0.9,
+          "fpr": 0.02,
+          "balanced_accuracy": 0.94
+        }
+      }
+    },
+    {
+      "model": "unbiased/pareto-26.10-preview",
+      "created": 1790863623,
+      "mode": "reasoning_off",
+      "scored_at": "2026-11-16T07:01:47Z",
+      "n": 1050,
+      "errors": 42,
+      "error_rate": 0.04,
+      "excluded": false,
+      "balanced_accuracy": 0.905309,
+      "datasets": {
+        "openai-moderation-api-release": {
+          "tp": 247,
+          "fn": 38,
+          "fp": 32,
+          "tn": 253,
+          "errors": 30,
+          "recall": 0.866667,
+          "fpr": 0.112281,
+          "balanced_accuracy": 0.877193
+        },
+        "xstest-v2": {
+          "tp": 167,
+          "fn": 23,
+          "fp": 3,
+          "tn": 245,
+          "errors": 12,
+          "recall": 0.878947,
+          "fpr": 0.012097,
+          "balanced_accuracy": 0.933425
         }
       }
     },

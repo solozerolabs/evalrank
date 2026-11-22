@@ -382,6 +382,20 @@
           "items": {
             "$ref": "#/$defs/Caveat"
           }
+        },
+        "refusal_rate": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Measured refusal rate on unrestricted creative writing (0..1); null when no refusal evidence covers this model."
+        },
+        "model_family": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Vendor family of model_id (the id's provider prefix): a refusal on one family is a reason to try a selection of another."
         }
       }
     },
@@ -416,7 +430,9 @@
             "no_serving_offer",
             "cost_unmeasured",
             "effort_gap_too_large",
-            "constraints_not_met"
+            "constraints_not_met",
+            "refusal_rate_unknown",
+            "refusal_rate_above_max"
           ]
         },
         "detail": {

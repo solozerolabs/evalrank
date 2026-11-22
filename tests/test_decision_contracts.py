@@ -853,6 +853,58 @@ def _selection(model: str, *, cost: int | None = 100, ratio_ppm: int = 990_000, 
     )
 
 
+class RefusalRateContractTests(unittest.TestCase):
+    def test_max_refusal_rate_is_an_optional_unit_fraction(self):
+        query = DecisionQueryV2.from_dict(
+            {"schema_version": "2", "cell_id": "writing", "objective": "capability_top_set", "max_refusal_rate": 0.3}
+        )
+        self.assertEqual(0.3, query.max_refusal_rate)
+        self.assertIn('"max_refusal_rate":0.3', query.canonical_json())
+        self.assertNotIn("max_refusal_rate", _query().to_dict())
+        for bad in (-0.1, 1.5, True, "0.3", float("nan")):
+            with self.subTest(bad=bad), self.assertRaises(ValueError):
+                DecisionQueryV2(cell_id="writing", objective="capability_top_set", max_refusal_rate=bad)
+
+    def test_selection_refusal_fields_round_trip_and_travel_together(self):
+        selection = replace(_selection("model-a"), refusal_rate=0.28, model_family="deepseek")
+        self.assertEqual(0.28, selection.to_dict()["refusal_rate"])
+        self.assertEqual(selection, DecisionSelectionV2.from_dict(selection.to_dict()))
+        unknown = replace(_selection("model-a"), refusal_rate=None, model_family="openai")
+        self.assertIsNone(unknown.to_dict()["refusal_rate"])
+        self.assertNotIn("refusal_rate", _selection("model-a").to_dict())
+        payload = selection.to_dict()
+        del payload["model_family"]
+        with self.assertRaises(ValueError):
+            DecisionSelectionV2.from_dict(payload)
+        with self.assertRaises(ValueError):
+            replace(_selection("model-a"), refusal_rate=1.2, model_family="openai")
+
+    def test_receipt_with_refusal_floats_rehashes_as_rfc8785_number_text(self):
+        receipt = _receipt(
+            query=DecisionQueryV2(cell_id="writing", objective="capability_top_set", max_refusal_rate=0.3),
+            selections=(replace(_selection("model-a"), refusal_rate=0.28, model_family="deepseek"),),
+            exclusions=(DecisionExclusionV2(model_key="claudeopus55", code="refusal_rate_above_max", reasoning_effort="high"),),
+        )
+        self.assertEqual(receipt, DecisionReceiptV2.from_dict(json.loads(json.dumps(receipt.to_dict()))))
+        self.assertEqual(
+            receipt.receipt_id, f"receipt_{sha256_hex(receipt.to_body_dict(), allow_floats=True)}"
+        )
+        with self.assertRaises(TypeError):
+            sha256_hex(receipt.to_body_dict())  # floats stay out of every other identity
+
+    def test_es_number_matches_ecmascript_number_to_string(self):
+        from evalrank_core.canonical_json import es_number
+
+        cases = {
+            0.3: "0.3", 0.58: "0.58", 1e-7: "1e-7", 0.000001: "0.000001", 1e21: "1e+21",
+            1e20: "100000000000000000000", 0.1 + 0.2: "0.30000000000000004", -0.42: "-0.42",
+            5e-324: "5e-324", 12.5: "12.5", 0.0: "0",
+        }
+        for value, text in cases.items():
+            with self.subTest(value=value):
+                self.assertEqual(text, es_number(value))
+
+
 def _receipt(**overrides) -> DecisionReceiptV2:
     values = {
         "query": _query(),

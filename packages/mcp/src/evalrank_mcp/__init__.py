@@ -233,6 +233,12 @@ def _decision_query_schema() -> dict[str, Any]:
             },
             "regions": string_set,
             "minimum_context_tokens": {"type": "integer", "minimum": 1},
+            "max_refusal_rate": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Keep only models whose refusal rate on unrestricted creative writing is known and at most this.",
+            },
             "usage_profile": usage_profile,
         },
     }

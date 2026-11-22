@@ -245,6 +245,8 @@ export const EXCLUSION_CODES = [
   "cost_unmeasured",
   "effort_gap_too_large",
   "constraints_not_met",
+  "refusal_rate_unknown",
+  "refusal_rate_above_max",
 ] as const;
 export const LOCK_STATUSES = ["admitted", "held", "rejected", "unlocked"] as const;
 /** Call surfaces with a probed effort vocabulary; any other `via` is a 422 `via_not_supported`. */
@@ -275,6 +277,8 @@ export interface DecisionQueryV2 {
   reasoning_effort?: ReasoningEffort;
   regions?: string[];
   minimum_context_tokens?: number;
+  /** Highest acceptable refusal rate on unrestricted creative writing (0..1); unknown-rate models are excluded. */
+  max_refusal_rate?: number;
   usage_profile?: UsageProfileV1;
 }
 
@@ -317,6 +321,10 @@ export interface DecisionSelectionV2 {
   projected_cost_microusd: number | null;
   latency_p50_ms: number | null;
   caveats: DecisionCaveatV2[];
+  /** Refusal rate on unrestricted creative writing (0..1); null when unmeasured. Absent on older receipts. */
+  refusal_rate?: number | null;
+  /** Vendor family of `model_id` (its provider prefix). Present exactly when `refusal_rate` is. */
+  model_family?: string;
 }
 
 export interface DecisionExclusionV2 {
@@ -386,13 +394,17 @@ const passportClasses = [
 ] as const;
 const identityTriples = new Set(RESOLVED_IDENTITY_TRIPLES.map((row) => row.join("|")));
 
-/** Restricted RFC 8785: valid Unicode, UTF-16 key order, safe integers, no floats. */
-export function canonicalJson(value: unknown): string {
-  return JSON.stringify(canonicalValue(value, "$"));
+/**
+ * Restricted RFC 8785: valid Unicode, UTF-16 key order, safe integers, no floats.
+ * `allowFloats` admits finite floats (RFC 8785 number text, as `JSON.stringify` writes it): only
+ * decision queries and receipts use it, for `max_refusal_rate` and `refusal_rate`.
+ */
+export function canonicalJson(value: unknown, options: { allowFloats?: boolean } = {}): string {
+  return JSON.stringify(canonicalValue(value, "$", options.allowFloats === true));
 }
 
-export async function sha256Hex(value: unknown): Promise<string> {
-  const bytes = new TextEncoder().encode(canonicalJson(value));
+export async function sha256Hex(value: unknown, options: { allowFloats?: boolean } = {}): Promise<string> {
+  const bytes = new TextEncoder().encode(canonicalJson(value, options));
   const digest = await globalThis.crypto.subtle.digest("SHA-256", bytes);
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
@@ -412,7 +424,7 @@ export async function receiptId(body: Record<string, unknown>): Promise<string> 
   if ("receipt_id" in body) {
     throw new TypeError("receipt body must exclude receipt_id");
   }
-  return `receipt_${await sha256Hex(normalizeReceiptBody(body))}`;
+  return `receipt_${await sha256Hex(normalizeReceiptBody(body), { allowFloats: true })}`;
 }
 
 export function parseSnapshotSetDescriptorV1(value: unknown): SnapshotSetDescriptorV1 {
@@ -1217,7 +1229,8 @@ export function parseServingOfferV1(value: unknown): ServingOfferV1 {
 }
 
 const queryOptional = [
-  "via", "provider_ids", "api", "reasoning_effort", "regions", "minimum_context_tokens", "usage_profile",
+  "via", "provider_ids", "api", "reasoning_effort", "regions", "minimum_context_tokens", "max_refusal_rate",
+  "usage_profile",
 ] as const;
 const ppm = 1_000_000;
 
@@ -1242,6 +1255,7 @@ export function parseDecisionQueryV2(value: unknown): DecisionQueryV2 {
   if ("reasoning_effort" in payload) query.reasoning_effort = enumValue(payload.reasoning_effort, REASONING_EFFORTS, "reasoning_effort");
   if ("regions" in payload) query.regions = normalizedStringSet(payload.regions, "regions");
   if ("minimum_context_tokens" in payload) query.minimum_context_tokens = safeInteger(payload.minimum_context_tokens, "minimum_context_tokens", 1);
+  if ("max_refusal_rate" in payload) query.max_refusal_rate = fraction(payload.max_refusal_rate, "max_refusal_rate");
   if ("usage_profile" in payload) query.usage_profile = parseUsageProfileV1(payload.usage_profile);
   return query;
 }
@@ -1263,7 +1277,7 @@ export async function parseDecisionReceiptV2(value: unknown): Promise<DecisionRe
   const identifier = patternString(payload.receipt_id, /^receipt_[0-9a-f]{64}$/, "receipt_id");
   const { receipt_id: _ignored, ...rawBody } = payload;
   const body = normalizeReceiptBody(rawBody);
-  if (identifier !== `receipt_${await sha256Hex(body)}`) {
+  if (identifier !== `receipt_${await sha256Hex(body, { allowFloats: true })}`) {
     throw new TypeError("receipt_id must hash the full receipt body except receipt_id");
   }
   return { receipt_id: identifier, ...body };
@@ -1356,7 +1370,10 @@ function parseSelection(value: unknown): DecisionSelectionV2 {
     "model_id", "display_name", "provider_id", "serving_offer_id", "reasoning_effort", "api",
     "capability_ratio_ppm", "family_coverage", "price", "effort_multiplier", "projected_cost_microusd",
     "latency_p50_ms", "caveats",
-  ]);
+  ], ["refusal_rate", "model_family"]);
+  if (("refusal_rate" in payload) !== ("model_family" in payload)) {
+    throw new TypeError("refusal_rate and model_family are both present or both absent");
+  }
   const price = closed(payload.price, [
     "input_microusd_per_million", "cached_input_microusd_per_million", "output_microusd_per_million",
   ]);
@@ -1379,6 +1396,10 @@ function parseSelection(value: unknown): DecisionSelectionV2 {
     latency_p50_ms: nullableSafeInteger(payload.latency_p50_ms, "latency_p50_ms", 0),
     caveats: normalizeRecords(array(payload.caveats, "caveats").map(parseCaveat), (row) => [row.code], "caveats"),
   };
+  if ("model_family" in payload) {
+    selection.refusal_rate = payload.refusal_rate === null ? null : fraction(payload.refusal_rate, "refusal_rate");
+    selection.model_family = nonEmptyString(payload.model_family, "model_family");
+  }
   if (selection.capability_ratio_ppm > ppm) throw new TypeError("capability_ratio_ppm must not exceed 1000000");
   const unmeasured = selection.caveats.some((row) => row.code === "cost_unmeasured");
   if ((selection.projected_cost_microusd === null) !== unmeasured) {
@@ -1749,14 +1770,24 @@ function parseIdentity(payload: Record<string, unknown>): {
   return { entity_kind: entityKind, interaction_policy: interactionPolicy, configuration_passport_class: passportClass };
 }
 
-function canonicalValue(value: unknown, path: string): unknown {
+function fraction(value: unknown, name: string): number {
+  if (typeof value !== "number" || !Number.isFinite(value) || value < 0 || value > 1) {
+    throw new TypeError(`${name} must be a number in [0, 1]`);
+  }
+  return value;
+}
+
+function canonicalValue(value: unknown, path: string, allowFloats = false): unknown {
   if (value === null || typeof value === "boolean" || typeof value === "string") {
     if (typeof value === "string") validUnicode(value, path);
     return value;
   }
   if (typeof value === "number") {
     if (!Number.isFinite(value)) throw new TypeError(`${path} must be finite`);
-    if (!Number.isInteger(value)) throw new TypeError(`${path} must not be a float in restricted JCS`);
+    if (!Number.isInteger(value)) {
+      if (allowFloats) return value;
+      throw new TypeError(`${path} must not be a float in restricted JCS`);
+    }
     if (!Number.isSafeInteger(value)) throw new TypeError(`${path} must be a safe integer`);
     return Object.is(value, -0) ? 0 : value;
   }
@@ -1764,13 +1795,13 @@ function canonicalValue(value: unknown, path: string): unknown {
     for (let index = 0; index < value.length; index += 1) {
       if (!(index in value)) throw new TypeError(`${path}[${index}] must not be a sparse array hole`);
     }
-    return value.map((item, index) => canonicalValue(item, `${path}[${index}]`));
+    return value.map((item, index) => canonicalValue(item, `${path}[${index}]`, allowFloats));
   }
   if (isPlainRecord(value)) {
     const result: Record<string, unknown> = {};
     for (const key of Object.keys(value).sort()) {
       validUnicode(key, `${path} key`);
-      result[key] = canonicalValue(value[key], `${path}.${key}`);
+      result[key] = canonicalValue(value[key], `${path}.${key}`, allowFloats);
     }
     return result;
   }

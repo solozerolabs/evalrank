@@ -2,7 +2,7 @@
   "$schema": "../schemas/evalrank-manifest.schema.json",
   "object": "evalrank_manifest",
   "schema_version": "1",
-  "manifest_version": "2026-11-14.9",
+  "manifest_version": "2026-11-22.1",
   "ranking_group_dimensions": [
     "cell_id",
     "entity_kind",
@@ -4634,6 +4634,22 @@
         "model_configuration"
       ],
       "state": "active",
+      "rank_eligible_count": null,
+      "correlation_status": "unknown",
+      "correlated_family_group": null,
+      "research_flags": [],
+      "quarantine_reason": null
+    },
+    {
+      "benchmark_family_id": "ugi-refusal",
+      "display_name": "UGI Leaderboard refusal rate (1 - W/10)",
+      "candidate_cells": [
+        "writing"
+      ],
+      "entity_kinds": [
+        "model_configuration"
+      ],
+      "state": "shadow",
       "rank_eligible_count": null,
       "correlation_status": "unknown",
       "correlated_family_group": null,
@@ -11661,6 +11677,55 @@
         "correlated_family_group": null
       },
       "ranking_group_ids": [],
+      "quarantine_reason": null
+    },
+    {
+      "feed_id": "ugi-refusal-discovery",
+      "benchmark_family_id": "ugi-refusal",
+      "adapter_id": "ugi-leaderboard-hf-csv-v1",
+      "metric_direction": "lower",
+      "candidate_cells": [
+        "writing"
+      ],
+      "entity_kind": "model_configuration",
+      "interaction_policy": "direct_prompt",
+      "configuration_passport_class": "model-configuration-v1",
+      "state": "shadow",
+      "rank_eligible_count": null,
+      "rights": {
+        "status": "approved",
+        "harness_code_license": "Apache-2.0",
+        "task_data_license": null,
+        "commercial_use": "allowed",
+        "result_redistribution": "allowed",
+        "trajectory_redistribution": "allowed",
+        "environment_terms": "allowed",
+        "artifact_retention": "allowed",
+        "derived_score_publication": "allowed"
+      },
+      "cadence": {
+        "status": "validated",
+        "mode": "periodic",
+        "stale_after_seconds": 1209600,
+        "stop_recommending_after_seconds": 7776000,
+        "as_of": null,
+        "upstream_version": null
+      },
+      "retention": {
+        "store_artifact_bytes": true,
+        "maximum_days": null
+      },
+      "lineage": {
+        "validation_status": "declared",
+        "task_lineage_id": "ugi-leaderboard-tasks",
+        "environment_lineage_id": "ugi-leaderboard-environments",
+        "grader_lineage_id": "ugi-leaderboard-graders",
+        "correlation_status": "unknown",
+        "correlated_family_group": null
+      },
+      "ranking_group_ids": [
+        "rg-writing-model-configuration-direct-prompt-model-configuration-v1"
+      ],
       "quarantine_reason": null
     }
   ]

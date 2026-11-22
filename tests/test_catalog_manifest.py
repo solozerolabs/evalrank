@@ -182,6 +182,7 @@ EXPECTED_FAMILY_IDS = (
     "lmarena-text-factuality",
     "evalrank-site-translation",
     "aa-intelligence-index-cost-per-task",
+    "ugi-refusal",
 )
 
 # MTEB families each expose an embedder + a reranker feed (both retrieval
@@ -487,7 +488,7 @@ class CatalogManifestTests(unittest.TestCase):
 
         self.assertEqual("evalrank_manifest", payload["object"])
         self.assertEqual("1", payload["schema_version"])
-        self.assertEqual("2026-11-14.9", payload["manifest_version"])
+        self.assertEqual("2026-11-22.1", payload["manifest_version"])
         for key, id_key in (
             ("cells", "cell_id"),
             ("ranking_groups", "ranking_group_id"),
@@ -1955,7 +1956,7 @@ class CatalogManifestTests(unittest.TestCase):
             },
             active,
         )
-        self.assertEqual(130, len(families))
+        self.assertEqual(131, len(families))
         self.assertEqual(EXPECTED_FAMILY_IDS, tuple(row["benchmark_family_id"] for row in families))
         self.assertTrue(all(row["rank_eligible_count"] is None for row in families))
         self.assertTrue(all(set(row["candidate_cells"]) <= cell_ids for row in families))
@@ -1975,7 +1976,8 @@ class CatalogManifestTests(unittest.TestCase):
             if row["state"] == "shadow"
         }
         self.assertEqual(
-            {"cybergym-e2e-aa", "deepsecbench-aa-refusal", "macroscopebench"}, shadow
+            {"cybergym-e2e-aa", "deepsecbench-aa-refusal", "macroscopebench", "ugi-refusal"},
+            shadow,
         )
         self.assertTrue(all(
             row["state"] == "discovered"
@@ -2047,7 +2049,7 @@ class CatalogManifestTests(unittest.TestCase):
             declared_correlations,
         )
         feeds = manifest()["feeds"]
-        self.assertEqual(143, len(feeds))
+        self.assertEqual(144, len(feeds))
         self.assertEqual(EXPECTED_FEED_IDS, tuple(row["feed_id"] for row in feeds))
 
     def test_itbench_is_not_executable_without_exact_configuration_identity(self):
@@ -2543,6 +2545,8 @@ class CatalogManifestTests(unittest.TestCase):
                 "lmarena-text-factuality-discovery": "higher",
                 "evalrank-site-translation-board-discovery": "higher",
                 "aa-intelligence-index-cost-per-task-benchmarkheaven-discovery": "lower",
+                # A refusal rate on unrestricted creative writing (shadow, a filter input).
+                "ugi-refusal-discovery": "lower",
             },
             recovered_directions,
         )

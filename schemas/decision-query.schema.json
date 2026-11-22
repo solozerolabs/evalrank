@@ -58,6 +58,12 @@
     "minimum_context_tokens": {
       "$ref": "#/$defs/PositiveSafeInteger"
     },
+    "max_refusal_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Highest acceptable refusal rate on unrestricted creative writing (0..1). When set, only models with a known refusal rate at or below it are eligible; a model with no refusal evidence is excluded (refusal_rate_unknown), one above it too (refusal_rate_above_max). Omit for no refusal filter."
+    },
     "usage_profile": {
       "$ref": "#/$defs/UsageProfile"
     }

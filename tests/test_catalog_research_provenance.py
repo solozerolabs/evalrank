@@ -38,10 +38,10 @@ class CatalogResearchProvenanceTests(unittest.TestCase):
 
         self.assertEqual("benchmark_research_provenance", self.provenance["object"])
         self.assertEqual("1", self.provenance["schema_version"])
-        self.assertEqual("2026-11-14.9", self.provenance["manifest_version"])
+        self.assertEqual("2026-11-22.1", self.provenance["manifest_version"])
         self.assertEqual(self.manifest["manifest_version"], self.provenance["manifest_version"])
         self.assertEqual(expected_ids, actual_ids)
-        self.assertEqual(130, len(actual_ids))
+        self.assertEqual(131, len(actual_ids))
         self.assertEqual(len(actual_ids), len(set(actual_ids)))
 
     def test_every_family_has_dated_primary_or_official_sources(self):

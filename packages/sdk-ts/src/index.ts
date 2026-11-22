@@ -500,7 +500,7 @@ export class EvalRankClient {
       headers: {
         "Content-Type": "application/json",
       },
-      body: canonicalJson(parsed),
+      body: canonicalJson(parsed, { allowFloats: true }),
       },
     );
     return parseDecisionReceiptV2(response);

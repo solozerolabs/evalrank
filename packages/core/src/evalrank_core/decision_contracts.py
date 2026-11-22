@@ -992,6 +992,8 @@ EXCLUSION_CODES = {
     "cost_unmeasured",
     "effort_gap_too_large",
     "constraints_not_met",
+    "refusal_rate_unknown",
+    "refusal_rate_above_max",
 }
 LOCK_STATUSES = {"admitted", "held", "rejected", "unlocked"}
 USAGE_BASES = {"caller", "default_agent_task_mix"}
@@ -1029,6 +1031,7 @@ class DecisionQueryV2:
     reasoning_effort: str | None = None
     regions: tuple[str, ...] | None = None
     minimum_context_tokens: int | None = None
+    max_refusal_rate: float | int | None = None
     usage_profile: UsageProfileV1 | None = None
 
     def __post_init__(self) -> None:
@@ -1044,6 +1047,7 @@ class DecisionQueryV2:
         if self.reasoning_effort is not None:
             _require_enum("reasoning_effort", self.reasoning_effort, set(REASONING_EFFORTS))
         _require_nullable_safe_integer("minimum_context_tokens", self.minimum_context_tokens, minimum=1)
+        _require_nullable_fraction("max_refusal_rate", self.max_refusal_rate)
         if self.usage_profile is not None and not isinstance(self.usage_profile, UsageProfileV1):
             raise TypeError("usage_profile must be UsageProfileV1 or null")
 
@@ -1074,7 +1078,7 @@ class DecisionQueryV2:
         return payload
 
     def canonical_json(self) -> str:
-        return canonical_json(self.to_dict())
+        return canonical_json(self.to_dict(), allow_floats=True)
 
     @classmethod
     def from_dict(cls, value: Any) -> "DecisionQueryV2":
@@ -1099,6 +1103,7 @@ _QUERY_OPTIONAL = (
     "reasoning_effort",
     "regions",
     "minimum_context_tokens",
+    "max_refusal_rate",
     "usage_profile",
 )
 
@@ -1224,6 +1229,9 @@ class DecisionSelectionV2:
     projected_cost_microusd: int | None
     latency_p50_ms: int | None
     caveats: tuple[DecisionCaveatV2, ...]
+    # Both or neither: a receipt built before the refusal signal carries neither field.
+    model_family: str | None = None
+    refusal_rate: float | int | None = None
 
     def __post_init__(self) -> None:
         for name in ("model_id", "display_name", "provider_id", "serving_offer_id"):
@@ -1253,8 +1261,20 @@ class DecisionSelectionV2:
         for caveat in self.caveats:
             if caveat.code == "effort_substituted" and caveat.measured_effort == self.reasoning_effort:
                 raise ValueError("effort_substituted must name a measured effort other than the selection's")
+        if self.model_family is not None:
+            _require_string("model_family", self.model_family)
+        _require_nullable_fraction("refusal_rate", self.refusal_rate)
+        if self.model_family is None and self.refusal_rate is not None:
+            raise ValueError("refusal_rate travels with model_family")
 
     def to_dict(self) -> dict[str, Any]:
+        payload = self._core_dict()
+        if self.model_family is not None:
+            payload["refusal_rate"] = self.refusal_rate
+            payload["model_family"] = self.model_family
+        return payload
+
+    def _core_dict(self) -> dict[str, Any]:
         return {
             "model_id": self.model_id,
             "display_name": self.display_name,
@@ -1290,7 +1310,10 @@ class DecisionSelectionV2:
                 "latency_p50_ms",
                 "caveats",
             ),
+            optional=("refusal_rate", "model_family"),
         )
+        if ("refusal_rate" in payload) != ("model_family" in payload):
+            raise ValueError("refusal_rate and model_family are both present or both absent")
         payload["price"] = DecisionPriceV2.from_dict(payload["price"])
         if payload["effort_multiplier"] is not None:
             payload["effort_multiplier"] = EffortMultiplierV2.from_dict(payload["effort_multiplier"])
@@ -1413,7 +1436,7 @@ class DecisionReceiptV2:
             self._validate_pick()
         elif self.selections or not self.abstain_reasons:
             raise ValueError("abstain carries no selection and at least one abstain reason")
-        expected = f"receipt_{sha256_hex(self.to_body_dict())}"
+        expected = f"receipt_{sha256_hex(self.to_body_dict(), allow_floats=True)}"
         if self.receipt_id != expected:
             raise ValueError("receipt_id must hash the full receipt body except receipt_id")
 
@@ -1469,7 +1492,7 @@ class DecisionReceiptV2:
         unchecked = object.__new__(cls)
         for name, value in values.items():
             object.__setattr__(unchecked, name, value)
-        return cls(receipt_id=f"receipt_{sha256_hex(unchecked.to_body_dict())}", **values)
+        return cls(receipt_id=f"receipt_{sha256_hex(unchecked.to_body_dict(), allow_floats=True)}", **values)
 
     def to_body_dict(self) -> dict[str, Any]:
         return {
@@ -1625,6 +1648,14 @@ def _require_safe_integer(name: str, value: Any, *, minimum: int | None = None) 
 def _require_nullable_safe_integer(name: str, value: Any, *, minimum: int | None = None) -> None:
     if value is not None:
         _require_safe_integer(name, value, minimum=minimum)
+
+
+def _require_nullable_fraction(name: str, value: Any) -> None:
+    """A JSON number in [0, 1] (int 0/1 or a finite float), or null."""
+    if value is None:
+        return
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not 0 <= value <= 1:
+        raise ValueError(f"{name} must be a number in [0, 1]")
 
 
 def _require_decimal(name: str, value: Any) -> Decimal:

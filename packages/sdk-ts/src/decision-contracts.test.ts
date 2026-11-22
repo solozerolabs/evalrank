@@ -458,6 +458,40 @@ async function rehashed(wire: Record<string, unknown>): Promise<Record<string, u
   return { ...body, receipt_id: await receiptId(body) };
 }
 
+test("refusal-rate fields: optional query fraction, paired selection fields, float-aware receipt hash", async () => {
+  const query = parseDecisionQueryV2({
+    schema_version: "2", cell_id: "writing", objective: "capability_top_set", max_refusal_rate: 0.3,
+  });
+  assert.equal(query.max_refusal_rate, 0.3);
+  for (const bad of [-0.1, 1.5, "0.3", null]) {
+    assert.throws(() => parseDecisionQueryV2({
+      schema_version: "2", cell_id: "writing", objective: "capability_top_set", max_refusal_rate: bad,
+    }));
+  }
+  // RFC 8785 number text, byte-identical to Python's evalrank_core.canonical_json.es_number.
+  assert.equal(canonicalJson({ b: 1e-7, a: 0.3 }, { allowFloats: true }), '{"a":0.3,"b":1e-7}');
+  assert.throws(() => canonicalJson({ a: 0.3 }), /float/);
+
+  const wire = goldenWire("top_set_pick");
+  for (const row of wire.selections as Array<Record<string, unknown>>) {
+    row.refusal_rate = 0.28;
+    row.model_family = "openai";
+  }
+  wire.query = { ...(wire.query as Record<string, unknown>), max_refusal_rate: 0.3 };
+  (wire.exclusions as unknown[]).push({ model_key: "zz-unrated", code: "refusal_rate_unknown" });
+  const parsed = await parseDecisionReceiptV2(await rehashed(wire));
+  assert.equal(parsed.selections[0].refusal_rate, 0.28);
+  assert.equal(parsed.selections[0].model_family, "openai");
+  assert.equal(parsed.query.max_refusal_rate, 0.3);
+
+  const unpaired = structuredClone(wire);
+  delete (unpaired.selections as Array<Record<string, unknown>>)[0].model_family;
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(unpaired)), /both present/);
+  const unknown = structuredClone(wire);
+  (unknown.selections as Array<Record<string, unknown>>)[0].refusal_rate = null;
+  assert.equal((await parseDecisionReceiptV2(await rehashed(unknown))).selections[0].refusal_rate, null);
+});
+
 test("every golden receipt parses to its exact body and Python receipt id", async () => {
   for (const row of golden.receipts) {
     const parsed = await parseDecisionReceiptV2({ ...row.body, receipt_id: row.receipt_id });

@@ -2,7 +2,7 @@
   "$schema": "../schemas/benchmark-research-provenance.schema.json",
   "object": "benchmark_research_provenance",
   "schema_version": "1",
-  "manifest_version": "2026-11-14.9",
+  "manifest_version": "2026-11-22.1",
   "families": [
     {
       "benchmark_family_id": "livecodebench",
@@ -13065,6 +13065,107 @@
           "source_ids": [
             "aa_leaderboard",
             "benchmarkheaven_api"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_family_id": "ugi-refusal",
+      "checked_on": "2026-11-22",
+      "sources": [
+        {
+          "source_id": "ugi_space",
+          "kind": "official_leaderboard",
+          "url": "https://huggingface.co/spaces/DontPlanToEnd/UGI-Leaderboard"
+        },
+        {
+          "source_id": "ugi_data",
+          "kind": "official_dataset",
+          "url": "https://huggingface.co/spaces/DontPlanToEnd/UGI-Leaderboard/raw/main/ugi-leaderboard-data.csv"
+        }
+      ],
+      "claims": [
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The UGI (Uncensored General Intelligence) Leaderboard scores models on a private question set; its W/10 column is a 0-10 willingness score, the mean of W/10-Direct (how far the model answers a request it would be expected to refuse) and W/10-Adherence (how far it follows the request without deflecting). The space publishes every row, including W/10 and W/10-Direct/Adherence, in one CSV file at the repository root. On 2026-11-22 the file held 1,331 rows, 397 of them foundation models with vendor-prefixed ids such as anthropic/claude-opus-5-5 (adaptive, effort=high) and openai/gpt-6-sol (reasoning_effort=low).",
+          "source_ids": [
+            "ugi_space",
+            "ugi_data"
+          ]
+        },
+        {
+          "topic": "scope",
+          "research_flag": null,
+          "basis": "evalrank_inference",
+          "statement": "The family is the refusal rate on unrestricted creative writing, derived as refusal_rate = 1 - W/10 / 10 (a unit interval, lower is better): W/10 = 10 means the model never declines, 0 that it always does. Only foundation-model rows are read, so a fine-tune or merge never stands in for the vendor model it shares a name with. It stays shadow and never ranks the writing cell: it is a filter input that lets a consumer exclude models that decline unrestricted prompts, not a quality score.",
+          "source_ids": [
+            "ugi_space",
+            "ugi_data"
+          ]
+        },
+        {
+          "topic": "harness_code_license",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The UGI Leaderboard Hugging Face space declares the Apache-2.0 license in its card, covering the repository files, including the published results file ugi-leaderboard-data.csv.",
+          "source_ids": [
+            "ugi_space"
+          ]
+        },
+        {
+          "topic": "commercial_use",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Apache-2.0 grants use, reproduction and distribution rights without a noncommercial restriction.",
+          "source_ids": [
+            "ugi_space"
+          ]
+        },
+        {
+          "topic": "result_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Apache-2.0 permits redistribution of the published results file, so ingested result records may be redistributed with attribution and the license notice.",
+          "source_ids": [
+            "ugi_space"
+          ]
+        },
+        {
+          "topic": "trajectory_redistribution",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "The results file carries no model trajectories or task text (the question set is private), so the feed redistributes none; the published rows themselves are Apache-2.0.",
+          "source_ids": [
+            "ugi_space"
+          ]
+        },
+        {
+          "topic": "environment_terms",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Reading the published Apache-2.0 results file involves no execution environment and imposes no additional environment terms.",
+          "source_ids": [
+            "ugi_space"
+          ]
+        },
+        {
+          "topic": "artifact_retention",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Apache-2.0 grants reproduction rights for the repository files, permitting retained copies of the results file.",
+          "source_ids": [
+            "ugi_space"
+          ]
+        },
+        {
+          "topic": "derived_score_publication",
+          "research_flag": null,
+          "basis": "direct_source",
+          "statement": "Apache-2.0 permits derivative works, so a refusal rate derived from W/10 may be published with attribution to the UGI Leaderboard.",
+          "source_ids": [
+            "ugi_space"
           ]
         }
       ]

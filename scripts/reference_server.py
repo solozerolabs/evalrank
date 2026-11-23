@@ -64,7 +64,7 @@ class _ReferenceServer(ThreadingHTTPServer):
             receipt = DecisionReceiptV2.from_dict({**row["body"], "receipt_id": row["receipt_id"]})
             self.golden_receipts[receipt.query.canonical_json()] = (
                 receipt.receipt_id,
-                restricted_jcs(receipt.to_dict()),
+                restricted_jcs(receipt.to_dict(), allow_floats=True),
             )
         self.use_cases_bytes = restricted_jcs(sample_use_case_catalog().to_dict())
         self.benchmark_health_bytes = restricted_jcs(_benchmark_health(repo_root))

@@ -981,7 +981,17 @@ class ServingOfferV1:
 
 
 REASONING_EFFORTS = ("none", "minimal", "low", "medium", "high", "xhigh", "max")
-DECISION_OBJECTIVES = {"lowest_cost_within_top_set", "capability_top_set"}
+DECISION_OBJECTIVES = {"lowest_cost_within_top_set", "capability_top_set", "fallback_chain"}
+"""``fallback_chain``: every configuration that survives every filter (``capability_top_set``'s filters,
+``max_refusal_score`` included), in ``capability_top_set``'s capability order with no band cutoff, keeping
+the first configuration per model and then the first per vendor (``model_family``). ``selections[0]`` is
+the pick; each later selection is the next fallback, most capable first."""
+REFUSAL_SCORE_DESCRIPTION = (
+    "Refusal score: 1 - UGI W/10 / 10, from the UGI Leaderboard's private set of unrestricted"
+    " creative-writing requests. 0 = the model is never pushed into refusing or deviating, 1 = it always is."
+    " A ranking signal for how readily a model refuses unrestricted creative writing, not the share of"
+    " ordinary requests it refuses."
+)
 DECISION_APIS = {"chat_completions", "responses", "fal_queue"}
 ABSTAIN_REASONS = {"no_ranked_candidate", "no_eligible_offer", "stale_evidence", "not_a_model_cell"}
 EXCLUSION_CODES = {
@@ -992,9 +1002,11 @@ EXCLUSION_CODES = {
     "cost_unmeasured",
     "effort_gap_too_large",
     "constraints_not_met",
-    "refusal_rate_unknown",
-    "refusal_rate_above_max",
+    "refusal_score_unknown",
+    "refusal_score_above_max",
 }
+"""With ``max_refusal_score`` set, a model whose refusal score is unknown is excluded ``refusal_score_unknown``
+and one whose score is above the maximum ``refusal_score_above_max``."""
 LOCK_STATUSES = {"admitted", "held", "rejected", "unlocked"}
 USAGE_BASES = {"caller", "default_agent_task_mix", "per_output_second"}
 SUPPORTED_VIA = ("fal", "openai", "openrouter")
@@ -1032,7 +1044,8 @@ class DecisionQueryV2:
     reasoning_effort: str | None = None
     regions: tuple[str, ...] | None = None
     minimum_context_tokens: int | None = None
-    max_refusal_rate: float | int | None = None
+    max_refusal_score: float | int | None = None
+    """Highest acceptable refusal score (0..1); see ``REFUSAL_SCORE_DESCRIPTION``."""
     usage_profile: UsageProfileV1 | None = None
 
     def __post_init__(self) -> None:
@@ -1048,7 +1061,7 @@ class DecisionQueryV2:
         if self.reasoning_effort is not None:
             _require_enum("reasoning_effort", self.reasoning_effort, set(REASONING_EFFORTS))
         _require_nullable_safe_integer("minimum_context_tokens", self.minimum_context_tokens, minimum=1)
-        _require_nullable_fraction("max_refusal_rate", self.max_refusal_rate)
+        _require_nullable_fraction("max_refusal_score", self.max_refusal_score)
         if self.usage_profile is not None and not isinstance(self.usage_profile, UsageProfileV1):
             raise TypeError("usage_profile must be UsageProfileV1 or null")
 
@@ -1104,7 +1117,7 @@ _QUERY_OPTIONAL = (
     "reasoning_effort",
     "regions",
     "minimum_context_tokens",
-    "max_refusal_rate",
+    "max_refusal_score",
     "usage_profile",
 )
 
@@ -1240,7 +1253,8 @@ class DecisionSelectionV2:
     caveats: tuple[DecisionCaveatV2, ...]
     # Both or neither: a receipt built before the refusal signal carries neither field.
     model_family: str | None = None
-    refusal_rate: float | int | None = None
+    refusal_score: float | int | None = None
+    """The model's refusal score (0..1, see ``REFUSAL_SCORE_DESCRIPTION``); None when unmeasured."""
 
     def __post_init__(self) -> None:
         for name in ("model_id", "display_name", "provider_id", "serving_offer_id"):
@@ -1276,14 +1290,14 @@ class DecisionSelectionV2:
                 raise ValueError("effort_substituted must name a measured effort other than the selection's")
         if self.model_family is not None:
             _require_string("model_family", self.model_family)
-        _require_nullable_fraction("refusal_rate", self.refusal_rate)
-        if self.model_family is None and self.refusal_rate is not None:
-            raise ValueError("refusal_rate travels with model_family")
+        _require_nullable_fraction("refusal_score", self.refusal_score)
+        if self.model_family is None and self.refusal_score is not None:
+            raise ValueError("refusal_score travels with model_family")
 
     def to_dict(self) -> dict[str, Any]:
         payload = self._core_dict()
         if self.model_family is not None:
-            payload["refusal_rate"] = self.refusal_rate
+            payload["refusal_score"] = self.refusal_score
             payload["model_family"] = self.model_family
         return payload
 
@@ -1323,10 +1337,10 @@ class DecisionSelectionV2:
                 "latency_p50_ms",
                 "caveats",
             ),
-            optional=("refusal_rate", "model_family"),
+            optional=("refusal_score", "model_family"),
         )
-        if ("refusal_rate" in payload) != ("model_family" in payload):
-            raise ValueError("refusal_rate and model_family are both present or both absent")
+        if ("refusal_score" in payload) != ("model_family" in payload):
+            raise ValueError("refusal_score and model_family are both present or both absent")
         payload["price"] = DecisionPriceV2.from_dict(payload["price"])
         if payload["effort_multiplier"] is not None:
             payload["effort_multiplier"] = EffortMultiplierV2.from_dict(payload["effort_multiplier"])
@@ -1408,6 +1422,27 @@ def _media_usage(query: DecisionQueryV2) -> DecisionUsageV2 | None:
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
+class DecisionRelaxationV2:
+    """An abstain's way out: the lowest refusal score among configurations excluded only as
+    ``refusal_score_above_max``. Re-posting the query with this ``max_refusal_score`` picks that configuration."""
+
+    max_refusal_score: float | int
+
+    def __post_init__(self) -> None:
+        if self.max_refusal_score is None:
+            raise ValueError("max_refusal_score must be a number in [0, 1]")
+        _require_nullable_fraction("max_refusal_score", self.max_refusal_score)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"max_refusal_score": self.max_refusal_score}
+
+    @classmethod
+    def from_dict(cls, value: Any) -> "DecisionRelaxationV2":
+        payload = _closed(value, required=("max_refusal_score",))
+        return cls(max_refusal_score=payload["max_refusal_score"])
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
 class DecisionReceiptV2:
     """``pick``: ``selections[0]`` is the pick and the rest is the band in order. ``abstain``: no selection, one or more reasons."""
 
@@ -1424,6 +1459,8 @@ class DecisionReceiptV2:
     exclusions: tuple[DecisionExclusionV2, ...]
     usage_profile: DecisionUsageV2
     abstain_reasons: tuple[str, ...]
+    relaxation: DecisionRelaxationV2 | None = None
+    """Abstain only: the loosened ``max_refusal_score`` that would pick (see ``DecisionRelaxationV2``)."""
 
     def __post_init__(self) -> None:
         if not isinstance(self.query, DecisionQueryV2):
@@ -1466,6 +1503,7 @@ class DecisionReceiptV2:
             self._validate_pick()
         elif self.selections or not self.abstain_reasons:
             raise ValueError("abstain carries no selection and at least one abstain reason")
+        self._validate_relaxation()
         expected = f"receipt_{sha256_hex(self.to_body_dict(), allow_floats=True)}"
         if self.receipt_id != expected:
             raise ValueError("receipt_id must hash the full receipt body except receipt_id")
@@ -1495,8 +1533,33 @@ class DecisionReceiptV2:
                 raise ValueError("lowest_cost_within_top_set selects priced configurations only")
             if costs[0] != min(costs):  # type: ignore[type-var]
                 raise ValueError("lowest_cost_within_top_set picks the cheapest configuration of the band")
+        elif self.query.objective == "fallback_chain":
+            ratios = [row.capability_ratio_ppm for row in self.selections]
+            if ratios != sorted(ratios, reverse=True):
+                raise ValueError("fallback_chain orders its selections most capable first")
+            models = [row.model_id for row in self.selections]
+            if len(set(models)) != len(models):
+                raise ValueError("fallback_chain keeps one configuration per model")
+            vendors = [row.model_family for row in self.selections if row.model_family is not None]
+            if len(set(vendors)) != len(vendors):
+                raise ValueError("fallback_chain keeps one configuration per vendor (model_family)")
         elif pick.capability_ratio_ppm != max(row.capability_ratio_ppm for row in self.selections):
             raise ValueError("capability_top_set picks the highest-scoring configuration")
+
+    def _validate_relaxation(self) -> None:
+        if self.relaxation is None:
+            return
+        if not isinstance(self.relaxation, DecisionRelaxationV2):
+            raise TypeError("relaxation must be DecisionRelaxationV2 or null")
+        if self.outcome != "abstain":
+            raise ValueError("relaxation is allowed only on an abstain")
+        ceiling = self.query.max_refusal_score
+        if ceiling is None:
+            raise ValueError("relaxation needs the query's max_refusal_score")
+        if self.relaxation.max_refusal_score <= ceiling:
+            raise ValueError("relaxation.max_refusal_score must exceed the query's max_refusal_score")
+        if not any(row.code == "refusal_score_above_max" for row in self.exclusions):
+            raise ValueError("relaxation needs a refusal_score_above_max exclusion")
 
     @classmethod
     def create(
@@ -1511,6 +1574,7 @@ class DecisionReceiptV2:
         exclusions: tuple[DecisionExclusionV2, ...],
         abstain_reasons: tuple[str, ...],
         media: bool = False,
+        relaxation: "DecisionRelaxationV2 | None" = None,
     ) -> "DecisionReceiptV2":
         """Build a receipt; ``usage_profile`` is derived from the query (``media``: per output second) and
         ``receipt_id`` from the body."""
@@ -1524,6 +1588,7 @@ class DecisionReceiptV2:
             "exclusions": exclusions,
             "usage_profile": DecisionUsageV2.per_output_second() if media else DecisionUsageV2.for_query(query),
             "abstain_reasons": abstain_reasons,
+            "relaxation": relaxation,
         }
         unchecked = object.__new__(cls)
         for name, value in values.items():
@@ -1531,7 +1596,7 @@ class DecisionReceiptV2:
         return cls(receipt_id=f"receipt_{sha256_hex(unchecked.to_body_dict(), allow_floats=True)}", **values)
 
     def to_body_dict(self) -> dict[str, Any]:
-        return {
+        body = {
             "object": self.object,
             "schema_version": self.schema_version,
             "query": self.query.to_dict(),
@@ -1544,6 +1609,9 @@ class DecisionReceiptV2:
             "usage_profile": self.usage_profile.to_dict(),
             "abstain_reasons": sorted(self.abstain_reasons),
         }
+        if self.relaxation is not None:
+            body["relaxation"] = self.relaxation.to_dict()
+        return body
 
     def to_dict(self) -> dict[str, Any]:
         return {**self.to_body_dict(), "receipt_id": self.receipt_id}
@@ -1566,6 +1634,7 @@ class DecisionReceiptV2:
                 "usage_profile",
                 "abstain_reasons",
             ),
+            optional=("relaxation",),
         )
         _envelope(payload, cls.object, cls.schema_version)
         return cls(
@@ -1579,6 +1648,7 @@ class DecisionReceiptV2:
             exclusions=tuple(DecisionExclusionV2.from_dict(row) for row in _array("exclusions", payload["exclusions"])),
             usage_profile=DecisionUsageV2.from_dict(payload["usage_profile"]),
             abstain_reasons=_array_to_tuple("abstain_reasons", payload["abstain_reasons"]),
+            relaxation=None if "relaxation" not in payload else DecisionRelaxationV2.from_dict(payload["relaxation"]),
         )
 
 

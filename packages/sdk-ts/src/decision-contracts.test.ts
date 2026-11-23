@@ -13,6 +13,7 @@ import {
 import {
   canonicalJson,
   evaluatedConfigurationId,
+  DECISION_OBJECTIVES,
   DEFAULT_AGENT_TASK_MIX,
   parseServingOfferV1,
   parseConfigurationPassportV1,
@@ -70,7 +71,7 @@ const manifest = JSON.parse(
 test("restricted JCS matches the cross-language golden bytes", async () => {
   assert.equal(canonicalJson(golden.query.input), golden.query.canonical);
   for (const row of golden.receipts) {
-    assert.equal(await sha256Hex(row.body), row.body_sha256, row.name);
+    assert.equal(await sha256Hex(row.body, { allowFloats: true }), row.body_sha256, row.name);
     assert.equal(await receiptId(row.body), row.receipt_id, row.name);
   }
   for (const vector of golden.rejection_vectors.slice(0, 2)) {
@@ -458,14 +459,14 @@ async function rehashed(wire: Record<string, unknown>): Promise<Record<string, u
   return { ...body, receipt_id: await receiptId(body) };
 }
 
-test("refusal-rate fields: optional query fraction, paired selection fields, float-aware receipt hash", async () => {
+test("refusal-score fields: optional query fraction, paired selection fields, float-aware receipt hash", async () => {
   const query = parseDecisionQueryV2({
-    schema_version: "2", cell_id: "writing", objective: "capability_top_set", max_refusal_rate: 0.3,
+    schema_version: "2", cell_id: "writing", objective: "capability_top_set", max_refusal_score: 0.3,
   });
-  assert.equal(query.max_refusal_rate, 0.3);
+  assert.equal(query.max_refusal_score, 0.3);
   for (const bad of [-0.1, 1.5, "0.3", null]) {
     assert.throws(() => parseDecisionQueryV2({
-      schema_version: "2", cell_id: "writing", objective: "capability_top_set", max_refusal_rate: bad,
+      schema_version: "2", cell_id: "writing", objective: "capability_top_set", max_refusal_score: bad,
     }));
   }
   // RFC 8785 number text, byte-identical to Python's evalrank_core.canonical_json.es_number.
@@ -474,22 +475,77 @@ test("refusal-rate fields: optional query fraction, paired selection fields, flo
 
   const wire = goldenWire("top_set_pick");
   for (const row of wire.selections as Array<Record<string, unknown>>) {
-    row.refusal_rate = 0.28;
+    row.refusal_score = 0.28;
     row.model_family = "openai";
   }
-  wire.query = { ...(wire.query as Record<string, unknown>), max_refusal_rate: 0.3 };
-  (wire.exclusions as unknown[]).push({ model_key: "zz-unrated", code: "refusal_rate_unknown" });
+  wire.query = { ...(wire.query as Record<string, unknown>), max_refusal_score: 0.3 };
+  (wire.exclusions as unknown[]).push({ model_key: "zz-unrated", code: "refusal_score_unknown" });
   const parsed = await parseDecisionReceiptV2(await rehashed(wire));
-  assert.equal(parsed.selections[0].refusal_rate, 0.28);
+  assert.equal(parsed.selections[0].refusal_score, 0.28);
   assert.equal(parsed.selections[0].model_family, "openai");
-  assert.equal(parsed.query.max_refusal_rate, 0.3);
+  assert.equal(parsed.query.max_refusal_score, 0.3);
 
   const unpaired = structuredClone(wire);
   delete (unpaired.selections as Array<Record<string, unknown>>)[0].model_family;
   await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(unpaired)), /both present/);
   const unknown = structuredClone(wire);
-  (unknown.selections as Array<Record<string, unknown>>)[0].refusal_rate = null;
-  assert.equal((await parseDecisionReceiptV2(await rehashed(unknown))).selections[0].refusal_rate, null);
+  (unknown.selections as Array<Record<string, unknown>>)[0].refusal_score = null;
+  assert.equal((await parseDecisionReceiptV2(await rehashed(unknown))).selections[0].refusal_score, null);
+});
+
+test("fallback_chain: most capable first, one configuration per model and per vendor", async () => {
+  const wire = goldenWire("fallback_chain_pick");
+  const parsed = await parseDecisionReceiptV2(wire);
+  assert.deepEqual(parsed.selections.map((row) => row.model_family), ["openai", "lyra"]);
+  assert.ok((DECISION_OBJECTIVES as readonly string[]).includes("fallback_chain"));
+
+  const reversed = structuredClone(wire);
+  (reversed.selections as unknown[]).reverse();
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(reversed)), /most capable first/);
+
+  const sameVendor = structuredClone(wire);
+  const rows = sameVendor.selections as Array<Record<string, unknown>>;
+  rows[1].model_family = "openai";
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(sameVendor)), /per vendor/);
+
+  const sameModel = structuredClone(wire);
+  const twins = sameModel.selections as Array<Record<string, unknown>>;
+  twins[1].model_id = twins[0].model_id;
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(sameModel)), /per model/);
+
+  const topSet = structuredClone(wire);
+  (topSet.query as Record<string, unknown>).objective = "capability_top_set";
+  (topSet.selections as Array<Record<string, unknown>>)[1].model_family = "openai";
+  assert.equal((await parseDecisionReceiptV2(await rehashed(topSet))).selections.length, 2);
+});
+
+test("relaxation: abstain only, above the query's max_refusal_score, with a refusal_score_above_max exclusion", async () => {
+  const wire = goldenWire("abstain_refusal_relaxation");
+  assert.deepEqual((await parseDecisionReceiptV2(wire)).relaxation, { max_refusal_score: 0.125 });
+  assert.equal((await parseDecisionReceiptV2(goldenWire("abstain_no_eligible_offer"))).relaxation, undefined);
+
+  const onPick = goldenWire("fallback_chain_pick");
+  onPick.relaxation = { max_refusal_score: 0.5 };
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(onPick)), /only on an abstain/);
+
+  const noFilter = structuredClone(wire);
+  delete (noFilter.query as Record<string, unknown>).max_refusal_score;
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(noFilter)), /needs the query's max_refusal_score/);
+
+  const notAbove = structuredClone(wire);
+  notAbove.relaxation = { max_refusal_score: 0.1 };
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(notAbove)), /must exceed/);
+
+  const noExclusion = structuredClone(wire);
+  noExclusion.exclusions = (noExclusion.exclusions as Array<Record<string, unknown>>)
+    .filter((row) => row.code !== "refusal_score_above_max");
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(noExclusion)), /refusal_score_above_max exclusion/);
+
+  for (const bad of [{}, { max_refusal_score: 1.5 }, { max_refusal_score: 0.2, extra: 1 }]) {
+    const mutated = structuredClone(wire);
+    mutated.relaxation = bad;
+    await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(mutated)));
+  }
 });
 
 test("media receipts: fal_queue, per-second price, per_output_second usage with a null profile", async () => {
@@ -507,7 +563,7 @@ test("media receipts: fal_queue, per-second price, per_output_second usage with 
       microusd_per_output_second: 19000,
     },
   };
-  delete (media as Record<string, unknown>).refusal_rate;
+  delete (media as Record<string, unknown>).refusal_score;
   delete (media as Record<string, unknown>).model_family;
   wire.selections = [media];
   const parsed = await parseDecisionReceiptV2(await rehashed(wire));
@@ -523,11 +579,11 @@ test("every golden receipt parses to its exact body and Python receipt id", asyn
     const parsed = await parseDecisionReceiptV2({ ...row.body, receipt_id: row.receipt_id });
     const { receipt_id: identifier, ...body } = parsed;
     assert.equal(identifier, row.receipt_id, row.name);
-    assert.equal(canonicalJson(body), canonicalJson(row.body), row.name);
-    assert.equal(await sha256Hex(row.body), row.body_sha256, row.name);
+    assert.equal(canonicalJson(body, { allowFloats: true }), canonicalJson(row.body, { allowFloats: true }), row.name);
+    assert.equal(await sha256Hex(row.body, { allowFloats: true }), row.body_sha256, row.name);
   }
   assert.deepEqual(golden.receipts.map((row) => row.name), [
-    "value_pick", "top_set_pick", "pinned_level", "substituted_effort",
+    "value_pick", "top_set_pick", "pinned_level", "substituted_effort", "fallback_chain_pick", "abstain_refusal_relaxation",
     "abstain_no_ranked_candidate", "abstain_no_eligible_offer", "abstain_stale_evidence", "abstain_not_a_model_cell",
   ]);
 });
@@ -1163,8 +1219,22 @@ test("Draft 2020 schemas enforce the portable semantic shapes they can express",
   (zeroUsage.usage_profile as Record<string, unknown>).cache_storage_token_seconds = 1;
   assert.equal(queryValidator(zeroUsage), false);
 
+  assert.equal(queryValidator({ schema_version: "2", cell_id: "writing", objective: "fallback_chain" }), true);
+  assert.equal(queryValidator({ schema_version: "2", cell_id: "writing", objective: "capability_top_set", max_refusal_score: 0.3 }), true);
+  assert.equal(queryValidator({ schema_version: "2", cell_id: "writing", objective: "capability_top_set", max_refusal_rate: 0.3 }), false);
+  const relaxed = golden.receipts.find((row) => row.name === "abstain_refusal_relaxation")!;
+  const relaxedWire = (): Record<string, unknown> => structuredClone({ ...relaxed.body, receipt_id: relaxed.receipt_id });
+  for (const bad of [{}, { max_refusal_score: 1.5 }, { max_refusal_score: 0.2, extra: 1 }]) {
+    const mutated = relaxedWire();
+    mutated.relaxation = bad;
+    assert.equal(receiptValidator(mutated), false, JSON.stringify(bad));
+  }
+
   const pick = golden.receipts.find((row) => row.name === "value_pick")!;
   const wire = (): Record<string, unknown> => structuredClone({ ...pick.body, receipt_id: pick.receipt_id });
+  const pickWithRelaxation = wire();
+  pickWithRelaxation.relaxation = { max_refusal_score: 0.2 };
+  assert.equal(receiptValidator(pickWithRelaxation), false);
   const pickWithReason = wire();
   pickWithReason.abstain_reasons = ["stale_evidence"];
   assert.equal(receiptValidator(pickWithReason), false);

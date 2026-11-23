@@ -23,6 +23,7 @@ from evalrank_core import (  # noqa: E402
     DecisionPriceV2 as Price,
     DecisionQueryV2 as Query,
     DecisionReceiptV2 as Receipt,
+    DecisionRelaxationV2 as Relaxation,
     DecisionSelectionV2 as Selection,
     EffortMultiplierV2 as Multiplier,
     UsageProfileV1,
@@ -44,8 +45,9 @@ PRICES = {
     "gpt-6-sol": (1_250_000, 125_000, 10_000_000),
     "gpt-6-astra": (5_000_000, 500_000, 40_000_000),
     "gpt-5-mini": (250_000, 25_000, 2_000_000),
+    "lyra-3": (2_000_000, 200_000, 12_000_000),
 }
-DISPLAY = {"gpt-6-sol": "GPT-6 Sol", "gpt-6-astra": "GPT-6 Astra", "gpt-5-mini": "GPT-5 mini"}
+DISPLAY = {"gpt-6-sol": "GPT-6 Sol", "gpt-6-astra": "GPT-6 Astra", "gpt-5-mini": "GPT-5 mini", "lyra-3": "Lyra 3"}
 
 
 def base_cost(model: str, usage: UsageProfileV1) -> int:
@@ -70,6 +72,8 @@ def selection(
     coverage: int = 2,
     latency: int | None = 900,
     caveats: tuple[Caveat, ...] = (),
+    vendor: str = "openai",
+    refusal: tuple[str, float | None] | None = None,
 ) -> Selection:
     if multiplier_ppm is None:
         multiplier, cost = None, None
@@ -80,9 +84,9 @@ def selection(
         cost = -(-base_cost(model, usage) * multiplier_ppm // 1_000_000)
     uncached, cached, output = PRICES[model]
     return Selection(
-        model_id=model if via == "openai" else f"openai/{model}",
+        model_id=model if via == "openai" else f"{vendor}/{model}",
         display_name=DISPLAY[model],
-        provider_id="openai",
+        provider_id=vendor,
         serving_offer_id=f"offer_{via}-{model}",
         reasoning_effort=effort,
         api=api,
@@ -97,6 +101,8 @@ def selection(
         projected_cost_microusd=cost,
         latency_p50_ms=latency,
         caveats=caveats,
+        model_family=None if refusal is None else refusal[0],
+        refusal_score=None if refusal is None else refusal[1],
     )
 
 
@@ -104,7 +110,7 @@ def families(*rows: tuple[str, str, int, str | None]) -> tuple[Family, ...]:
     return tuple(Family(family_id=f, lock_status=s, weight_ppm=w, stale_at=t) for f, s, w, t in rows)
 
 
-def receipt(name, query, outcome, cell, fams, selections=(), exclusions=(), reasons=(), snapshots=None):
+def receipt(name, query, outcome, cell, fams, selections=(), exclusions=(), reasons=(), snapshots=None, relaxation=None):
     built = Receipt.create(
         query=query,
         decided_at=DECIDED_AT,
@@ -114,10 +120,11 @@ def receipt(name, query, outcome, cell, fams, selections=(), exclusions=(), reas
         selections=tuple(selections),
         exclusions=tuple(exclusions),
         abstain_reasons=tuple(reasons),
+        relaxation=relaxation,
     )
     body = built.to_body_dict()
     assert Receipt.from_dict(built.to_dict()) == built
-    return {"name": name, "body": body, "body_sha256": sha256_hex(body), "receipt_id": built.receipt_id}
+    return {"name": name, "body": body, "body_sha256": sha256_hex(body, allow_floats=True), "receipt_id": built.receipt_id}
 
 
 WRITING_FAMILIES = families(
@@ -214,6 +221,36 @@ receipts = [
         exclusions=(
             Exclusion(model_key="gpt6nano", code="effort_gap_too_large", reasoning_effort="medium", detail="measured only at xhigh; the effort curve gap is 0.081"),
         ),
+    ),
+    receipt(
+        "fallback_chain_pick",
+        Query(cell_id="writing", objective="fallback_chain", via="openrouter", max_refusal_score=0.4),
+        "pick",
+        "writing",
+        WRITING_FAMILIES,
+        selections=(
+            selection("gpt-6-sol", "high", 1_000_000, via="openrouter", multiplier_ppm=1_510_000, coverage=1, refusal=("openai", 0.25)),
+            selection("lyra-3", "medium", 960_000, via="openrouter", vendor="lyra", coverage=1, refusal=("lyra", 0.125)),
+        ),
+        exclusions=(
+            Exclusion(model_key="gpt6sol", code="constraints_not_met", reasoning_effort="medium", detail="a more capable configuration of the same model leads the chain"),
+            Exclusion(model_key="gpt6astra", code="constraints_not_met", reasoning_effort="medium", detail="a more capable model of the same vendor leads the chain"),
+            Exclusion(model_key="gpt5mini", code="refusal_score_unknown", reasoning_effort="medium"),
+        ),
+    ),
+    receipt(
+        "abstain_refusal_relaxation",
+        Query(cell_id="writing", objective="capability_top_set", via="openrouter", max_refusal_score=0.1),
+        "abstain",
+        "writing",
+        WRITING_FAMILIES,
+        exclusions=(
+            Exclusion(model_key="gpt6sol", code="refusal_score_above_max", reasoning_effort="medium", detail="refusal score 0.25 is above 0.1"),
+            Exclusion(model_key="lyra3", code="refusal_score_above_max", reasoning_effort="medium", detail="refusal score 0.125 is above 0.1"),
+            Exclusion(model_key="gpt5mini", code="refusal_score_unknown", reasoning_effort="medium"),
+        ),
+        reasons=("no_eligible_offer",),
+        relaxation=Relaxation(max_refusal_score=0.125),
     ),
     receipt(
         "abstain_no_ranked_candidate",

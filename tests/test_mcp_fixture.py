@@ -76,7 +76,15 @@ class McpFixtureTests(unittest.TestCase):
         self.assertEqual(["schema_version", "cell_id", "objective"], query["required"])
         self.assertEqual("2", query["properties"]["schema_version"]["const"])
         self.assertEqual(["fal", "openai", "openrouter"], query["properties"]["via"]["enum"])
-        for retired in ("ranking_group_id", "entity_kind", "monthly_budget_microusd", "zero_cache_sensitivity_usage_profile"):
+        self.assertEqual(
+            ["lowest_cost_within_top_set", "capability_top_set", "fallback_chain"],
+            query["properties"]["objective"]["enum"],
+        )
+        self.assertIn("fallback_chain", query["properties"]["objective"]["description"])
+        refusal = query["properties"]["max_refusal_score"]
+        self.assertEqual(("number", 0, 1), (refusal["type"], refusal["minimum"], refusal["maximum"]))
+        self.assertIn("1 - UGI W/10 / 10", refusal["description"])
+        for retired in ("ranking_group_id", "entity_kind", "monthly_budget_microusd", "zero_cache_sensitivity_usage_profile", "max_refusal_rate"):
             self.assertNotIn(retired, query["properties"])
         self.assertEqual("boolean", decide["properties"]["share"]["type"])
         receipt = tools[2]["inputSchema"]

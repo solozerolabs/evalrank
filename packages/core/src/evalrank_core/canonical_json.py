@@ -5,9 +5,9 @@ measurements travel as canonical decimal strings, while counts and monetary
 units use JavaScript-safe integers. This keeps Python and browser SDKs byte
 identical without silently rounding evidence.
 
-One documented exception: a decision receipt carries two caller-facing unit
-fractions (the query's ``max_refusal_rate`` and each selection's
-``refusal_rate``). ``allow_floats=True`` admits finite floats and writes them
+One documented exception: a decision receipt carries caller-facing unit
+fractions (the query's ``max_refusal_score``, each selection's
+``refusal_score``, and an abstain's ``relaxation.max_refusal_score``). ``allow_floats=True`` admits finite floats and writes them
 exactly as RFC 8785 does (ECMAScript ``Number.prototype.toString``), which is
 what ``JSON.stringify`` emits, so the bytes stay identical across SDKs.
 """

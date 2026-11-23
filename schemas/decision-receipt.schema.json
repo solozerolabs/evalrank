@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://evalrank.ai/schemas/decision-receipt.schema.json",
   "title": "EvalRank Decision Receipt V2",
-  "description": "outcome pick: selections[0] is the pick, the rest is the priced band in order. Ratios are parts per million (integers: receipt hashes exclude floats).",
+  "description": "outcome pick: selections[0] is the pick, the rest is the priced band in order (fallback_chain: the fallbacks in order, most capable first). Ratios are parts per million (integers: receipt hashes exclude floats).",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -132,6 +132,21 @@
           "not_a_model_cell"
         ]
       }
+    },
+    "relaxation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_refusal_score"
+      ],
+      "properties": {
+        "max_refusal_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "description": "Abstain only, present when the query set max_refusal_score and some configuration was excluded only as refusal_score_above_max: max_refusal_score is the lowest refusal score among those configurations, so re-posting the query with it produces a pick for that configuration's objective. Absent otherwise."
     }
   },
   "allOf": [
@@ -154,6 +169,11 @@
           "abstain_reasons": {
             "maxItems": 0
           }
+        },
+        "not": {
+          "required": [
+            "relaxation"
+          ]
         }
       },
       "else": {
@@ -428,14 +448,14 @@
             "$ref": "#/$defs/Caveat"
           }
         },
-        "refusal_rate": {
+        "refusal_score": {
           "type": [
             "number",
             "null"
           ],
           "minimum": 0,
           "maximum": 1,
-          "description": "Measured refusal rate on unrestricted creative writing (0..1); null when no refusal evidence covers this model."
+          "description": "Refusal score: 1 - UGI W/10 / 10, from the UGI Leaderboard's private set of unrestricted creative-writing requests. 0 = the model is never pushed into refusing or deviating, 1 = it always is. A ranking signal for how readily a model refuses unrestricted creative writing, not the share of ordinary requests it refuses. Null when no refusal score covers this model."
         },
         "model_family": {
           "type": "string",
@@ -476,8 +496,8 @@
             "cost_unmeasured",
             "effort_gap_too_large",
             "constraints_not_met",
-            "refusal_rate_unknown",
-            "refusal_rate_above_max"
+            "refusal_score_unknown",
+            "refusal_score_above_max"
           ]
         },
         "detail": {

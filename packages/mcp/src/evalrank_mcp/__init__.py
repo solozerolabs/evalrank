@@ -3,12 +3,18 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from evalrank_core.decision_contracts import REASONING_EFFORTS, SUPPORTED_VIA
+from evalrank_core.decision_contracts import REASONING_EFFORTS, REFUSAL_SCORE_DESCRIPTION, SUPPORTED_VIA
 from evalrank_core.fixtures import (
     PUBLIC_FIXTURE_KINDS,
     sample_public_fixture,
 )
 from evalrank_sdk import EvalRankApiError, EvalRankClient
+
+FALLBACK_CHAIN_HINT = (
+    "lowest_cost_within_top_set: the cheapest of the top band. capability_top_set: the most capable."
+    " fallback_chain: every eligible configuration, most capable first, one per model and then one per"
+    " vendor; selections[0] is the pick, the rest are fallbacks in order."
+)
 
 
 __version__ = "0.0.0"
@@ -217,7 +223,8 @@ def _decision_query_schema() -> dict[str, Any]:
             "cell_id": {"type": "string", "minLength": 1},
             "objective": {
                 "type": "string",
-                "enum": ["lowest_cost_within_top_set", "capability_top_set"],
+                "enum": ["lowest_cost_within_top_set", "capability_top_set", "fallback_chain"],
+                "description": FALLBACK_CHAIN_HINT,
             },
             "via": {
                 "type": "string",
@@ -229,15 +236,17 @@ def _decision_query_schema() -> dict[str, Any]:
             "reasoning_effort": {
                 "type": "string",
                 "enum": list(REASONING_EFFORTS),
-                "description": "Comparison level, default medium; capability_top_set ignores it unless pinned.",
+                "description": "Comparison level, default medium; capability_top_set and fallback_chain ignore it unless pinned.",
             },
             "regions": string_set,
             "minimum_context_tokens": {"type": "integer", "minimum": 1},
-            "max_refusal_rate": {
+            "max_refusal_score": {
                 "type": "number",
                 "minimum": 0,
                 "maximum": 1,
-                "description": "Keep only models whose refusal rate on unrestricted creative writing is known and at most this.",
+                "description": (
+                    "Highest acceptable refusal score (0..1); a model with no score is excluded. " + REFUSAL_SCORE_DESCRIPTION
+                ),
             },
             "usage_profile": usage_profile,
         },

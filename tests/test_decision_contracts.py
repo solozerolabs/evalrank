@@ -29,6 +29,7 @@ from evalrank_core.decision_contracts import (  # noqa: E402
     DecisionPriceV2,
     DecisionQueryV2,
     DecisionReceiptV2,
+    DecisionRelaxationV2,
     DecisionSelectionV2,
     DecisionUsageV2,
     EffortMultiplierV2,
@@ -594,7 +595,7 @@ class DecisionReceiptTests(unittest.TestCase):
                 receipt = DecisionReceiptV2.from_dict({**row["body"], "receipt_id": row["receipt_id"]})
                 self.assertEqual(row["body"], receipt.to_body_dict())
                 self.assertEqual(f"receipt_{row['body_sha256']}", receipt.receipt_id)
-                self.assertEqual(row["body_sha256"], sha256_hex(row["body"]))
+                self.assertEqual(row["body_sha256"], sha256_hex(row["body"], allow_floats=True))
                 names.append(row["name"])
                 queries.add(receipt.query.canonical_json())
         self.assertEqual(
@@ -603,6 +604,8 @@ class DecisionReceiptTests(unittest.TestCase):
                 "top_set_pick",
                 "pinned_level",
                 "substituted_effort",
+                "fallback_chain_pick",
+                "abstain_refusal_relaxation",
                 "abstain_no_ranked_candidate",
                 "abstain_no_eligible_offer",
                 "abstain_stale_evidence",
@@ -618,6 +621,10 @@ class DecisionReceiptTests(unittest.TestCase):
         )
         self.assertIn({"code": "cost_unmeasured"}, by_name["top_set_pick"]["selections"][0]["caveats"])
         self.assertEqual("openai/gpt-6-sol", by_name["top_set_pick"]["selections"][0]["model_id"])
+        chain = by_name["fallback_chain_pick"]["selections"]
+        self.assertEqual(["openai", "lyra"], [row["model_family"] for row in chain])
+        self.assertEqual({"max_refusal_score": 0.125}, by_name["abstain_refusal_relaxation"]["relaxation"])
+        self.assertTrue(all("relaxation" not in row["body"] for row in corpus["receipts"] if row["name"] != "abstain_refusal_relaxation"))
         for name in ("abstain_no_ranked_candidate", "abstain_no_eligible_offer", "abstain_stale_evidence", "abstain_not_a_model_cell"):
             self.assertEqual([name.removeprefix("abstain_")], by_name[name]["abstain_reasons"])
         for row in corpus["rejection_vectors"][2:]:
@@ -853,37 +860,37 @@ def _selection(model: str, *, cost: int | None = 100, ratio_ppm: int = 990_000, 
     )
 
 
-class RefusalRateContractTests(unittest.TestCase):
-    def test_max_refusal_rate_is_an_optional_unit_fraction(self):
+class RefusalScoreContractTests(unittest.TestCase):
+    def test_max_refusal_score_is_an_optional_unit_fraction(self):
         query = DecisionQueryV2.from_dict(
-            {"schema_version": "2", "cell_id": "writing", "objective": "capability_top_set", "max_refusal_rate": 0.3}
+            {"schema_version": "2", "cell_id": "writing", "objective": "capability_top_set", "max_refusal_score": 0.3}
         )
-        self.assertEqual(0.3, query.max_refusal_rate)
-        self.assertIn('"max_refusal_rate":0.3', query.canonical_json())
-        self.assertNotIn("max_refusal_rate", _query().to_dict())
+        self.assertEqual(0.3, query.max_refusal_score)
+        self.assertIn('"max_refusal_score":0.3', query.canonical_json())
+        self.assertNotIn("max_refusal_score", _query().to_dict())
         for bad in (-0.1, 1.5, True, "0.3", float("nan")):
             with self.subTest(bad=bad), self.assertRaises(ValueError):
-                DecisionQueryV2(cell_id="writing", objective="capability_top_set", max_refusal_rate=bad)
+                DecisionQueryV2(cell_id="writing", objective="capability_top_set", max_refusal_score=bad)
 
     def test_selection_refusal_fields_round_trip_and_travel_together(self):
-        selection = replace(_selection("model-a"), refusal_rate=0.28, model_family="deepseek")
-        self.assertEqual(0.28, selection.to_dict()["refusal_rate"])
+        selection = replace(_selection("model-a"), refusal_score=0.28, model_family="deepseek")
+        self.assertEqual(0.28, selection.to_dict()["refusal_score"])
         self.assertEqual(selection, DecisionSelectionV2.from_dict(selection.to_dict()))
-        unknown = replace(_selection("model-a"), refusal_rate=None, model_family="openai")
-        self.assertIsNone(unknown.to_dict()["refusal_rate"])
-        self.assertNotIn("refusal_rate", _selection("model-a").to_dict())
+        unknown = replace(_selection("model-a"), refusal_score=None, model_family="openai")
+        self.assertIsNone(unknown.to_dict()["refusal_score"])
+        self.assertNotIn("refusal_score", _selection("model-a").to_dict())
         payload = selection.to_dict()
         del payload["model_family"]
         with self.assertRaises(ValueError):
             DecisionSelectionV2.from_dict(payload)
         with self.assertRaises(ValueError):
-            replace(_selection("model-a"), refusal_rate=1.2, model_family="openai")
+            replace(_selection("model-a"), refusal_score=1.2, model_family="openai")
 
     def test_receipt_with_refusal_floats_rehashes_as_rfc8785_number_text(self):
         receipt = _receipt(
-            query=DecisionQueryV2(cell_id="writing", objective="capability_top_set", max_refusal_rate=0.3),
-            selections=(replace(_selection("model-a"), refusal_rate=0.28, model_family="deepseek"),),
-            exclusions=(DecisionExclusionV2(model_key="claudeopus55", code="refusal_rate_above_max", reasoning_effort="high"),),
+            query=DecisionQueryV2(cell_id="writing", objective="capability_top_set", max_refusal_score=0.3),
+            selections=(replace(_selection("model-a"), refusal_score=0.28, model_family="deepseek"),),
+            exclusions=(DecisionExclusionV2(model_key="claudeopus55", code="refusal_score_above_max", reasoning_effort="high"),),
         )
         self.assertEqual(receipt, DecisionReceiptV2.from_dict(json.loads(json.dumps(receipt.to_dict()))))
         self.assertEqual(
@@ -891,6 +898,21 @@ class RefusalRateContractTests(unittest.TestCase):
         )
         with self.assertRaises(TypeError):
             sha256_hex(receipt.to_body_dict())  # floats stay out of every other identity
+
+    def test_refusal_score_vocabulary_matches_the_wire_schemas(self):
+        query = json.loads((SCHEMAS / "decision-query.schema.json").read_text(encoding="utf-8"))
+        receipt = json.loads((SCHEMAS / "decision-receipt.schema.json").read_text(encoding="utf-8"))
+        self.assertIn("max_refusal_score", query["properties"])
+        self.assertNotIn("max_refusal_rate", query["properties"])
+        self.assertIn("refusal_score", receipt["$defs"]["Selection"]["properties"])
+        codes = receipt["$defs"]["Exclusion"]["properties"]["code"]["enum"]
+        self.assertIn("refusal_score_unknown", codes)
+        self.assertIn("refusal_score_above_max", codes)
+        self.assertFalse(any("refusal_rate" in code for code in codes))
+        self.assertIn(decision_contracts.REFUSAL_SCORE_DESCRIPTION, query["properties"]["max_refusal_score"]["description"])
+        self.assertIn(decision_contracts.REFUSAL_SCORE_DESCRIPTION, receipt["$defs"]["Selection"]["properties"]["refusal_score"]["description"])
+        with self.assertRaisesRegex(ValueError, "unknown fields: max_refusal_rate"):
+            DecisionQueryV2.from_dict({"schema_version": "2", "cell_id": "writing", "objective": "capability_top_set", "max_refusal_rate": 0.3})
 
     def test_es_number_matches_ecmascript_number_to_string(self):
         from evalrank_core.canonical_json import es_number
@@ -903,6 +925,106 @@ class RefusalRateContractTests(unittest.TestCase):
         for value, text in cases.items():
             with self.subTest(value=value):
                 self.assertEqual(text, es_number(value))
+
+
+def _vendor_selection(model: str, family: str, *, ratio_ppm: int, effort: str = "medium") -> DecisionSelectionV2:
+    return replace(
+        _selection(model, ratio_ppm=ratio_ppm, effort=effort),
+        serving_offer_id=f"offer_{model}_{effort}",
+        model_family=family,
+        refusal_score=0.25,
+    )
+
+
+class FallbackChainContractTests(unittest.TestCase):
+    """fallback_chain: every eligible configuration, most capable first, one per model then one per vendor."""
+
+    def test_fallback_chain_is_a_query_objective_in_core_and_schema(self):
+        query = json.loads((SCHEMAS / "decision-query.schema.json").read_text(encoding="utf-8"))
+        self.assertIn("fallback_chain", decision_contracts.DECISION_OBJECTIVES)
+        self.assertEqual(sorted(decision_contracts.DECISION_OBJECTIVES), sorted(query["properties"]["objective"]["enum"]))
+        self.assertIn("no band cutoff", query["properties"]["objective"]["description"])
+        self.assertEqual("fallback_chain", DecisionQueryV2.from_dict({"schema_version": "2", "cell_id": "writing", "objective": "fallback_chain"}).objective)
+
+    def test_chain_orders_most_capable_first_with_unpriced_configurations_allowed(self):
+        query = _query(objective="fallback_chain")
+        first = _vendor_selection("openai/a", "openai", ratio_ppm=1_000_000)
+        second = replace(_vendor_selection("lyra/b", "lyra", ratio_ppm=940_000), projected_cost_microusd=None,
+                         effort_multiplier=None, caveats=(DecisionCaveatV2(code="cost_unmeasured"),))
+        third = _vendor_selection("zeno/c", "zeno", ratio_ppm=940_000)
+        receipt = _receipt(query=query, selections=(first, second, third))
+        self.assertEqual(["openai/a", "lyra/b", "zeno/c"], [row.model_id for row in receipt.selections])
+        self.assertEqual(receipt, DecisionReceiptV2.from_dict(json.loads(json.dumps(receipt.to_dict()))))
+        with self.assertRaisesRegex(ValueError, "most capable first"):
+            _receipt(query=query, selections=(second, first))
+
+    def test_chain_keeps_one_configuration_per_model_and_per_vendor(self):
+        query = _query(objective="fallback_chain")
+        high = _vendor_selection("openai/a", "openai", ratio_ppm=1_000_000, effort="high")
+        medium = _vendor_selection("openai/a", "openai", ratio_ppm=990_000)
+        sibling = _vendor_selection("openai/b", "openai", ratio_ppm=980_000)
+        with self.assertRaisesRegex(ValueError, "one configuration per model"):
+            _receipt(query=query, selections=(high, medium))
+        with self.assertRaisesRegex(ValueError, "per vendor"):
+            _receipt(query=query, selections=(high, sibling))
+
+    def test_chain_honours_a_pinned_effort_like_capability_top_set(self):
+        query = _query(objective="fallback_chain", reasoning_effort="high")
+        with self.assertRaisesRegex(ValueError, "pinned reasoning_effort"):
+            _receipt(query=query, selections=(_vendor_selection("openai/a", "openai", ratio_ppm=1_000_000),))
+
+    def test_existing_objectives_keep_their_rules(self):
+        top = _query(objective="capability_top_set")
+        same_vendor = (
+            _vendor_selection("openai/a", "openai", ratio_ppm=1_000_000),
+            _vendor_selection("openai/b", "openai", ratio_ppm=990_000),
+        )
+        self.assertEqual(2, len(_receipt(query=top, selections=same_vendor).selections))
+
+
+class RelaxationContractTests(unittest.TestCase):
+    def _abstain(self, **overrides) -> DecisionReceiptV2:
+        values = {
+            "query": _query(objective="capability_top_set", max_refusal_score=0.1),
+            "outcome": "abstain",
+            "selections": (),
+            "exclusions": (DecisionExclusionV2(model_key="model-a", code="refusal_score_above_max", reasoning_effort="medium"),),
+            "abstain_reasons": ("no_eligible_offer",),
+            "relaxation": DecisionRelaxationV2(max_refusal_score=0.125),
+        }
+        values.update(overrides)
+        return _receipt(**values)
+
+    def test_abstain_relaxation_round_trips_and_is_hashed(self):
+        receipt = self._abstain()
+        payload = receipt.to_dict()
+        self.assertEqual({"max_refusal_score": 0.125}, payload["relaxation"])
+        self.assertEqual(receipt, DecisionReceiptV2.from_dict(json.loads(json.dumps(payload))))
+        self.assertNotEqual(receipt.receipt_id, self._abstain(relaxation=None).receipt_id)
+        self.assertNotIn("relaxation", self._abstain(relaxation=None).to_dict())
+        self.assertNotIn("relaxation", _receipt().to_dict())
+
+    def test_relaxation_is_abstain_only_and_needs_the_refusal_filter(self):
+        with self.assertRaisesRegex(ValueError, "only on an abstain"):
+            _receipt(query=_query(max_refusal_score=0.1), relaxation=DecisionRelaxationV2(max_refusal_score=0.2))
+        with self.assertRaisesRegex(ValueError, "needs the query's max_refusal_score"):
+            self._abstain(query=_query(objective="capability_top_set"))
+        with self.assertRaisesRegex(ValueError, "must exceed"):
+            self._abstain(relaxation=DecisionRelaxationV2(max_refusal_score=0.1))
+        with self.assertRaisesRegex(ValueError, "refusal_score_above_max exclusion"):
+            self._abstain(exclusions=(DecisionExclusionV2(model_key="model-a", code="refusal_score_unknown"),))
+
+    def test_relaxation_wire_shape_is_closed(self):
+        payload = self._abstain().to_dict()
+        for bad in ({}, {"max_refusal_score": 1.5}, {"max_refusal_score": None}, {"max_refusal_score": 0.2, "extra": 1}):
+            with self.subTest(bad=bad), self.assertRaises(ValueError):
+                DecisionReceiptV2.from_dict({**payload, "relaxation": bad})
+        schema = json.loads((SCHEMAS / "decision-receipt.schema.json").read_text(encoding="utf-8"))
+        relaxation = schema["properties"]["relaxation"]
+        self.assertFalse(relaxation["additionalProperties"])
+        self.assertEqual(["max_refusal_score"], relaxation["required"])
+        self.assertEqual({"required": ["relaxation"]}, schema["allOf"][0]["then"]["not"])
+        self.assertFalse(schema["additionalProperties"])
 
 
 def _media_selection(endpoint: str, *, per_second: int, ratio_ppm: int) -> DecisionSelectionV2:

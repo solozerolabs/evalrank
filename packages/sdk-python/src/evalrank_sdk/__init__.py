@@ -108,7 +108,7 @@ class EvalRankClient:
         parsed_query = (
             query if isinstance(query, DecisionQueryV2) else DecisionQueryV2.from_dict(query)
         )
-        body = restricted_jcs(parsed_query.to_dict())
+        body = restricted_jcs(parsed_query.to_dict(), allow_floats=True)
         response = self._request_json(
             "/v1/decisions?share=true" if share else "/v1/decisions",
             method="POST",

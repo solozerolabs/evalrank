@@ -234,7 +234,13 @@ export interface ServingOfferV1 {
 }
 
 export const REASONING_EFFORTS = ["none", "minimal", "low", "medium", "high", "xhigh", "max"] as const;
-export const DECISION_OBJECTIVES = ["lowest_cost_within_top_set", "capability_top_set"] as const;
+/**
+ * `fallback_chain`: every configuration that survives every filter (`capability_top_set`'s filters,
+ * `max_refusal_score` included), in `capability_top_set`'s capability order with no band cutoff, keeping the
+ * first configuration per model and then the first per vendor (`model_family`). `selections[0]` is the pick;
+ * each later selection is the next fallback, most capable first.
+ */
+export const DECISION_OBJECTIVES = ["lowest_cost_within_top_set", "capability_top_set", "fallback_chain"] as const;
 export const DECISION_APIS = ["chat_completions", "responses", "fal_queue"] as const;
 export const ABSTAIN_REASONS = ["no_ranked_candidate", "no_eligible_offer", "stale_evidence", "not_a_model_cell"] as const;
 export const EXCLUSION_CODES = [
@@ -245,8 +251,8 @@ export const EXCLUSION_CODES = [
   "cost_unmeasured",
   "effort_gap_too_large",
   "constraints_not_met",
-  "refusal_rate_unknown",
-  "refusal_rate_above_max",
+  "refusal_score_unknown",
+  "refusal_score_above_max",
 ] as const;
 export const LOCK_STATUSES = ["admitted", "held", "rejected", "unlocked"] as const;
 /** Call surfaces the decision route serves: openai/openrouter for token cells, fal for media cells (the server's default there); any other `via` is a 422 `via_not_supported`. */
@@ -277,8 +283,11 @@ export interface DecisionQueryV2 {
   reasoning_effort?: ReasoningEffort;
   regions?: string[];
   minimum_context_tokens?: number;
-  /** Highest acceptable refusal rate on unrestricted creative writing (0..1); unknown-rate models are excluded. */
-  max_refusal_rate?: number;
+  /**
+   * Highest acceptable refusal score (0..1); a model with no score is excluded (`refusal_score_unknown`),
+   * one above it too (`refusal_score_above_max`). Refusal score: 1 - UGI W/10 / 10, from the UGI Leaderboard's private set of unrestricted creative-writing requests. 0 = the model is never pushed into refusing or deviating, 1 = it always is. A ranking signal for how readily a model refuses unrestricted creative writing, not the share of ordinary requests it refuses.
+   */
+  max_refusal_score?: number;
   usage_profile?: UsageProfileV1;
 }
 
@@ -323,9 +332,9 @@ export interface DecisionSelectionV2 {
   projected_cost_microusd: number | null;
   latency_p50_ms: number | null;
   caveats: DecisionCaveatV2[];
-  /** Refusal rate on unrestricted creative writing (0..1); null when unmeasured. Absent on older receipts. */
-  refusal_rate?: number | null;
-  /** Vendor family of `model_id` (its provider prefix). Present exactly when `refusal_rate` is. */
+  /** Refusal score: 1 - UGI W/10 / 10, from the UGI Leaderboard's private set of unrestricted creative-writing requests. 0 = the model is never pushed into refusing or deviating, 1 = it always is. A ranking signal for how readily a model refuses unrestricted creative writing, not the share of ordinary requests it refuses. Null when unmeasured. Absent on older receipts. */
+  refusal_score?: number | null;
+  /** Vendor family of `model_id` (its provider prefix). Present exactly when `refusal_score` is. */
   model_family?: string;
 }
 
@@ -356,6 +365,15 @@ export interface DecisionReceiptV2 {
   exclusions: DecisionExclusionV2[];
   usage_profile: DecisionUsageV2;
   abstain_reasons: AbstainReasonV2[];
+  /**
+   * Abstain only, when the query set `max_refusal_score` and some configuration was excluded only as
+   * `refusal_score_above_max`: the lowest refusal score among those. Re-posting with it picks that configuration.
+   */
+  relaxation?: DecisionRelaxationV2;
+}
+
+export interface DecisionRelaxationV2 {
+  max_refusal_score: number;
 }
 
 export interface SnapshotSetDescriptorV1 {
@@ -400,7 +418,7 @@ const identityTriples = new Set(RESOLVED_IDENTITY_TRIPLES.map((row) => row.join(
 /**
  * Restricted RFC 8785: valid Unicode, UTF-16 key order, safe integers, no floats.
  * `allowFloats` admits finite floats (RFC 8785 number text, as `JSON.stringify` writes it): only
- * decision queries and receipts use it, for `max_refusal_rate` and `refusal_rate`.
+ * decision queries and receipts use it, for `max_refusal_score`, `refusal_score`, and `relaxation.max_refusal_score`.
  */
 export function canonicalJson(value: unknown, options: { allowFloats?: boolean } = {}): string {
   return JSON.stringify(canonicalValue(value, "$", options.allowFloats === true));
@@ -1232,7 +1250,7 @@ export function parseServingOfferV1(value: unknown): ServingOfferV1 {
 }
 
 const queryOptional = [
-  "via", "provider_ids", "api", "reasoning_effort", "regions", "minimum_context_tokens", "max_refusal_rate",
+  "via", "provider_ids", "api", "reasoning_effort", "regions", "minimum_context_tokens", "max_refusal_score",
   "usage_profile",
 ] as const;
 const ppm = 1_000_000;
@@ -1258,7 +1276,7 @@ export function parseDecisionQueryV2(value: unknown): DecisionQueryV2 {
   if ("reasoning_effort" in payload) query.reasoning_effort = enumValue(payload.reasoning_effort, REASONING_EFFORTS, "reasoning_effort");
   if ("regions" in payload) query.regions = normalizedStringSet(payload.regions, "regions");
   if ("minimum_context_tokens" in payload) query.minimum_context_tokens = safeInteger(payload.minimum_context_tokens, "minimum_context_tokens", 1);
-  if ("max_refusal_rate" in payload) query.max_refusal_rate = fraction(payload.max_refusal_rate, "max_refusal_rate");
+  if ("max_refusal_score" in payload) query.max_refusal_score = fraction(payload.max_refusal_score, "max_refusal_score");
   if ("usage_profile" in payload) query.usage_profile = parseUsageProfileV1(payload.usage_profile);
   return query;
 }
@@ -1276,7 +1294,7 @@ export function decisionUsageFor(query: DecisionQueryV2): DecisionUsageV2 {
 }
 
 export async function parseDecisionReceiptV2(value: unknown): Promise<DecisionReceiptV2> {
-  const payload = closed(value, ["receipt_id", ...receiptBodyFields]);
+  const payload = closed(value, ["receipt_id", ...receiptBodyFields], ["relaxation"]);
   const identifier = patternString(payload.receipt_id, /^receipt_[0-9a-f]{64}$/, "receipt_id");
   const { receipt_id: _ignored, ...rawBody } = payload;
   const body = normalizeReceiptBody(rawBody);
@@ -1292,7 +1310,7 @@ const receiptBodyFields = [
 ];
 
 function normalizeReceiptBody(value: unknown): Omit<DecisionReceiptV2, "receipt_id"> {
-  const payload = closed(value, receiptBodyFields);
+  const payload = closed(value, receiptBodyFields, ["relaxation"]);
   envelope(payload, "decision_receipt", "2");
   const query = parseDecisionQueryV2(payload.query);
   const selections = array(payload.selections, "selections").map(parseSelection);
@@ -1329,6 +1347,19 @@ function normalizeReceiptBody(value: unknown): Omit<DecisionReceiptV2, "receipt_
   else if (body.selections.length || !body.abstain_reasons.length) {
     throw new TypeError("abstain carries no selection and at least one abstain reason");
   }
+  if ("relaxation" in payload) {
+    const relaxation = closed(payload.relaxation, ["max_refusal_score"]);
+    const score = fraction(relaxation.max_refusal_score, "max_refusal_score");
+    if (body.outcome !== "abstain") throw new TypeError("relaxation is allowed only on an abstain");
+    if (query.max_refusal_score === undefined) throw new TypeError("relaxation needs the query's max_refusal_score");
+    if (score <= query.max_refusal_score) {
+      throw new TypeError("relaxation.max_refusal_score must exceed the query's max_refusal_score");
+    }
+    if (!body.exclusions.some((row) => row.code === "refusal_score_above_max")) {
+      throw new TypeError("relaxation needs a refusal_score_above_max exclusion");
+    }
+    body.relaxation = { max_refusal_score: score };
+  }
   return body;
 }
 
@@ -1357,6 +1388,17 @@ function validatePick(body: Omit<DecisionReceiptV2, "receipt_id">): void {
     if (costs[0] !== Math.min(...(costs as number[]))) {
       throw new TypeError("lowest_cost_within_top_set picks the cheapest configuration of the band");
     }
+  } else if (query.objective === "fallback_chain") {
+    if (selections.some((row, index) => index > 0 && row.capability_ratio_ppm > selections[index - 1].capability_ratio_ppm)) {
+      throw new TypeError("fallback_chain orders its selections most capable first");
+    }
+    if (new Set(selections.map((row) => row.model_id)).size !== selections.length) {
+      throw new TypeError("fallback_chain keeps one configuration per model");
+    }
+    const vendors = selections.flatMap((row) => (row.model_family === undefined ? [] : [row.model_family]));
+    if (new Set(vendors).size !== vendors.length) {
+      throw new TypeError("fallback_chain keeps one configuration per vendor (model_family)");
+    }
   } else if (pick.capability_ratio_ppm !== Math.max(...selections.map((row) => row.capability_ratio_ppm))) {
     throw new TypeError("capability_top_set picks the highest-scoring configuration");
   }
@@ -1377,9 +1419,9 @@ function parseSelection(value: unknown): DecisionSelectionV2 {
     "model_id", "display_name", "provider_id", "serving_offer_id", "reasoning_effort", "api",
     "capability_ratio_ppm", "family_coverage", "price", "effort_multiplier", "projected_cost_microusd",
     "latency_p50_ms", "caveats",
-  ], ["refusal_rate", "model_family"]);
-  if (("refusal_rate" in payload) !== ("model_family" in payload)) {
-    throw new TypeError("refusal_rate and model_family are both present or both absent");
+  ], ["refusal_score", "model_family"]);
+  if (("refusal_score" in payload) !== ("model_family" in payload)) {
+    throw new TypeError("refusal_score and model_family are both present or both absent");
   }
   const price = closed(payload.price, [
     "input_microusd_per_million", "cached_input_microusd_per_million", "output_microusd_per_million",
@@ -1407,7 +1449,7 @@ function parseSelection(value: unknown): DecisionSelectionV2 {
     caveats: normalizeRecords(array(payload.caveats, "caveats").map(parseCaveat), (row) => [row.code], "caveats"),
   };
   if ("model_family" in payload) {
-    selection.refusal_rate = payload.refusal_rate === null ? null : fraction(payload.refusal_rate, "refusal_rate");
+    selection.refusal_score = payload.refusal_score === null ? null : fraction(payload.refusal_score, "refusal_score");
     selection.model_family = nonEmptyString(payload.model_family, "model_family");
   }
   if (selection.capability_ratio_ppm > ppm) throw new TypeError("capability_ratio_ppm must not exceed 1000000");

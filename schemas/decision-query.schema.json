@@ -23,8 +23,10 @@
     "objective": {
       "enum": [
         "lowest_cost_within_top_set",
-        "capability_top_set"
-      ]
+        "capability_top_set",
+        "fallback_chain"
+      ],
+      "description": "lowest_cost_within_top_set: the cheapest configuration of the top band. capability_top_set: the most capable configuration. fallback_chain: every configuration that survives every filter (capability_top_set's filters, max_refusal_score included), in capability_top_set's capability order with no band cutoff, keeping the first configuration per model and then the first per vendor (model_family); selections[0] is the pick and each later selection is the next fallback, most capable first."
     },
     "via": {
       "type": "string",
@@ -50,7 +52,7 @@
         "xhigh",
         "max"
       ],
-      "description": "Comparison level; capability_top_set ignores it unless pinned."
+      "description": "Comparison level; capability_top_set and fallback_chain ignore it unless pinned."
     },
     "regions": {
       "$ref": "#/$defs/NonEmptyStringSet"
@@ -58,11 +60,11 @@
     "minimum_context_tokens": {
       "$ref": "#/$defs/PositiveSafeInteger"
     },
-    "max_refusal_rate": {
+    "max_refusal_score": {
       "type": "number",
       "minimum": 0,
       "maximum": 1,
-      "description": "Highest acceptable refusal rate on unrestricted creative writing (0..1). When set, only models with a known refusal rate at or below it are eligible; a model with no refusal evidence is excluded (refusal_rate_unknown), one above it too (refusal_rate_above_max). Omit for no refusal filter."
+      "description": "Highest acceptable refusal score (0..1). Refusal score: 1 - UGI W/10 / 10, from the UGI Leaderboard's private set of unrestricted creative-writing requests. 0 = the model is never pushed into refusing or deviating, 1 = it always is. A ranking signal for how readily a model refuses unrestricted creative writing, not the share of ordinary requests it refuses. When set, only models with a known refusal score at or below it are eligible; a model with no refusal score is excluded (refusal_score_unknown), one above it too (refusal_score_above_max). Omit for no refusal filter."
     },
     "usage_profile": {
       "$ref": "#/$defs/UsageProfile"

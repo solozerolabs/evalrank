@@ -105,7 +105,7 @@ class ReferenceServerE2ETests(unittest.TestCase):
                 )
                 self.assertEqual(200, status)
                 self.assertEqual(
-                    restricted_jcs({**row["body"], "receipt_id": row["receipt_id"]}), body
+                    restricted_jcs({**row["body"], "receipt_id": row["receipt_id"]}, allow_floats=True), body
                 )
 
     def test_unprobed_via_is_the_exact_golden_via_not_supported_problem(self):
@@ -465,7 +465,7 @@ class ReferenceServerE2ETests(unittest.TestCase):
     ):
         body = raw
         if payload is not None:
-            body = restricted_jcs(payload)
+            body = restricted_jcs(payload, allow_floats=True)
         request = urllib.request.Request(
             f"{self.base_url}{path}",
             data=body,

@@ -475,6 +475,198 @@
       "receipt_id": "receipt_ce9dbe0bfa65ff629998f1905e91c05673af941fcc143662a00620438b855a11"
     },
     {
+      "name": "fallback_chain_pick",
+      "body": {
+        "object": "decision_receipt",
+        "schema_version": "2",
+        "query": {
+          "object": "decision_query",
+          "schema_version": "2",
+          "cell_id": "writing",
+          "objective": "fallback_chain",
+          "via": "openrouter",
+          "max_refusal_score": 0.4
+        },
+        "decided_at": "2026-11-01T09:00:00Z",
+        "outcome": "pick",
+        "snapshot_ids": [
+          "explorer_1111111111111111111111111111111111111111111111111111111111111111",
+          "explorer_2222222222222222222222222222222222222222222222222222222222222222"
+        ],
+        "families": [
+          {
+            "family_id": "eqbench-creative-writing-v3",
+            "lock_status": "admitted",
+            "weight_ppm": 400000,
+            "stale_at": "2026-11-12T00:00:00Z"
+          },
+          {
+            "family_id": "lmarena-instruction-following",
+            "lock_status": "admitted",
+            "weight_ppm": 600000,
+            "stale_at": "2026-11-10T00:00:00Z"
+          }
+        ],
+        "selections": [
+          {
+            "model_id": "openai/gpt-6-sol",
+            "display_name": "GPT-6 Sol",
+            "provider_id": "openai",
+            "serving_offer_id": "offer_openrouter-gpt-6-sol",
+            "reasoning_effort": "high",
+            "api": "chat_completions",
+            "capability_ratio_ppm": 1000000,
+            "family_coverage": 1,
+            "price": {
+              "input_microusd_per_million": 1250000,
+              "cached_input_microusd_per_million": 125000,
+              "output_microusd_per_million": 10000000
+            },
+            "effort_multiplier": {
+              "multiplier_ppm": 1510000,
+              "source": "aa-intelligence-index-cost-per-task"
+            },
+            "projected_cost_microusd": 10948,
+            "latency_p50_ms": 900,
+            "caveats": [],
+            "refusal_score": 0.25,
+            "model_family": "openai"
+          },
+          {
+            "model_id": "lyra/lyra-3",
+            "display_name": "Lyra 3",
+            "provider_id": "lyra",
+            "serving_offer_id": "offer_openrouter-lyra-3",
+            "reasoning_effort": "medium",
+            "api": "chat_completions",
+            "capability_ratio_ppm": 960000,
+            "family_coverage": 1,
+            "price": {
+              "input_microusd_per_million": 2000000,
+              "cached_input_microusd_per_million": 200000,
+              "output_microusd_per_million": 12000000
+            },
+            "effort_multiplier": {
+              "multiplier_ppm": 1000000,
+              "source": "comparison_level"
+            },
+            "projected_cost_microusd": 9600,
+            "latency_p50_ms": 900,
+            "caveats": [],
+            "refusal_score": 0.125,
+            "model_family": "lyra"
+          }
+        ],
+        "exclusions": [
+          {
+            "model_key": "gpt5mini",
+            "code": "refusal_score_unknown",
+            "reasoning_effort": "medium"
+          },
+          {
+            "model_key": "gpt6astra",
+            "code": "constraints_not_met",
+            "reasoning_effort": "medium",
+            "detail": "a more capable model of the same vendor leads the chain"
+          },
+          {
+            "model_key": "gpt6sol",
+            "code": "constraints_not_met",
+            "reasoning_effort": "medium",
+            "detail": "a more capable configuration of the same model leads the chain"
+          }
+        ],
+        "usage_profile": {
+          "basis": "default_agent_task_mix",
+          "profile": {
+            "basis": "estimated",
+            "uncached_input_tokens": 1000,
+            "cached_read_tokens": 8000,
+            "output_tokens": 500,
+            "cache_writes": [],
+            "cache_storage_token_seconds": 0
+          }
+        },
+        "abstain_reasons": []
+      },
+      "body_sha256": "e01dc6bb2659386933c5d59f37fe757daa8b58d8f8e2305f15327e7ebf6d00c4",
+      "receipt_id": "receipt_e01dc6bb2659386933c5d59f37fe757daa8b58d8f8e2305f15327e7ebf6d00c4"
+    },
+    {
+      "name": "abstain_refusal_relaxation",
+      "body": {
+        "object": "decision_receipt",
+        "schema_version": "2",
+        "query": {
+          "object": "decision_query",
+          "schema_version": "2",
+          "cell_id": "writing",
+          "objective": "capability_top_set",
+          "via": "openrouter",
+          "max_refusal_score": 0.1
+        },
+        "decided_at": "2026-11-01T09:00:00Z",
+        "outcome": "abstain",
+        "snapshot_ids": [
+          "explorer_1111111111111111111111111111111111111111111111111111111111111111",
+          "explorer_2222222222222222222222222222222222222222222222222222222222222222"
+        ],
+        "families": [
+          {
+            "family_id": "eqbench-creative-writing-v3",
+            "lock_status": "admitted",
+            "weight_ppm": 400000,
+            "stale_at": "2026-11-12T00:00:00Z"
+          },
+          {
+            "family_id": "lmarena-instruction-following",
+            "lock_status": "admitted",
+            "weight_ppm": 600000,
+            "stale_at": "2026-11-10T00:00:00Z"
+          }
+        ],
+        "selections": [],
+        "exclusions": [
+          {
+            "model_key": "gpt5mini",
+            "code": "refusal_score_unknown",
+            "reasoning_effort": "medium"
+          },
+          {
+            "model_key": "gpt6sol",
+            "code": "refusal_score_above_max",
+            "reasoning_effort": "medium",
+            "detail": "refusal score 0.25 is above 0.1"
+          },
+          {
+            "model_key": "lyra3",
+            "code": "refusal_score_above_max",
+            "reasoning_effort": "medium",
+            "detail": "refusal score 0.125 is above 0.1"
+          }
+        ],
+        "usage_profile": {
+          "basis": "default_agent_task_mix",
+          "profile": {
+            "basis": "estimated",
+            "uncached_input_tokens": 1000,
+            "cached_read_tokens": 8000,
+            "output_tokens": 500,
+            "cache_writes": [],
+            "cache_storage_token_seconds": 0
+          }
+        },
+        "abstain_reasons": [
+          "no_eligible_offer"
+        ],
+        "relaxation": {
+          "max_refusal_score": 0.125
+        }
+      },
+      "body_sha256": "fcefcd6a2fdacf72f88e06d305ee8261edd32863cf4ddb11366e68e6b5e26974",
+      "receipt_id": "receipt_fcefcd6a2fdacf72f88e06d305ee8261edd32863cf4ddb11366e68e6b5e26974"
+    },
+    {
       "name": "abstain_no_ranked_candidate",
       "body": {
         "object": "decision_receipt",

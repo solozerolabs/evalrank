@@ -1042,6 +1042,7 @@ def _media_selection(endpoint: str, *, per_second: int, ratio_ppm: int) -> Decis
             cached_input_microusd_per_million=None,
             output_microusd_per_million=None,
             microusd_per_output_second=per_second,
+            observed_at="2026-11-14T23:01:50Z",
         ),
         effort_multiplier=None,
         projected_cost_microusd=None,
@@ -1063,6 +1064,22 @@ class MediaDecisionContractTests(unittest.TestCase):
         self.assertEqual(19_000, payload["selections"][0]["price"]["microusd_per_output_second"])
         self.assertEqual(receipt, DecisionReceiptV2.from_dict(json.loads(json.dumps(payload))))
         self.assertNotIn("microusd_per_output_second", _selection("model-a").to_dict()["price"])
+
+    def test_media_price_observed_at_round_trips_and_is_absent_on_token_prices(self):
+        price = _media_selection("a/x", per_second=1, ratio_ppm=1_000_000).to_dict()["price"]
+        self.assertEqual("2026-11-14T23:01:50Z", price["observed_at"])
+        self.assertNotIn("observed_at", _selection("model-a").to_dict()["price"])
+        with self.assertRaises(ValueError):
+            DecisionPriceV2.from_dict({**price, "observed_at": "2026-11-14"})
+
+    def test_band_is_an_optional_query_field_best_or_value(self):
+        query = DecisionQueryV2.from_dict({"schema_version": "2", "cell_id": "writing", "objective": "lowest_cost_within_top_set", "band": "value"})
+        self.assertEqual("value", query.to_dict()["band"])
+        self.assertNotIn("band", _query().to_dict())
+        with self.assertRaises(ValueError):
+            DecisionQueryV2(cell_id="writing", objective="capability_top_set", band="cheap")
+        schema = json.loads((SCHEMAS / "decision-query.schema.json").read_text(encoding="utf-8"))
+        self.assertEqual(list(decision_contracts.DECISION_BANDS), schema["properties"]["band"]["enum"])
 
     def test_media_lowest_cost_picks_the_cheapest_per_second(self):
         query = DecisionQueryV2(cell_id="talking-avatar", objective="lowest_cost_within_top_set")

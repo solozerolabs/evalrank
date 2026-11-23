@@ -982,6 +982,8 @@ class ServingOfferV1:
 
 REASONING_EFFORTS = ("none", "minimal", "low", "medium", "high", "xhigh", "max")
 DECISION_OBJECTIVES = {"lowest_cost_within_top_set", "capability_top_set", "fallback_chain"}
+DECISION_BANDS = ("best", "value")
+"""``band``: best (default) is within 0.97 of the best capability ratio, value within 0.90; fallback_chain ignores it."""
 """``fallback_chain``: every configuration that survives every filter (``capability_top_set``'s filters,
 ``max_refusal_score`` included), in ``capability_top_set``'s capability order with no band cutoff, keeping
 the first configuration per model and then the first per vendor (``model_family``). ``selections[0]`` is
@@ -1038,6 +1040,8 @@ class DecisionQueryV2:
 
     cell_id: str
     objective: str
+    band: str | None = None
+    """``best`` (default, 0.97 of the best ratio) or ``value`` (0.90); see ``DECISION_BANDS``."""
     via: str | None = None
     provider_ids: tuple[str, ...] | None = None
     api: str | None = None
@@ -1051,6 +1055,8 @@ class DecisionQueryV2:
     def __post_init__(self) -> None:
         _require_string("cell_id", self.cell_id)
         _require_enum("objective", self.objective, DECISION_OBJECTIVES)
+        if self.band is not None:
+            _require_enum("band", self.band, set(DECISION_BANDS))
         if self.via is not None:
             _require_pattern("via", self.via, _VIA_RE)
         for name in ("provider_ids", "regions"):
@@ -1111,6 +1117,7 @@ class DecisionQueryV2:
 
 
 _QUERY_OPTIONAL = (
+    "band",
     "via",
     "provider_ids",
     "api",
@@ -1161,20 +1168,25 @@ class DecisionPriceV2:
     cached_input_microusd_per_million: int | None
     output_microusd_per_million: int | None
     microusd_per_output_second: int | None = None
+    observed_at: str | None = None
+    """Media only: when the measured bill was incurred (the board run's billing window end)."""
 
     def __post_init__(self) -> None:
         for name in (*_PRICE_FIELDS, "microusd_per_output_second"):
             _require_nullable_safe_integer(name, getattr(self, name), minimum=0)
+        if self.observed_at is not None:
+            _parse_timestamp("observed_at", self.observed_at)
 
     def to_dict(self) -> dict[str, Any]:
-        payload = {name: getattr(self, name) for name in _PRICE_FIELDS}
-        if self.microusd_per_output_second is not None:
-            payload["microusd_per_output_second"] = self.microusd_per_output_second
+        payload: dict[str, Any] = {name: getattr(self, name) for name in _PRICE_FIELDS}
+        for name in ("microusd_per_output_second", "observed_at"):
+            if getattr(self, name) is not None:
+                payload[name] = getattr(self, name)
         return payload
 
     @classmethod
     def from_dict(cls, value: Any) -> "DecisionPriceV2":
-        return cls(**_closed(value, required=_PRICE_FIELDS, optional=("microusd_per_output_second",)))
+        return cls(**_closed(value, required=_PRICE_FIELDS, optional=("microusd_per_output_second", "observed_at")))
 
 
 _PRICE_FIELDS = (

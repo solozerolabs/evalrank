@@ -241,6 +241,8 @@ export const REASONING_EFFORTS = ["none", "minimal", "low", "medium", "high", "x
  * each later selection is the next fallback, most capable first.
  */
 export const DECISION_OBJECTIVES = ["lowest_cost_within_top_set", "capability_top_set", "fallback_chain"] as const;
+/** `band`: `best` (default) is within 0.97 of the best capability ratio, `value` within 0.90; `fallback_chain` ignores it. */
+export const DECISION_BANDS = ["best", "value"] as const;
 export const DECISION_APIS = ["chat_completions", "responses", "fal_queue"] as const;
 export const ABSTAIN_REASONS = ["no_ranked_candidate", "no_eligible_offer", "stale_evidence", "not_a_model_cell"] as const;
 export const EXCLUSION_CODES = [
@@ -277,6 +279,8 @@ export interface DecisionQueryV2 {
   schema_version: "2";
   cell_id: string;
   objective: DecisionObjective;
+  /** `best` (default) keeps configurations within 0.97 of the best capability ratio, `value` within 0.90; `fallback_chain` ignores it. */
+  band?: (typeof DECISION_BANDS)[number];
   via?: string;
   provider_ids?: string[];
   api?: DecisionApi;
@@ -304,6 +308,8 @@ export interface DecisionPriceV2 {
   output_microusd_per_million: number | null;
   /** Media selections: measured price per second of delivered output (token prices are null). Absent on token selections. */
   microusd_per_output_second?: number | null;
+  /** Media selections: when the measured bill was incurred (the board run's billing window end). */
+  observed_at?: string;
 }
 
 export interface EffortMultiplierV2 {
@@ -1250,7 +1256,7 @@ export function parseServingOfferV1(value: unknown): ServingOfferV1 {
 }
 
 const queryOptional = [
-  "via", "provider_ids", "api", "reasoning_effort", "regions", "minimum_context_tokens", "max_refusal_score",
+  "band", "via", "provider_ids", "api", "reasoning_effort", "regions", "minimum_context_tokens", "max_refusal_score",
   "usage_profile",
 ] as const;
 const ppm = 1_000_000;
@@ -1270,6 +1276,7 @@ export function parseDecisionQueryV2(value: unknown): DecisionQueryV2 {
     cell_id: nonEmptyString(payload.cell_id, "cell_id"),
     objective: enumValue(payload.objective, DECISION_OBJECTIVES, "objective"),
   };
+  if ("band" in payload) query.band = enumValue(payload.band, DECISION_BANDS, "band");
   if ("via" in payload) query.via = patternString(payload.via, /^[a-z0-9][a-z0-9-]*$/, "via");
   if ("provider_ids" in payload) query.provider_ids = normalizedStringSet(payload.provider_ids, "provider_ids");
   if ("api" in payload) query.api = enumValue(payload.api, DECISION_APIS, "api");
@@ -1425,7 +1432,7 @@ function parseSelection(value: unknown): DecisionSelectionV2 {
   }
   const price = closed(payload.price, [
     "input_microusd_per_million", "cached_input_microusd_per_million", "output_microusd_per_million",
-  ], ["microusd_per_output_second"]);
+  ], ["microusd_per_output_second", "observed_at"]);
   const selection: DecisionSelectionV2 = {
     model_id: nonEmptyString(payload.model_id, "model_id"),
     display_name: nonEmptyString(payload.display_name, "display_name"),
@@ -1442,6 +1449,7 @@ function parseSelection(value: unknown): DecisionSelectionV2 {
       ...("microusd_per_output_second" in price
         ? { microusd_per_output_second: nullableSafeInteger(price.microusd_per_output_second, "microusd_per_output_second", 0) }
         : {}),
+      ...("observed_at" in price ? { observed_at: timestamp(price.observed_at, "observed_at") } : {}),
     },
     effort_multiplier: payload.effort_multiplier === null ? null : parseMultiplier(payload.effort_multiplier),
     projected_cost_microusd: nullableSafeInteger(payload.projected_cost_microusd, "projected_cost_microusd", 0),

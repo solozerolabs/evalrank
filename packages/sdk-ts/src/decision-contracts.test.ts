@@ -550,7 +550,7 @@ test("relaxation: abstain only, above the query's max_refusal_score, with a refu
 
 test("media receipts: fal_queue, per-second price, per_output_second usage with a null profile", async () => {
   const wire = goldenWire("top_set_pick");
-  wire.query = { schema_version: "2", object: "decision_query", cell_id: "talking-avatar", objective: "lowest_cost_within_top_set" };
+  wire.query = { schema_version: "2", object: "decision_query", cell_id: "talking-avatar", objective: "lowest_cost_within_top_set", band: "value" };
   wire.usage_profile = { basis: "per_output_second", profile: null };
   wire.exclusions = [];
   const rows = wire.selections as Array<Record<string, unknown>>;
@@ -560,7 +560,7 @@ test("media receipts: fal_queue, per-second price, per_output_second usage with 
     projected_cost_microusd: null, caveats: [],
     price: {
       input_microusd_per_million: null, cached_input_microusd_per_million: null, output_microusd_per_million: null,
-      microusd_per_output_second: 19000,
+      microusd_per_output_second: 19000, observed_at: "2026-11-14T23:01:50Z",
     },
   };
   delete (media as Record<string, unknown>).refusal_score;
@@ -568,6 +568,11 @@ test("media receipts: fal_queue, per-second price, per_output_second usage with 
   wire.selections = [media];
   const parsed = await parseDecisionReceiptV2(await rehashed(wire));
   assert.equal(parsed.selections[0].price.microusd_per_output_second, 19000);
+  assert.equal(parsed.selections[0].price.observed_at, "2026-11-14T23:01:50Z");
+  assert.equal(parsed.query.band, "value");
+  const badBand = structuredClone(wire);
+  (badBand.query as Record<string, unknown>).band = "cheap";
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(badBand)), /band/);
   assert.equal(parsed.usage_profile.profile, null);
   const withProfile = structuredClone(wire);
   (withProfile.usage_profile as Record<string, unknown>).profile = (goldenWire("top_set_pick").usage_profile as Record<string, unknown>).profile;

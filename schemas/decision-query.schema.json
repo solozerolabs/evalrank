@@ -28,6 +28,13 @@
       ],
       "description": "lowest_cost_within_top_set: the cheapest configuration of the top band. capability_top_set: the most capable configuration. fallback_chain: every configuration that survives every filter (capability_top_set's filters, max_refusal_score included), in capability_top_set's capability order with no band cutoff, keeping the first configuration per model and then the first per vendor (model_family); selections[0] is the pick and each later selection is the next fallback, most capable first."
     },
+    "band": {
+      "enum": [
+        "best",
+        "value"
+      ],
+      "description": "The capability band lowest_cost_within_top_set and capability_top_set choose from: best (default) keeps configurations within 0.97 of the best capability ratio, value within 0.90 (a wider band, so lowest_cost_within_top_set can take a cheaper model that scores up to 10% lower). fallback_chain has no band and ignores it."
+    },
     "via": {
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9-]*$",

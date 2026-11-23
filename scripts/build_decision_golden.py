@@ -292,7 +292,7 @@ corpus = {
                 "code": "via_not_supported",
                 "retriable": False,
                 "field": "via",
-                "supported_via": ["openai", "openrouter"],
+                "supported_via": ["fal", "openai", "openrouter"],
             },
         }
     ],

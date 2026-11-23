@@ -79,13 +79,47 @@
         "basis": {
           "enum": [
             "caller",
-            "default_agent_task_mix"
+            "default_agent_task_mix",
+            "per_output_second"
           ]
         },
         "profile": {
-          "$ref": "decision-query.schema.json#/$defs/UsageProfile"
+          "oneOf": [
+            {
+              "$ref": "decision-query.schema.json#/$defs/UsageProfile"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The token profile the receipt priced; null exactly when basis is per_output_second (a media cell priced per second of delivered output)."
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "basis": {
+                "const": "per_output_second"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "profile": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "profile": {
+                "$ref": "decision-query.schema.json#/$defs/UsageProfile"
+              }
+            }
+          }
+        }
+      ]
     },
     "abstain_reasons": {
       "type": "array",
@@ -216,6 +250,15 @@
           ],
           "minimum": 0,
           "maximum": 9007199254740991
+        },
+        "microusd_per_output_second": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Measured price per second of delivered output for a media selection (what the host billed the board's own clips); absent on token-priced selections."
         }
       }
     },
@@ -336,8 +379,10 @@
         "api": {
           "enum": [
             "chat_completions",
-            "responses"
-          ]
+            "responses",
+            "fal_queue"
+          ],
+          "description": "Request API. fal_queue: submit to the fal queue at model_id (a fal endpoint id) with the media cell's inputs."
         },
         "capability_ratio_ppm": {
           "type": "integer",

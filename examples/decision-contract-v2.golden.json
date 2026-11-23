@@ -693,6 +693,7 @@
         "retriable": false,
         "field": "via",
         "supported_via": [
+          "fal",
           "openai",
           "openrouter"
         ]

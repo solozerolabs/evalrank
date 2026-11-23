@@ -905,6 +905,69 @@ class RefusalRateContractTests(unittest.TestCase):
                 self.assertEqual(text, es_number(value))
 
 
+def _media_selection(endpoint: str, *, per_second: int, ratio_ppm: int) -> DecisionSelectionV2:
+    return DecisionSelectionV2(
+        model_id=endpoint,
+        display_name=endpoint,
+        provider_id="fal",
+        serving_offer_id=f"media_{endpoint}",
+        reasoning_effort="none",
+        api="fal_queue",
+        capability_ratio_ppm=ratio_ppm,
+        family_coverage=1,
+        price=DecisionPriceV2(
+            input_microusd_per_million=None,
+            cached_input_microusd_per_million=None,
+            output_microusd_per_million=None,
+            microusd_per_output_second=per_second,
+        ),
+        effort_multiplier=None,
+        projected_cost_microusd=None,
+        latency_p50_ms=None,
+        caveats=(),
+    )
+
+
+class MediaDecisionContractTests(unittest.TestCase):
+    """A media cell (talking-avatar) is priced per second of delivered output, not per token."""
+
+    def test_media_receipt_round_trips_with_a_per_second_basis(self):
+        query = DecisionQueryV2(cell_id="talking-avatar", objective="lowest_cost_within_top_set", provider_ids=("fal",))
+        cheap = _media_selection("minimax/h3-max-turbo/image-to-video", per_second=19_000, ratio_ppm=1_000_000)
+        dear = _media_selection("heygen/avatar-6/turbo/image-to-video", per_second=55_000, ratio_ppm=938_000)
+        receipt = _receipt(query=query, selections=(cheap, dear), media=True)
+        payload = receipt.to_dict()
+        self.assertEqual({"basis": "per_output_second", "profile": None}, payload["usage_profile"])
+        self.assertEqual(19_000, payload["selections"][0]["price"]["microusd_per_output_second"])
+        self.assertEqual(receipt, DecisionReceiptV2.from_dict(json.loads(json.dumps(payload))))
+        self.assertNotIn("microusd_per_output_second", _selection("model-a").to_dict()["price"])
+
+    def test_media_lowest_cost_picks_the_cheapest_per_second(self):
+        query = DecisionQueryV2(cell_id="talking-avatar", objective="lowest_cost_within_top_set")
+        cheap = _media_selection("a/cheap", per_second=19_000, ratio_ppm=938_000)
+        dear = _media_selection("b/dear", per_second=55_000, ratio_ppm=1_000_000)
+        with self.assertRaisesRegex(ValueError, "cheapest"):
+            _receipt(query=query, selections=(dear, cheap), media=True)
+
+    def test_per_second_basis_needs_a_null_profile_and_no_caller_profile(self):
+        with self.assertRaises(ValueError):
+            decision_contracts.DecisionUsageV2(basis="per_output_second", profile=_usage_profile())
+        query = _query(usage_profile=_usage_profile())
+        with self.assertRaisesRegex(ValueError, "usage_profile must echo"):
+            _receipt(query=query, selections=(_media_selection("a/x", per_second=1, ratio_ppm=1_000_000),), media=True)
+
+    def test_media_vocabulary_matches_the_wire_schemas(self):
+        receipt = json.loads((SCHEMAS / "decision-receipt.schema.json").read_text(encoding="utf-8"))
+        api = receipt["$defs"]["Selection"]["properties"]["api"]["enum"]
+        self.assertEqual(sorted(decision_contracts.DECISION_APIS), sorted(api))
+        self.assertEqual(
+            sorted(decision_contracts.USAGE_BASES),
+            sorted(receipt["properties"]["usage_profile"]["properties"]["basis"]["enum"]),
+        )
+        self.assertIn("microusd_per_output_second", receipt["$defs"]["Price"]["properties"])
+        self.assertIn("fal", decision_contracts.SUPPORTED_VIA)
+
+
 def _receipt(**overrides) -> DecisionReceiptV2:
     values = {
         "query": _query(),

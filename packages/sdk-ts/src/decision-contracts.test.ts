@@ -492,6 +492,32 @@ test("refusal-rate fields: optional query fraction, paired selection fields, flo
   assert.equal((await parseDecisionReceiptV2(await rehashed(unknown))).selections[0].refusal_rate, null);
 });
 
+test("media receipts: fal_queue, per-second price, per_output_second usage with a null profile", async () => {
+  const wire = goldenWire("top_set_pick");
+  wire.query = { schema_version: "2", object: "decision_query", cell_id: "talking-avatar", objective: "lowest_cost_within_top_set" };
+  wire.usage_profile = { basis: "per_output_second", profile: null };
+  wire.exclusions = [];
+  const rows = wire.selections as Array<Record<string, unknown>>;
+  rows.splice(1);
+  const media = {
+    ...rows[0], provider_id: "fal", api: "fal_queue", reasoning_effort: "none", effort_multiplier: null,
+    projected_cost_microusd: null, caveats: [],
+    price: {
+      input_microusd_per_million: null, cached_input_microusd_per_million: null, output_microusd_per_million: null,
+      microusd_per_output_second: 19000,
+    },
+  };
+  delete (media as Record<string, unknown>).refusal_rate;
+  delete (media as Record<string, unknown>).model_family;
+  wire.selections = [media];
+  const parsed = await parseDecisionReceiptV2(await rehashed(wire));
+  assert.equal(parsed.selections[0].price.microusd_per_output_second, 19000);
+  assert.equal(parsed.usage_profile.profile, null);
+  const withProfile = structuredClone(wire);
+  (withProfile.usage_profile as Record<string, unknown>).profile = (goldenWire("top_set_pick").usage_profile as Record<string, unknown>).profile;
+  await assert.rejects(async () => parseDecisionReceiptV2(await rehashed(withProfile)), /no token profile/);
+});
+
 test("every golden receipt parses to its exact body and Python receipt id", async () => {
   for (const row of golden.receipts) {
     const parsed = await parseDecisionReceiptV2({ ...row.body, receipt_id: row.receipt_id });

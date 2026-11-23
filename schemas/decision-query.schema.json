@@ -29,7 +29,7 @@
     "via": {
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9-]*$",
-      "description": "Call surface: openrouter or openai. Any other host answers 422 via_not_supported until its efforts are probed."
+      "description": "Call surface: openrouter or openai for token cells; fal for media cells (talking-avatar, video-generation), where it is also the default. Any other host answers 422 via_not_supported until its efforts are probed."
     },
     "provider_ids": {
       "$ref": "#/$defs/NonEmptyStringSet"

@@ -75,7 +75,7 @@ class McpFixtureTests(unittest.TestCase):
         self.assertEqual("decision_query", query["properties"]["object"]["const"])
         self.assertEqual(["schema_version", "cell_id", "objective"], query["required"])
         self.assertEqual("2", query["properties"]["schema_version"]["const"])
-        self.assertEqual(["openai", "openrouter"], query["properties"]["via"]["enum"])
+        self.assertEqual(["fal", "openai", "openrouter"], query["properties"]["via"]["enum"])
         for retired in ("ranking_group_id", "entity_kind", "monthly_budget_microusd", "zero_cache_sensitivity_usage_profile"):
             self.assertNotIn(retired, query["properties"])
         self.assertEqual("boolean", decide["properties"]["share"]["type"])

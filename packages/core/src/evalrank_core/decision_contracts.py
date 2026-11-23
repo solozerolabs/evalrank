@@ -982,7 +982,7 @@ class ServingOfferV1:
 
 REASONING_EFFORTS = ("none", "minimal", "low", "medium", "high", "xhigh", "max")
 DECISION_OBJECTIVES = {"lowest_cost_within_top_set", "capability_top_set"}
-DECISION_APIS = {"chat_completions", "responses"}
+DECISION_APIS = {"chat_completions", "responses", "fal_queue"}
 ABSTAIN_REASONS = {"no_ranked_candidate", "no_eligible_offer", "stale_evidence", "not_a_model_cell"}
 EXCLUSION_CODES = {
     "ambiguous_identity",
@@ -996,9 +996,10 @@ EXCLUSION_CODES = {
     "refusal_rate_above_max",
 }
 LOCK_STATUSES = {"admitted", "held", "rejected", "unlocked"}
-USAGE_BASES = {"caller", "default_agent_task_mix"}
-SUPPORTED_VIA = ("openai", "openrouter")
-"""Call surfaces with a probed effort vocabulary; any other ``via`` is a 422 ``via_not_supported``."""
+USAGE_BASES = {"caller", "default_agent_task_mix", "per_output_second"}
+SUPPORTED_VIA = ("fal", "openai", "openrouter")
+"""Call surfaces the decision route serves: ``openai``/``openrouter`` for token cells, ``fal`` for media cells
+(the server's default there); any other ``via`` is a 422 ``via_not_supported``."""
 COMPARISON_LEVEL_SOURCE = "comparison_level"
 PPM = 1_000_000
 _VIA_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
@@ -1137,22 +1138,30 @@ class DecisionFamilyV2:
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class DecisionPriceV2:
-    """List price of the serving offer, micro-USD per million tokens; null when the host does not list it."""
+    """List price of the serving offer, micro-USD per million tokens; null when the host does not list it.
+
+    A media selection carries ``microusd_per_output_second`` (measured per second of delivered output) and null
+    token prices; a token selection omits it.
+    """
 
     input_microusd_per_million: int | None
     cached_input_microusd_per_million: int | None
     output_microusd_per_million: int | None
+    microusd_per_output_second: int | None = None
 
     def __post_init__(self) -> None:
-        for name in _PRICE_FIELDS:
+        for name in (*_PRICE_FIELDS, "microusd_per_output_second"):
             _require_nullable_safe_integer(name, getattr(self, name), minimum=0)
 
     def to_dict(self) -> dict[str, Any]:
-        return {name: getattr(self, name) for name in _PRICE_FIELDS}
+        payload = {name: getattr(self, name) for name in _PRICE_FIELDS}
+        if self.microusd_per_output_second is not None:
+            payload["microusd_per_output_second"] = self.microusd_per_output_second
+        return payload
 
     @classmethod
     def from_dict(cls, value: Any) -> "DecisionPriceV2":
-        return cls(**_closed(value, required=_PRICE_FIELDS))
+        return cls(**_closed(value, required=_PRICE_FIELDS, optional=("microusd_per_output_second",)))
 
 
 _PRICE_FIELDS = (
@@ -1254,8 +1263,12 @@ class DecisionSelectionV2:
             _normalize_typed_records("caveats", self.caveats, DecisionCaveatV2, lambda row: (row.code,)),
         )
         codes = {row.code for row in self.caveats}
-        if (self.projected_cost_microusd is None) != ("cost_unmeasured" in codes):
-            raise ValueError("cost_unmeasured caveat is required exactly when projected_cost_microusd is null")
+        unmeasured = self.projected_cost_microusd is None and self.price.microusd_per_output_second is None
+        if unmeasured != ("cost_unmeasured" in codes):
+            raise ValueError(
+                "cost_unmeasured caveat is required exactly when the selection has no projected cost"
+                " and no per-second price"
+            )
         if self.projected_cost_microusd is not None and self.effort_multiplier is None:
             raise ValueError("a priced selection needs its effort_multiplier")
         for caveat in self.caveats:
@@ -1358,11 +1371,14 @@ class DecisionUsageV2:
     """The usage profile the receipt priced, and whether the caller sent it."""
 
     basis: str
-    profile: UsageProfileV1
+    profile: UsageProfileV1 | None  # null exactly when basis is per_output_second (a media cell)
 
     def __post_init__(self) -> None:
         _require_enum("basis", self.basis, USAGE_BASES)
-        if not isinstance(self.profile, UsageProfileV1):
+        if self.basis == "per_output_second":
+            if self.profile is not None:
+                raise ValueError("a per_output_second usage carries no token profile")
+        elif not isinstance(self.profile, UsageProfileV1):
             raise TypeError("profile must be UsageProfileV1")
 
     @classmethod
@@ -1372,12 +1388,23 @@ class DecisionUsageV2:
         return cls(basis="caller", profile=query.usage_profile)
 
     def to_dict(self) -> dict[str, Any]:
-        return {"basis": self.basis, "profile": self.profile.to_dict()}
+        return {"basis": self.basis, "profile": None if self.profile is None else self.profile.to_dict()}
+
+    @classmethod
+    def per_output_second(cls) -> "DecisionUsageV2":
+        """A media cell's basis: priced per second of delivered output, no token profile."""
+        return cls(basis="per_output_second", profile=None)
 
     @classmethod
     def from_dict(cls, value: Any) -> "DecisionUsageV2":
         payload = _closed(value, required=("basis", "profile"))
-        return cls(basis=payload["basis"], profile=UsageProfileV1.from_dict(payload["profile"]))
+        raw = payload["profile"]
+        return cls(basis=payload["basis"], profile=None if raw is None else UsageProfileV1.from_dict(raw))
+
+
+def _media_usage(query: DecisionQueryV2) -> DecisionUsageV2 | None:
+    """A media decision's usage: only when the caller sent no token profile (the server refuses one there)."""
+    return DecisionUsageV2.per_output_second() if query.usage_profile is None else None
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
@@ -1426,8 +1453,11 @@ class DecisionReceiptV2:
         )
         if not isinstance(self.usage_profile, DecisionUsageV2):
             raise TypeError("usage_profile must be DecisionUsageV2")
-        if self.usage_profile != DecisionUsageV2.for_query(self.query):
-            raise ValueError("usage_profile must echo the query's profile (caller) or the default agent task mix")
+        if self.usage_profile not in (DecisionUsageV2.for_query(self.query), _media_usage(self.query)):
+            raise ValueError(
+                "usage_profile must echo the query's profile (caller), the default agent task mix, or"
+                " per_output_second (a media cell, no caller profile)"
+            )
         reasons = _normalize_string_set("abstain_reasons", self.abstain_reasons, allow_empty=True)
         for reason in reasons:
             _require_enum("abstain_reasons item", reason, ABSTAIN_REASONS)
@@ -1456,10 +1486,14 @@ class DecisionReceiptV2:
             raise ValueError("every selection must come from the query's provider_ids")
         pick = self.selections[0]
         if self.query.objective == "lowest_cost_within_top_set":
-            costs = [row.projected_cost_microusd for row in self.selections]
+            media = self.usage_profile.basis == "per_output_second"
+            costs = [
+                row.price.microusd_per_output_second if media else row.projected_cost_microusd
+                for row in self.selections
+            ]
             if any(cost is None for cost in costs):
                 raise ValueError("lowest_cost_within_top_set selects priced configurations only")
-            if pick.projected_cost_microusd != min(costs):
+            if costs[0] != min(costs):  # type: ignore[type-var]
                 raise ValueError("lowest_cost_within_top_set picks the cheapest configuration of the band")
         elif pick.capability_ratio_ppm != max(row.capability_ratio_ppm for row in self.selections):
             raise ValueError("capability_top_set picks the highest-scoring configuration")
@@ -1476,8 +1510,10 @@ class DecisionReceiptV2:
         selections: tuple[DecisionSelectionV2, ...],
         exclusions: tuple[DecisionExclusionV2, ...],
         abstain_reasons: tuple[str, ...],
+        media: bool = False,
     ) -> "DecisionReceiptV2":
-        """Build a receipt; ``usage_profile`` is derived from the query and ``receipt_id`` from the body."""
+        """Build a receipt; ``usage_profile`` is derived from the query (``media``: per output second) and
+        ``receipt_id`` from the body."""
         values = {
             "query": query,
             "decided_at": decided_at,
@@ -1486,7 +1522,7 @@ class DecisionReceiptV2:
             "families": families,
             "selections": selections,
             "exclusions": exclusions,
-            "usage_profile": DecisionUsageV2.for_query(query),
+            "usage_profile": DecisionUsageV2.per_output_second() if media else DecisionUsageV2.for_query(query),
             "abstain_reasons": abstain_reasons,
         }
         unchecked = object.__new__(cls)

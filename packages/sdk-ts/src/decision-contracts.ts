@@ -235,7 +235,7 @@ export interface ServingOfferV1 {
 
 export const REASONING_EFFORTS = ["none", "minimal", "low", "medium", "high", "xhigh", "max"] as const;
 export const DECISION_OBJECTIVES = ["lowest_cost_within_top_set", "capability_top_set"] as const;
-export const DECISION_APIS = ["chat_completions", "responses"] as const;
+export const DECISION_APIS = ["chat_completions", "responses", "fal_queue"] as const;
 export const ABSTAIN_REASONS = ["no_ranked_candidate", "no_eligible_offer", "stale_evidence", "not_a_model_cell"] as const;
 export const EXCLUSION_CODES = [
   "ambiguous_identity",
@@ -249,8 +249,8 @@ export const EXCLUSION_CODES = [
   "refusal_rate_above_max",
 ] as const;
 export const LOCK_STATUSES = ["admitted", "held", "rejected", "unlocked"] as const;
-/** Call surfaces with a probed effort vocabulary; any other `via` is a 422 `via_not_supported`. */
-export const SUPPORTED_VIA = ["openai", "openrouter"] as const;
+/** Call surfaces the decision route serves: openai/openrouter for token cells, fal for media cells (the server's default there); any other `via` is a 422 `via_not_supported`. */
+export const SUPPORTED_VIA = ["fal", "openai", "openrouter"] as const;
 /** The usage profile a query without `usage_profile` is priced at: cache-heavy agent traffic. */
 export const DEFAULT_AGENT_TASK_MIX: UsageProfileV1 = Object.freeze({
   basis: "estimated",
@@ -293,6 +293,8 @@ export interface DecisionPriceV2 {
   input_microusd_per_million: number | null;
   cached_input_microusd_per_million: number | null;
   output_microusd_per_million: number | null;
+  /** Media selections: measured price per second of delivered output (token prices are null). Absent on token selections. */
+  microusd_per_output_second?: number | null;
 }
 
 export interface EffortMultiplierV2 {
@@ -335,8 +337,9 @@ export interface DecisionExclusionV2 {
 }
 
 export interface DecisionUsageV2 {
-  basis: "caller" | "default_agent_task_mix";
-  profile: UsageProfileV1;
+  basis: "caller" | "default_agent_task_mix" | "per_output_second";
+  /** Null exactly when basis is per_output_second (a media cell). */
+  profile: UsageProfileV1 | null;
 }
 
 /** `pick`: `selections[0]` is the pick and the rest is the band in order. `abstain`: no selection, one or more reasons. */
@@ -1316,8 +1319,11 @@ function normalizeReceiptBody(value: unknown): Omit<DecisionReceiptV2, "receipt_
     abstain_reasons: normalizedStringSet(payload.abstain_reasons, "abstain_reasons", true)
       .map((item) => enumValue(item, ABSTAIN_REASONS, "abstain_reasons item")),
   };
-  if (canonicalJson(body.usage_profile) !== canonicalJson(decisionUsageFor(query))) {
-    throw new TypeError("usage_profile must echo the query's profile (caller) or the default agent task mix");
+  const media = body.usage_profile.basis === "per_output_second";
+  if (media ? query.usage_profile !== undefined : canonicalJson(body.usage_profile) !== canonicalJson(decisionUsageFor(query))) {
+    throw new TypeError(
+      "usage_profile must echo the query's profile (caller), the default agent task mix, or per_output_second (a media cell, no caller profile)",
+    );
   }
   if (body.outcome === "pick") validatePick(body);
   else if (body.selections.length || !body.abstain_reasons.length) {
@@ -1343,11 +1349,12 @@ function validatePick(body: Omit<DecisionReceiptV2, "receipt_id">): void {
   }
   const pick = selections[0];
   if (query.objective === "lowest_cost_within_top_set") {
-    const costs = selections.map((row) => row.projected_cost_microusd);
+    const media = body.usage_profile.basis === "per_output_second";
+    const costs = selections.map((row) => (media ? row.price.microusd_per_output_second ?? null : row.projected_cost_microusd));
     if (costs.some((cost) => cost === null)) {
       throw new TypeError("lowest_cost_within_top_set selects priced configurations only");
     }
-    if (pick.projected_cost_microusd !== Math.min(...(costs as number[]))) {
+    if (costs[0] !== Math.min(...(costs as number[]))) {
       throw new TypeError("lowest_cost_within_top_set picks the cheapest configuration of the band");
     }
   } else if (pick.capability_ratio_ppm !== Math.max(...selections.map((row) => row.capability_ratio_ppm))) {
@@ -1376,7 +1383,7 @@ function parseSelection(value: unknown): DecisionSelectionV2 {
   }
   const price = closed(payload.price, [
     "input_microusd_per_million", "cached_input_microusd_per_million", "output_microusd_per_million",
-  ]);
+  ], ["microusd_per_output_second"]);
   const selection: DecisionSelectionV2 = {
     model_id: nonEmptyString(payload.model_id, "model_id"),
     display_name: nonEmptyString(payload.display_name, "display_name"),
@@ -1390,6 +1397,9 @@ function parseSelection(value: unknown): DecisionSelectionV2 {
       input_microusd_per_million: nullableSafeInteger(price.input_microusd_per_million, "input_microusd_per_million", 0),
       cached_input_microusd_per_million: nullableSafeInteger(price.cached_input_microusd_per_million, "cached_input_microusd_per_million", 0),
       output_microusd_per_million: nullableSafeInteger(price.output_microusd_per_million, "output_microusd_per_million", 0),
+      ...("microusd_per_output_second" in price
+        ? { microusd_per_output_second: nullableSafeInteger(price.microusd_per_output_second, "microusd_per_output_second", 0) }
+        : {}),
     },
     effort_multiplier: payload.effort_multiplier === null ? null : parseMultiplier(payload.effort_multiplier),
     projected_cost_microusd: nullableSafeInteger(payload.projected_cost_microusd, "projected_cost_microusd", 0),
@@ -1402,8 +1412,11 @@ function parseSelection(value: unknown): DecisionSelectionV2 {
   }
   if (selection.capability_ratio_ppm > ppm) throw new TypeError("capability_ratio_ppm must not exceed 1000000");
   const unmeasured = selection.caveats.some((row) => row.code === "cost_unmeasured");
-  if ((selection.projected_cost_microusd === null) !== unmeasured) {
-    throw new TypeError("cost_unmeasured caveat is required exactly when projected_cost_microusd is null");
+  const perSecond = selection.price.microusd_per_output_second ?? null;
+  if ((selection.projected_cost_microusd === null && perSecond === null) !== unmeasured) {
+    throw new TypeError(
+      "cost_unmeasured caveat is required exactly when the selection has no projected cost and no per-second price",
+    );
   }
   if (selection.projected_cost_microusd !== null && selection.effort_multiplier === null) {
     throw new TypeError("a priced selection needs its effort_multiplier");
@@ -1456,11 +1469,17 @@ function parseExclusion(value: unknown): DecisionExclusionV2 {
   return exclusion;
 }
 
+function nullProfile(value: unknown): null {
+  if (value !== null) throw new TypeError("a per_output_second usage carries no token profile");
+  return null;
+}
+
 function parseUsage(value: unknown): DecisionUsageV2 {
   const payload = closed(value, ["basis", "profile"]);
+  const basis = enumValue(payload.basis, ["caller", "default_agent_task_mix", "per_output_second"] as const, "basis");
   return {
-    basis: enumValue(payload.basis, ["caller", "default_agent_task_mix"] as const, "basis"),
-    profile: parseUsageProfileV1(payload.profile),
+    basis,
+    profile: basis === "per_output_second" ? nullProfile(payload.profile) : parseUsageProfileV1(payload.profile),
   };
 }
 

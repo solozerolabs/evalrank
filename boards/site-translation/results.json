@@ -59,7 +59,7 @@
       ]
     }
   ],
-  "updated_at": "2026-11-16T08:26:20Z",
+  "updated_at": "2026-11-23T08:00:18Z",
   "models": [
     {
       "model": "anthropic/claude-haiku-5.5",
@@ -799,78 +799,77 @@
       "model": "cohere/command-a-plus",
       "created": 1790102896,
       "mode": "reasoning_off",
-      "scored_at": "2026-11-16T08:03:19Z",
+      "scored_at": "2026-11-23T07:51:05Z",
       "n": 600,
       "errors": 40,
       "error_rate": 0.066667,
       "excluded": true,
-      "score": 0.823214,
-      "check_failures": 52,
+      "score": 0.803125,
+      "check_failures": 50,
       "check_codes": {
         "currency": 49,
-        "english": 2,
         "money": 49,
-        "number": 2
+        "number": 1
       },
       "sources": {
-        "own": 0.81369,
-        "wmt24pp": 0.851786
+        "own": 0.785119,
+        "wmt24pp": 0.857143
       },
       "languages": {
         "ar": {
-          "score": 0.7625,
+          "score": 0.78125,
           "errors": 0
         },
         "de": {
-          "score": 0.95625,
+          "score": 0.925,
           "errors": 0
         },
         "es": {
-          "score": 0.9125,
+          "score": 0.76875,
           "errors": 0
         },
         "fi": {
-          "score": 0.875,
+          "score": 0.88125,
           "errors": 0
         },
         "fr": {
-          "score": 0.95,
+          "score": 0.93125,
           "errors": 0
         },
         "he": {
-          "score": 0.7625,
+          "score": 0.75625,
           "errors": 0
         },
         "hi": {
-          "score": 0.8625,
+          "score": 0.6875,
           "errors": 0
         },
         "ja": {
-          "score": 0.73125,
-          "errors": 0
-        },
-        "ko": {
-          "score": 0.7625,
-          "errors": 0
-        },
-        "pl": {
           "score": 0.725,
           "errors": 0
         },
+        "ko": {
+          "score": 0.75625,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.75625,
+          "errors": 0
+        },
         "pt": {
-          "score": 0.94375,
+          "score": 0.925,
           "errors": 0
         },
         "ru": {
-          "score": 0.75,
+          "score": 0.75625,
           "errors": 0
         },
         "th": {
-          "score": 0.625,
+          "score": 0.7,
           "errors": 0
         },
         "tr": {
-          "score": 0.90625,
+          "score": 0.89375,
           "errors": 0
         },
         "zh": {
@@ -3365,7 +3364,7 @@
       "model": "mistralai/mistral-large-4-0",
       "created": 1791294122,
       "mode": "reasoning_off",
-      "scored_at": "2026-11-16T08:06:34Z",
+      "scored_at": "2026-11-23T07:49:49Z",
       "n": 600,
       "errors": 600,
       "error_rate": 1.0,
@@ -4100,81 +4099,80 @@
       "model": "nex-agi/nex-n2.5-pro",
       "created": 1788890050,
       "mode": "reasoning_off",
-      "scored_at": "2026-11-16T08:09:28Z",
+      "scored_at": "2026-11-23T07:52:20Z",
       "n": 600,
-      "errors": 480,
-      "error_rate": 0.8,
-      "excluded": true,
-      "score": 0.797917,
-      "check_failures": 11,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.89125,
+      "check_failures": 3,
       "check_codes": {
-        "clock": 9,
-        "english": 11
+        "english": 3
       },
       "sources": {
-        "own": 0.797222,
-        "wmt24pp": 0.8
+        "own": 0.894444,
+        "wmt24pp": 0.881667
       },
       "languages": {
         "ar": {
-          "score": 0.54375,
+          "score": 0.9,
           "errors": 0
         },
         "de": {
-          "score": 0.0,
-          "errors": 40
+          "score": 0.8625,
+          "errors": 0
         },
         "es": {
-          "score": 0.90625,
+          "score": 0.86875,
           "errors": 0
         },
         "fi": {
-          "score": 0.0,
-          "errors": 40
+          "score": 0.825,
+          "errors": 0
         },
         "fr": {
-          "score": 0.0,
-          "errors": 40
+          "score": 0.81875,
+          "errors": 0
         },
         "he": {
-          "score": 0.0,
-          "errors": 40
+          "score": 0.89375,
+          "errors": 0
         },
         "hi": {
-          "score": 0.0,
-          "errors": 40
+          "score": 0.9,
+          "errors": 0
         },
         "ja": {
-          "score": 0.0,
-          "errors": 40
+          "score": 0.9375,
+          "errors": 0
         },
         "ko": {
-          "score": 0.0,
-          "errors": 40
+          "score": 0.90625,
+          "errors": 0
         },
         "pl": {
-          "score": 0.0,
-          "errors": 40
+          "score": 0.875,
+          "errors": 0
         },
         "pt": {
-          "score": 0.0,
-          "errors": 40
+          "score": 0.9375,
+          "errors": 0
         },
         "ru": {
-          "score": 0.94375,
+          "score": 0.9375,
           "errors": 0
         },
         "th": {
-          "score": 0.0,
-          "errors": 40
+          "score": 0.83125,
+          "errors": 0
         },
         "tr": {
-          "score": 0.0,
-          "errors": 40
+          "score": 0.89375,
+          "errors": 0
         },
         "zh": {
-          "score": 0.0,
-          "errors": 40
+          "score": 0.98125,
+          "errors": 0
         }
       }
     },
@@ -5759,12 +5757,12 @@
       "model": "prism-ml/ternary-bonsai-2-9b",
       "created": 1792130995,
       "mode": "reasoning_off",
-      "scored_at": "2026-11-16T08:14:37Z",
+      "scored_at": "2026-11-23T07:51:59Z",
       "n": 600,
       "errors": 280,
       "error_rate": 0.466667,
       "excluded": true,
-      "score": 0.509375,
+      "score": 0.510938,
       "check_failures": 31,
       "check_codes": {
         "english": 5,
@@ -5772,12 +5770,12 @@
         "script": 2
       },
       "sources": {
-        "own": 0.526042,
-        "wmt24pp": 0.459375
+        "own": 0.527083,
+        "wmt24pp": 0.4625
       },
       "languages": {
         "ar": {
-          "score": 0.5125,
+          "score": 0.55625,
           "errors": 0
         },
         "de": {
@@ -5789,15 +5787,15 @@
           "errors": 40
         },
         "fi": {
-          "score": 0.1,
+          "score": 0.10625,
           "errors": 0
         },
         "fr": {
-          "score": 0.75625,
+          "score": 0.725,
           "errors": 0
         },
         "he": {
-          "score": 0.15625,
+          "score": 0.2,
           "errors": 0
         },
         "hi": {
@@ -5813,11 +5811,11 @@
           "errors": 40
         },
         "pl": {
-          "score": 0.6,
+          "score": 0.6125,
           "errors": 0
         },
         "pt": {
-          "score": 0.675,
+          "score": 0.6625,
           "errors": 0
         },
         "ru": {
@@ -5829,7 +5827,7 @@
           "errors": 40
         },
         "tr": {
-          "score": 0.59375,
+          "score": 0.54375,
           "errors": 0
         },
         "zh": {
@@ -5927,7 +5925,7 @@
       "model": "qwen/qwen3.5-122b-a10b",
       "created": 1772053789,
       "mode": "reasoning_off",
-      "scored_at": "2026-11-16T08:14:55Z",
+      "scored_at": "2026-11-23T07:50:19Z",
       "n": 600,
       "errors": 600,
       "error_rate": 1.0,
@@ -6343,7 +6341,7 @@
       "model": "qwen/qwen3.5-flash-02-23",
       "created": 1772053776,
       "mode": "reasoning_off",
-      "scored_at": "2026-11-16T08:15:57Z",
+      "scored_at": "2026-11-23T07:51:41Z",
       "n": 600,
       "errors": 600,
       "error_rate": 1.0,
@@ -6422,7 +6420,7 @@
       "model": "qwen/qwen3.5-plus-02-15",
       "created": 1771229416,
       "mode": "reasoning_off",
-      "scored_at": "2026-11-16T08:16:21Z",
+      "scored_at": "2026-11-23T07:52:30Z",
       "n": 600,
       "errors": 600,
       "error_rate": 1.0,
@@ -6501,7 +6499,7 @@
       "model": "qwen/qwen3.5-plus-20260420",
       "created": 1777261368,
       "mode": "reasoning_off",
-      "scored_at": "2026-11-16T08:16:31Z",
+      "scored_at": "2026-11-23T07:52:35Z",
       "n": 600,
       "errors": 600,
       "error_rate": 1.0,
@@ -6747,7 +6745,7 @@
       "model": "qwen/qwen3.6-flash",
       "created": 1777261362,
       "mode": "reasoning_off",
-      "scored_at": "2026-11-16T08:17:32Z",
+      "scored_at": "2026-11-23T07:53:13Z",
       "n": 600,
       "errors": 600,
       "error_rate": 1.0,
@@ -6826,7 +6824,7 @@
       "model": "qwen/qwen3.6-plus",
       "created": 1775133557,
       "mode": "reasoning_off",
-      "scored_at": "2026-11-16T08:17:54Z",
+      "scored_at": "2026-11-23T07:53:52Z",
       "n": 600,
       "errors": 600,
       "error_rate": 1.0,
@@ -7234,19 +7232,19 @@
       "model": "qwen/qwen3.8-omni-flash",
       "created": 1789959954,
       "mode": "reasoning_off",
-      "scored_at": "2026-11-16T08:20:36Z",
+      "scored_at": "2026-11-23T07:54:19Z",
       "n": 600,
-      "errors": 360,
-      "error_rate": 0.6,
+      "errors": 280,
+      "error_rate": 0.466667,
       "excluded": true,
-      "score": 0.815625,
+      "score": 0.900781,
       "check_failures": 1,
       "check_codes": {
         "english": 1
       },
       "sources": {
-        "own": 0.854167,
-        "wmt24pp": 0.7
+        "own": 0.915625,
+        "wmt24pp": 0.85625
       },
       "languages": {
         "ar": {
@@ -7254,35 +7252,35 @@
           "errors": 40
         },
         "de": {
-          "score": 0.0,
-          "errors": 40
+          "score": 0.86875,
+          "errors": 0
         },
         "es": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "fi": {
           "score": 0.0,
           "errors": 40
         },
-        "fi": {
-          "score": 0.66875,
-          "errors": 0
-        },
         "fr": {
-          "score": 0.7625,
-          "errors": 0
+          "score": 0.0,
+          "errors": 40
         },
         "he": {
           "score": 0.0,
           "errors": 40
         },
         "hi": {
-          "score": 0.0,
-          "errors": 40
+          "score": 0.8375,
+          "errors": 0
         },
         "ja": {
           "score": 0.0,
           "errors": 40
         },
         "ko": {
-          "score": 0.8,
+          "score": 0.9,
           "errors": 0
         },
         "pl": {
@@ -7290,24 +7288,24 @@
           "errors": 40
         },
         "pt": {
-          "score": 0.91875,
+          "score": 0.93125,
           "errors": 0
         },
         "ru": {
-          "score": 0.0,
-          "errors": 40
+          "score": 0.9,
+          "errors": 0
         },
         "th": {
-          "score": 0.88125,
+          "score": 0.9125,
           "errors": 0
         },
         "tr": {
-          "score": 0.8625,
-          "errors": 0
-        },
-        "zh": {
           "score": 0.0,
           "errors": 40
+        },
+        "zh": {
+          "score": 0.9625,
+          "errors": 0
         }
       }
     },
@@ -7388,6 +7386,92 @@
         },
         "zh": {
           "score": 0.9875,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "radixark/daisyrose-27b",
+      "created": 1795222188,
+      "mode": "reasoning_off",
+      "scored_at": "2026-11-23T08:00:18Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.768333,
+      "check_failures": 56,
+      "check_codes": {
+        "currency": 18,
+        "english": 1,
+        "id": 36,
+        "money": 18,
+        "number": 1,
+        "url": 1
+      },
+      "sources": {
+        "own": 0.761667,
+        "wmt24pp": 0.788333
+      },
+      "languages": {
+        "ar": {
+          "score": 0.725,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.74375,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.03125,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.8125,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.75,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.53125,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.9,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.925,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.8125,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.875,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.86875,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.76875,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.83125,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.99375,
           "errors": 0
         }
       }
@@ -7572,7 +7656,7 @@
       "model": "sakana/sakana-namazu",
       "created": 1786410129,
       "mode": "unavailable",
-      "scored_at": "2026-11-16T08:20:37Z",
+      "scored_at": "2026-11-23T07:53:13Z",
       "n": 600,
       "errors": 600,
       "error_rate": 1.0,
@@ -7980,6 +8064,87 @@
       }
     },
     {
+      "model": "tencent/hy4-flash",
+      "created": 1794838706,
+      "mode": "reasoning_off",
+      "scored_at": "2026-11-23T07:54:36Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.91125,
+      "check_failures": 1,
+      "check_codes": {
+        "script": 1
+      },
+      "sources": {
+        "own": 0.923889,
+        "wmt24pp": 0.873333
+      },
+      "languages": {
+        "ar": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.8875,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.78125,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.9375,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.84375,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.89375,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.95625,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.90625,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.94375,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.9125,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.91875,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.96875,
+          "errors": 0
+        }
+      }
+    },
+    {
       "model": "tencent/hy4-preview",
       "created": 1787897375,
       "mode": "reasoning_off",
@@ -8059,6 +8224,90 @@
         },
         "zh": {
           "score": 0.95625,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "model": "thinkingmachines/inkling-2-mini",
+      "created": 1795227585,
+      "mode": "reasoning_off",
+      "scored_at": "2026-11-23T07:55:07Z",
+      "n": 600,
+      "errors": 0,
+      "error_rate": 0.0,
+      "excluded": false,
+      "score": 0.796667,
+      "check_failures": 27,
+      "check_codes": {
+        "clock": 7,
+        "currency": 15,
+        "english": 13,
+        "money": 15
+      },
+      "sources": {
+        "own": 0.811667,
+        "wmt24pp": 0.751667
+      },
+      "languages": {
+        "ar": {
+          "score": 0.68125,
+          "errors": 0
+        },
+        "de": {
+          "score": 0.85,
+          "errors": 0
+        },
+        "es": {
+          "score": 0.79375,
+          "errors": 0
+        },
+        "fi": {
+          "score": 0.74375,
+          "errors": 0
+        },
+        "fr": {
+          "score": 0.8375,
+          "errors": 0
+        },
+        "he": {
+          "score": 0.7375,
+          "errors": 0
+        },
+        "hi": {
+          "score": 0.5875,
+          "errors": 0
+        },
+        "ja": {
+          "score": 0.80625,
+          "errors": 0
+        },
+        "ko": {
+          "score": 0.85,
+          "errors": 0
+        },
+        "pl": {
+          "score": 0.84375,
+          "errors": 0
+        },
+        "pt": {
+          "score": 0.9,
+          "errors": 0
+        },
+        "ru": {
+          "score": 0.8625,
+          "errors": 0
+        },
+        "th": {
+          "score": 0.7625,
+          "errors": 0
+        },
+        "tr": {
+          "score": 0.8,
+          "errors": 0
+        },
+        "zh": {
+          "score": 0.89375,
           "errors": 0
         }
       }

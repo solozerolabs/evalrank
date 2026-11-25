@@ -16,7 +16,7 @@
    "items": 51
   }
  ],
- "updated_at": "2026-11-18T10:24:00Z",
+ "updated_at": "2026-11-25T10:25:16Z",
  "models": [
   {
    "model": "surf/search/web",
@@ -7174,7 +7174,7 @@
    "usd_per_call": null,
    "billed_usd": 0,
    "list_usd": 0.002,
-   "scored_at": "2026-11-18T10:23:46Z",
+   "scored_at": "2026-11-25T10:24:59Z",
    "query_results": [
     {
      "id": "discovery-github",
@@ -7432,7 +7432,7 @@
      "code": "http_400"
     }
    ],
-   "attempts": 2
+   "attempts": 3
   },
   {
    "model": "dataforseo/serp/google-organic",
@@ -7453,7 +7453,7 @@
    "usd_per_call": null,
    "billed_usd": 0,
    "list_usd": 0.002,
-   "scored_at": "2026-11-18T10:24:00Z",
+   "scored_at": "2026-11-25T10:25:16Z",
    "query_results": [
     {
      "id": "discovery-github",
@@ -7711,7 +7711,7 @@
      "code": "http_400"
     }
    ],
-   "attempts": 2
+   "attempts": 3
   },
   {
    "model": "dataforseo/serp/yahoo-organic",
